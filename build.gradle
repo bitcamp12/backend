@@ -1,0 +1,57 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.3.5'
+	id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'com.cos'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+    // Spring Data JPA 의존성 (JPA를 통한 데이터베이스 연동)
+    //implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    
+    // Thymeleaf 템플릿 엔진 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+    // Spring Web 모듈 의존성 (웹 애플리케이션 개발)
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Lombok (자동으로 getter/setter 생성 등)
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // 개발 도구 의존성 (자동 리스타트 등)
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    // MySQL 커넥터 (MySQL 데이터베이스 연결)
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // 테스트용 의존성
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // MyBatis Spring Boot Starter 의존성 (JPA 대신 MyBatis 사용)
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+}
+
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
