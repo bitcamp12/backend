@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="../static/js/common_bootstrap.js"></script>
+</head>
+<body>
+	
+	<div class="container-fluid mt-2 w-50">
+        <!-- 상단 검색 및 정렬 버튼 -->
+        <div class="d-flex justify-content-between mb-3">
+            <div class="input-group flex-grow-1 me-2 col-md-4">
+                <input type="text" class="form-control" placeholder="검색어를 입력하세요">
+                <button type="button" class="btn btn-primary">검색</button>
+            </div>
+		    <select class="form-select w-auto col-md-4" aria-label="정렬">
+		        <option selected value="1">공연명▽</option>
+		        <option value="2">공연명△</option>
+		        <option value="3">최신등록순</option>
+		        <option value="4">할인율순</option>
+		    </select>        </div>
+   </div>
+   <div class="container mt-4 col-md-11 w-100">
+        <!-- 게시판 테이블 -->
+        <table class="table table-bordered table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>공연명</th>
+                    <th>상영관 타입</th>
+                    <th> 출연진 </th>
+                    <th>공연 기간</th>
+                    <th>할인 시간</th>
+                    <th>할인율</th>
+                    <th>수정</th>
+                    <th>숨김여부</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>예시 공연명 1</td>
+                    <td> A타입 </td>
+			       	<td> 유아름, 양준모, 조정석 </td>
+                    <td>2024-12-25 ~ 2024-12-25</td>
+                    <td>14:00 - 16:00</td>
+                    <td>30%</td>
+                    <td class="cell-btn-center"><button type="button" class="btn btn-primary btn-sm">수정</button></td>
+                    <td>
+                        <div class="form-check form-switch cell-btn-center">
+                            <input class="form-check-input" type="checkbox" id="toggle1">
+                            <label class="form-check-label" for="toggle1"></label>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>예시 공연명 2</td>
+                    <td> B타입 </td>
+                    <td> 강동원, 전지현, 서현진 </td>
+                    <td>2024-12-25 ~ 2024-12-25</td>
+                    <td>18:00 - 20:00</td>
+                    <td>20%</td>
+                    <td class="cell-btn-center"><button type="button" class="btn btn-primary btn-sm">수정</button></td>
+                    <td>
+                        <div class="form-check form-switch cell-btn-center">
+                            <input class="form-check-input" type="checkbox" id="toggle2">
+                            <label class="form-check-label" for="toggle2"></label>
+                        </div>
+                    </td>
+                </tr>
+                <!-- 추가 행은 필요에 따라 추가 -->
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
