@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>회원 관리</title>
+<style>
+body {
+	font-family: 'Arial', sans-serif;
+	background-color: #f5f5f5;
+	margin: 0;
+	padding: 20px;
+}
+
+.container {
+	max-width: 800px;
+	margin: 0 auto;
+	background-color: #fff;
+	padding: 20px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+	font-size: 24px;
+	font-weight: bold;
+	margin-bottom: 20px;
+}
+
+.search-bar {
+	display: flex;
+	justify-content: flex-end;
+	margin-bottom: 20px;
+}
+
+.search-bar input {
+	width: 200px;
+	padding: 5px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	margin-right: 10px;
+}
+
+.search-bar button {
+	padding: 6px 12px;
+	border: none;
+	background-color: #005cbf;
+	color: #fff;
+	font-size: 14px;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.search-bar button:hover {
+	background-color: #004494;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: 20px;
+}
+
+table th, table td {
+	border: 1px solid #ccc;
+	padding: 10px;
+	text-align: center;
+	font-size: 14px;
+}
+
+table th {
+	background-color: #f9f9f9;
+	font-weight: bold;
+}
+
+table tr:nth-child(even) {
+	background-color: #f7f7f7;
+}
+
+.btn-block, .btn-unblock {
+	padding: 6px 12px;
+	font-size: 12px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.btn-block {
+	background-color: #e74c3c;
+	color: #fff;
+}
+
+.btn-block:hover {
+	background-color: #c0392b;
+}
+
+.btn-unblock {
+	background-color: #27ae60;
+	color: #fff;
+}
+
+.btn-unblock:hover {
+	background-color: #1e8449;
+}
+
+.pagination {
+	text-align: center;
+	font-size: 14px;
+}
+
+.pagination a {
+	text-decoration: none;
+	color: #005cbf;
+	margin: 0 5px;
+	padding: 5px 10px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}
+
+.pagination a:hover {
+	background-color: #f5f5f5;
+	color: #004494;
+}
+
+.pagination .active {
+	background-color: #005cbf;
+	color: #fff;
+	pointer-events: none;
+}
+</style>
+</head>
+<body>
+	<div class="container">
+		<div class="title">회원 관리</div>
+
+		<!-- 검색 -->
+		<div class="search-bar">
+			<input type="text" id="search" placeholder="검색">
+			<button onclick="performSearch()">검색</button>
+		</div>
+
+		<!-- 테이블 -->
+		<table>
+			<thead>
+				<tr>
+					<th>NO.</th>
+					<th>ID</th>
+					<th>이름</th>
+					<th>메일</th>
+					<th>차단 여부</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- 데이터 행 -->
+				<tr>
+					<td>1</td>
+					<td>user01</td>
+					<td>홍길동</td>
+					<td>user01@example.com</td>
+					<td>
+						<button class="btn-block">차단</button>
+						<button class="btn-unblock">차단 해제</button>
+					</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>user02</td>
+					<td>김철수</td>
+					<td>user02@example.com</td>
+					<td>
+						<button class="btn-block">차단</button>
+						<button class="btn-unblock">차단 해제</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<!-- 페이징 -->
+		<div class="pagination">
+			<a href="#">이전</a> <a href="#">1</a> <a href="#" class="active">2</a>
+			<a href="#">3</a> <a href="#">4</a> <a href="#">5</a> <a href="#">다음</a>
+		</div>
+	</div>
+
+	<script>
+		function performSearch() {
+			const searchValue = document.getElementById('search').value;
+			alert(`검색어: ${searchValue}`);
+			// 실제 검색 로직은 추가 구현 필요
+		}
+	</script>
+</body>
+</html>
