@@ -24,4 +24,8 @@ public class TestController {
         return "test";  // test.html 템플릿을 렌더링
     }
     
+    @GetMapping("/notice")
+    public String notice(Model model) {
+    	return "admin/body/memberList";  // test.html 템플릿을 렌더링
+    }
 }
