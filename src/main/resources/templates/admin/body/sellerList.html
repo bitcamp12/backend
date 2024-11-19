@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>공연 관계자 관리</title>
+<link rel="stylesheet" th:href="@{/static/css/common.css}">
+<link rel="stylesheet" th:href="@{/static/css/sellerList.css}">
+</head>
+<body>
+	<div class="container">
+		<div class="title">공연 관계자 관리</div>
+
+		<!-- 검색 -->
+		<div class="search-bar">
+			<input type="text" id="search" placeholder="검색">
+			<button onclick="performSearch()">검색</button>
+		</div>
+
+		<!-- 테이블 -->
+		<table>
+			<thead>
+				<tr>
+					<th>회원 번호</th>
+					<th>아이디</th>
+					<th>이름</th>
+					<th>이메일</th>
+					<th>전화 번호</th>
+					<th>성별</th>
+					<th>가입 날짜</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>1</td>
+					<td>gw7191</td>
+					<td>홍길동</td>
+					<td>user1@mail.com</td>
+					<td>010-1234-5678</td>
+					<td>남</td>
+					<td>2024-01-01</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>gw7192</td>
+					<td>김영희</td>
+					<td>user2@mail.com</td>
+					<td>010-5678-1234</td>
+					<td>여</td>
+					<td>2024-02-01</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>gw2323</td>
+					<td>박철수</td>
+					<td>user3@mail.com</td>
+					<td>010-9876-5432</td>
+					<td>남</td>
+					<td>2024-03-01</td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td>user4</td>
+					<td>홍길동</td>
+					<td>user1@mail.com</td>
+					<td>010-1234-5678</td>
+					<td>남</td>
+					<td>2024-01-01</td>
+				</tr>
+				<tr>
+					<td>5</td>
+					<td>w2q2e</td>
+					<td>김영희</td>
+					<td>user2@mail.com</td>
+					<td>010-5678-1234</td>
+					<td>여</td>
+					<td>2024-02-01</td>
+				</tr>
+				<tr>
+					<td>6</td>
+					<td>gw2323</td>
+					<td>박철수</td>
+					<td>user3@mail.com</td>
+					<td>010-9876-5432</td>
+					<td>남</td>
+					<td>2024-03-01</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<!-- 페이징 -->
+		<div class="pagination">
+			<a href="#">이전</a> <a href="#">1</a> <a href="#" class="active">2</a>
+			<a href="#">3</a> <a href="#">4</a> <a href="#">5</a> <a href="#">다음</a>
+		</div>
+	</div>
+
+	<script>
+		function performSearch() {
+			const searchValue = document.getElementById('search').value;
+			alert(`검색어: ${searchValue}`);
+			// 실제 검색 로직은 추가 구현 필요
+		}
+	</script>
+</body>
+</html>

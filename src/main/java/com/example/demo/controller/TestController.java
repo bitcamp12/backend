@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.entity.TestEntity;
 import com.example.demo.service.TestService;
@@ -24,4 +23,8 @@ public class TestController {
         return "test";  // test.html 템플릿을 렌더링
     }
     
+    @GetMapping("/notice")
+    public String notice(Model model) {
+    	return "admin/body/sellerList";  // test.html 템플릿을 렌더링
+    }
 }
