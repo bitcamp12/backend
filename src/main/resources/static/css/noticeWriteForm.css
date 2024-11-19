@@ -1,15 +1,10 @@
-body {
-	font-family: 'Arial', sans-serif;
-	background-color: #f5f5f5;
-}
-
 .form-container {
-	background-color: #fff;
+	background-color: white;
 	padding: 20px 30px;
 	border: 1px solid #ddd;
 	border-radius: 6px;
 	width: 600px;
-	margin: 50px auto;
+	margin: 100px;
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -19,11 +14,6 @@ body {
 	color: #333;
 	margin-bottom: 20px;
 	text-align: center;
-}
-
-label {
-	font-weight: bold;
-	color: #555;
 }
 
 .form-control {
@@ -47,32 +37,34 @@ label {
 }
 
 .btn-primary {
-	background-color: #005cbf;
-	border-color: #005cbf;
+	background-color: #BE97EC;
+	border-color: #BE97EC;
 	font-size: 16px;
 	padding: 8px 20px;
 	border-radius: 4px;
 }
 
 .btn-primary:hover {
-	background-color: #004494;
-	border-color: #004494;
+	background-color: #6A2DB4;
+	border-color: #6A2DB4;
 }
 
 .btn-secondary {
-	background-color: #868e96;
-	border-color: #868e96;
-	font-size: 16px;
-	padding: 8px 20px;
-	border-radius: 4px;
+	background-color: #b0b8bc; /* 연한 회색 */
+	border-color: #b0b8bc; /* 버튼 테두리 색상 */
+	font-size: 16px; /* 글자 크기 */
+	padding: 8px 20px; /* 버튼 내부 여백 */
+	border-radius: 4px; /* 버튼 모서리 둥글기 */
 }
 
+/* 버튼 호버 상태 */
 .btn-secondary:hover {
-	background-color: #666c72;
-	border-color: #666c72;
+	background-color: #408080; /* 호버 시 더 연한 회색 */
+	border-color: #a0a6ab; /* 호버 시 테두리 색상 */
 }
 
 .form-footer {
 	margin-top: 20px;
 	text-align: right;
 }
+
