@@ -1,13 +1,4 @@
 /* CSS 코드 (앞서 작성한 CSS를 그대로 사용) */
-body {
-	font-family: Arial, sans-serif;
-	background-color: #f9f9f9;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	min-height: 100vh;
-	margin: 0;
-}
 
 .container {
 	width: 100%;
@@ -20,10 +11,8 @@ body {
 }
 
 h1 {
-	font-size: 20px;
-	margin-bottom: 10px;
-	color: black;
-	text-align: center;
+	margin-left: 20px;
+	text-align: left;
 }
 
 .text-end {
