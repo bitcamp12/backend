@@ -14,7 +14,7 @@ public class TestService {
 	
 	public TestEntity test() {
 		TestEntity testEntity = new TestEntity();
-		testEntity.setMessage(testDAO.test());
+		testEntity.setUserMessage(testDAO.test());
 		return testEntity;
 	}
 }

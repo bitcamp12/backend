@@ -19,12 +19,12 @@ public class TestController {
     @GetMapping("/test")
     public String test(Model model) {
     	TestEntity testEntity = testService.test();
-        model.addAttribute("message", testEntity.getMessage());  // 모델에 데이터를 추가
+        model.addAttribute("message", testEntity.getUserMessage());  // 모델에 데이터를 추가
         return "test";  // test.html 템플릿을 렌더링
     }
     
     @GetMapping("/notice")
     public String notice(Model model) {
-    	return "admin/body/sellerList";  // test.html 템플릿을 렌더링
+    	return "admin/body/noticeList";  // test.html 템플릿을 렌더링
     }
 }
