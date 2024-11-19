@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>공지사항 목록</title>
+<link rel="stylesheet" th:href="@{/static/css/noticeList.css}">
+</head>
+<body>
+	<div class="container">
+		<h1>공지사항 목록</h1>
+		<div class="text-end">
+			<a href="/notice/write" class="btn">글쓰기</a>
+		</div>
+		<table>
+			<thead>
+				<tr>
+					<th>NO.</th>
+					<th>제목</th>
+					<th>작성내용</th>
+					<th>작성일</th>
+					<th>작성하기</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- 공지사항 목록 출력 -->
+				<tr th:each="notice, stat : ${notices}">
+					<td th:text="${stat.count}"></td>
+					<td th:text="${notice.title}"></td>
+					<td th:text="${notice.content}"></td>
+					<td th:text="${notice.date}"></td>
+					<td><a th:href="@{/notice/{id}(id=${notice.id})}" class="btn">작성</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="search-container">
+			<div>
+				<input type="text" placeholder="검색"> <input type="button"
+					value="검색">
+			</div>
+			<div class="pagination">
+				<!-- 페이지네이션 링크 -->
+
+			</div>
+		</div>
+	</div>
+</body>
+</html>

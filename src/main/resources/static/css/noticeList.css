@@ -1,0 +1,133 @@
+/* CSS 코드 (앞서 작성한 CSS를 그대로 사용) */
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f9f9f9;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
+	margin: 0;
+}
+
+.container {
+	width: 100%;
+	max-width: 900px;
+	padding: 20px;
+	background-color: white;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+	font-size: 20px;
+	margin-bottom: 10px;
+	color: black;
+	text-align: center;
+}
+
+.text-end {
+	display: flex;
+	justify-content: flex-end;
+	margin-bottom: 10px;
+}
+
+.text-end .btn {
+	padding: 5px 10px;
+	background-color: #9b61db;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	font-size: 14px;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.text-end .btn:hover {
+	background-color: #7745a2;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: 20px;
+	table-layout: fixed;
+}
+
+table th, table td {
+	padding: 10px;
+	text-align: center;
+	border: 1px solid #ddd;
+	font-size: 14px;
+}
+
+table th {
+	background-color: #f3f3f3;
+	font-weight: bold;
+}
+
+table td input[type="button"] {
+	padding: 5px 10px;
+	background-color: #9b61db;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	font-size: 12px;
+	cursor: pointer;
+}
+
+table td input[type="button"]:hover {
+	background-color: #7745a2;
+}
+
+.search-container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 10px;
+}
+
+.search-container input[type="text"] {
+	padding: 5px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	width: 200px;
+}
+
+.search-container input[type="button"] {
+	padding: 5px 10px;
+	background-color: #9b61db;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 12px;
+}
+
+.search-container input[type="button"]:hover {
+	background-color: #7745a2;
+}
+
+.pagination {
+	text-align: center;
+	margin-top: 10px;
+}
+
+.pagination a {
+	padding: 5px 10px;
+	margin: 0 3px;
+	text-decoration: none;
+	color: #333;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}
+
+.pagination a:hover {
+	background-color: #f0f0f0;
+}
+
+.pagination a.active {
+	background-color: #9b61db;
+	color: white;
+	border-color: #9b61db;
+}
