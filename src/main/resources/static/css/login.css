@@ -1,14 +1,3 @@
-/* 전체 페이지 스타일 */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
-
 .login-container {
     width: 100%;
     max-width: 500px;
@@ -25,11 +14,6 @@ body {
     display: block;
     margin: 0 auto;
     max-width: 70px;
-    margin-bottom: 20px;
-}
-
-h1 {
-    font-size: 24px;
     margin-bottom: 20px;
 }
 
@@ -54,11 +38,11 @@ h1 {
 }
 
 .tab-button:hover {
-    background-color: #7745a2; /* 다크 보라색 */
+    background-color: #6A2DB4; /* 다크 보라색 */
 }
 
 .tab-button.active {
-    background-color: #9b61db; /* 보라색 (활성화된 탭) */
+    background-color: #BE97EC; /* 보라색 (활성화된 탭) */
 }
 
 hr.title-line {
@@ -96,7 +80,7 @@ hr.title-line {
     width: 100%;
     padding: 10px;
     margin-top: 40px;
-    background-color: #9b61db; /* 보라색 버튼 */
+    background-color: #BE97EC; /* 보라색 버튼 */
     color: white;
     border: none;
     cursor: pointer;
@@ -106,7 +90,7 @@ hr.title-line {
 }
 
 .login-button:hover {
-    background-color: #7745a2; /* 다크 보라색 버튼 */
+    background-color: #6A2DB4; /* 다크 보라색 버튼 */
 }
 .error-message {
     color: red; /* 빨간 글씨 */
@@ -120,25 +104,4 @@ hr.title-line {
 /* 기본 로그인 폼 (사이트 관리자 폼) 보이기 */
 #admin-form {
     display: block;
-}
-
-/* 반응형 스타일: 화면 크기가 600px 이하일 때 */
-@media (max-width: 600px) {
-    .login-container {
-        padding: 15px;
-    }
-
-    h1 {
-        font-size: 20px;
-    }
-
-    .tab-button {
-        font-size: 14px;
-        padding: 8px;
-    }
-
-    .login-button {
-        font-size: 14px;
-        padding: 12px;
-    }
 }
