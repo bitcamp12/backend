@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>회원 관리</title>
+<link rel="stylesheet" th:href="@{/static/css/common.css}">
 <link rel="stylesheet" th:href="@{/static/css/memberList.css}">
 </head>
 <body>
@@ -20,34 +21,69 @@
 		<table>
 			<thead>
 				<tr>
-					<th>NO.</th>
-					<th>ID</th>
+					<th>회원 번호</th>
+					<th>아이디</th>
 					<th>이름</th>
-					<th>메일</th>
-					<th>차단 여부</th>
+					<th>이메일</th>
+					<th>전화 번호</th>
+					<th>성별</th>
+					<th>가입 날짜</th>
 				</tr>
 			</thead>
 			<tbody>
-				<!-- 데이터 행 -->
 				<tr>
 					<td>1</td>
-					<td>user01</td>
+					<td>gw7191</td>
 					<td>홍길동</td>
-					<td>user01@example.com</td>
-					<td>
-						<button class="btn-block">차단</button>
-						<button class="btn-unblock">차단 해제</button>
-					</td>
+					<td>user1@mail.com</td>
+					<td>010-1234-5678</td>
+					<td>남</td>
+					<td>2024-01-01</td>
 				</tr>
 				<tr>
 					<td>2</td>
-					<td>user02</td>
-					<td>김철수</td>
-					<td>user02@example.com</td>
-					<td>
-						<button class="btn-block">차단</button>
-						<button class="btn-unblock">차단 해제</button>
-					</td>
+					<td>gw7192</td>
+					<td>김영희</td>
+					<td>user2@mail.com</td>
+					<td>010-5678-1234</td>
+					<td>여</td>
+					<td>2024-02-01</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>gw2323</td>
+					<td>박철수</td>
+					<td>user3@mail.com</td>
+					<td>010-9876-5432</td>
+					<td>남</td>
+					<td>2024-03-01</td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td>user4</td>
+					<td>홍길동</td>
+					<td>user1@mail.com</td>
+					<td>010-1234-5678</td>
+					<td>남</td>
+					<td>2024-01-01</td>
+				</tr>
+				<tr>
+					<td>5</td>
+					<td>w2q2e</td>
+					<td>김영희</td>
+					<td>user2@mail.com</td>
+					<td>010-5678-1234</td>
+					<td>여</td>
+					<td>2024-02-01</td>
+				</tr>
+				<tr>
+					<td>6</td>
+					<td>gw2323</td>
+					<td>박철수</td>
+					<td>user3@mail.com</td>
+					<td>010-9876-5432</td>
+					<td>남</td>
+					<td>2024-03-01</td>
 				</tr>
 			</tbody>
 		</table>
