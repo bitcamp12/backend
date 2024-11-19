@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AdminController {
     
     @GetMapping(value = {"/", ""})
-	public String index(Model model) {
+	public String index(Model modoel) {
         return "admin/index";  // index.html 템플릿을 렌더링
     }
 }
