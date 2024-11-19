@@ -13,8 +13,7 @@ public class AdminController {
     
     @GetMapping("/index")
 	public String index(Model model) {
-    	//관리자 정보 추후 추가하기 model 어트리뷰트..//
-    	
+    	//관리자 정보 추후 추가하기 model 어트리뷰트..//	
         return "admin/index";  // index.html 템플릿을 렌더링
     }
 }
