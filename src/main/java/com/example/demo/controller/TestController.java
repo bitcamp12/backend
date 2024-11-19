@@ -26,6 +26,6 @@ public class TestController {
     
     @GetMapping("/notice")
     public String notice(Model model) {
-    	return "admin/body/memberList";  // test.html 템플릿을 렌더링
+    	return "admin/body/sellerList";  // test.html 템플릿을 렌더링
     }
 }
