@@ -6,7 +6,7 @@ body {
 	align-items: center; /* 세로로 중앙 정렬 */
 	height: 100vh; /* 화면 전체 높이 */
 	margin: 0; /* 기본 마진 제거 */
-	overflow: auto; /* 스크롤 가능 */
+	overflow: hidden;
 }
 
 h1 {
