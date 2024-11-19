@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class TestEntity {
 
-	public String message;
+	public String userMessage;
 	
 }

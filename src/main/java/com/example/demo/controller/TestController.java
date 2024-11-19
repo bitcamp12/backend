@@ -19,12 +19,34 @@ public class TestController {
     @GetMapping("/test")
     public String test(Model model) {
     	TestEntity testEntity = testService.test();
-        model.addAttribute("message", testEntity.getMessage());  // 모델에 데이터를 추가
+        model.addAttribute("message", testEntity.getUserMessage());  // 모델에 데이터를 추가
         return "test";  // test.html 템플릿을 렌더링
     }
     
     @GetMapping("/notice")
     public String notice(Model model) {
+    	return "admin/body/noticeWriteForm";  // test.html 템플릿을 렌더링
+    }
+    
+    @GetMapping("/noticeList")
+    public String noticeList(Model model) {
+    	return "admin/body/noticeList";  // test.html 템플릿을 렌더링
+    }
+    
+    @GetMapping("/memberList")
+    public String memberList(Model model) {
+    	return "admin/body/memberList";  // test.html 템플릿을 렌더링
+    }
+    
+    @GetMapping("/sellerList")
+    public String sellerList(Model model) {
     	return "admin/body/sellerList";  // test.html 템플릿을 렌더링
     }
+    
+    @GetMapping("/noticeDetail")
+    public String noticeDetail(Model model) {
+    	return "admin/body/noticeDetail";  // test.html 템플릿을 렌더링
+    }
+    
+    
 }

@@ -5,7 +5,7 @@
 <mapper namespace="com.example.demo.dao.TestDAO">
 
     <select id="test" resultType="String">
-        SELECT message FROM test LIMIT 1;
+        SELECT * FROM test LIMIT 1;
     </select>
 
 </mapper>
