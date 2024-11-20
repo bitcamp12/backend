@@ -8,7 +8,7 @@ import com.example.demo.service.FavoriteService;
 
 
 @RestController
-@RequestMapping(value="/api/favorite")
+@RequestMapping(value="/api/favorites")
 public class FavoriteController {
     
 	@Autowired

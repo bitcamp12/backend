@@ -8,7 +8,7 @@ import com.example.demo.service.PlayService;
 
 
 @RestController
-@RequestMapping(value="/api/play")
+@RequestMapping(value="/api/plays")
 public class PlayController {
     
 	@Autowired

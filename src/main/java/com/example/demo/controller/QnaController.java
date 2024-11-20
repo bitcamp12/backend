@@ -8,7 +8,7 @@ import com.example.demo.service.QnaService;
 
 
 @RestController
-@RequestMapping(value="/api/qna")
+@RequestMapping(value="/api/qnas")
 public class QnaController {
     
 	@Autowired
