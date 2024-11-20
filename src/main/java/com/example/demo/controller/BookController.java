@@ -8,7 +8,7 @@ import com.example.demo.service.BookService;
 
 
 @RestController
-@RequestMapping(value="/api/book")
+@RequestMapping(value="/api/books")
 public class BookController {
     
 	@Autowired
