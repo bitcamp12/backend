@@ -15,7 +15,7 @@ import com.example.demo.service.MemberService;
 import com.example.demo.util.ApiResponse;
 
 @RestController
-@RequestMapping("api/member")
+@RequestMapping("api/members")
 public class MemberController {
 	
 	@Autowired
