@@ -54,6 +54,14 @@ dependencies {
    	//implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6' // HTML 페이지를 위한 Thymeleaf 추가
     //implementation 'org.springframework.security:spring-security-test' // Spring Security 의존성 추가
    
+      // Commons IO
+    implementation 'commons-io:commons-io:2.16.1'
+
+    // Commons FileUpload
+    implementation 'commons-fileupload:commons-fileupload:1.5'
+
+    // AWS S3 SDK
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.610'
 }
 
 
