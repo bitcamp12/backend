@@ -2,8 +2,10 @@ package com.example.demo.dao;
 
 import org.apache.ibatis.annotations.Mapper;
 
-@Mapper
-public interface TestDAO {
+import com.example.demo.dto.member.MemberDTO;
 
-	public String test();
+@Mapper
+public interface ReviewAfterDAO {
+
+	
 }

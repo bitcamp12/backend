@@ -2,9 +2,211 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>타임리프 테스트</title>
+    <title>Admin Page</title>
+
+    <!-- CSS 라이브러리 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* 전체 레이아웃 컨테이너 */
+        .layout-container {
+            display: flex;
+            min-height: 100vh;
+            background-color: #F8F7FF;  /* 연한 보라색 배경 */
+        }
+        
+
+        /* 헤더 스타일링 */
+        header {
+            background-color: white;
+            border-bottom: 1px solid #E5E7EB;
+            box-shadow: 0 4px 6px -1px rgba(107,70,193,0.05);
+        }
+
+        /* 사이드바 기본 스타일 */
+        .nav-transition {
+		    transition: all 0.3s ease;
+		    background: linear-gradient(to bottom, #ffffff, #FAFAFA);
+		    box-shadow: 1px 0 10px rgba(107, 70, 193, 0.08);
+		    padding: 0;
+		}
+		
+		/* ul 태그 스타일 수정 */
+		.nav-transition ul {
+		    padding: 0;
+		    margin: 0;
+		    width: 100%;
+		    display: flex;
+		    flex-direction: column;
+		    gap: 0.5rem;  /* 메뉴 간격 */
+		}
+		
+		.nav-transition ul li {
+		    width: 100%;
+		    display: flex;
+		    justify-content: center;
+		}
+
+        /* 사이드바 네비게이션 아이템 */
+       .nav-item {
+		    display: flex;
+		    align-items: center;
+		    justify-content: flex-start;
+		    padding: 0.875rem 1.5rem;  /* 패딩 조정 */
+		    color: #6B7280;
+		    transition: all 0.2s ease;
+		    border-radius: 8px;
+		    margin: 0.25rem 0.75rem;  /* 마진 조정 */
+		    width: calc(100% - 1.5rem);  /* 너비 조정 */
+		    position: relative;
+		    height: 3rem;
+		}
+		
+        .nav-item:hover {
+		    background: linear-gradient(135deg, #6D28D9 0%, #7C3AED 100%);
+		    color: white;
+		    transform: translateY(-1px);
+		    box-shadow: 0 2px 4px rgba(139, 92, 246, 0.1);
+		}
+		
+		/*active 상태의 스타일 추가*/
+		.nav-item.active{
+			background: linear-gradient(135deg, #6D28D9 0%, #7C3AED 100%);
+			color: white;
+			box-shadow: 0 2px 4px rgba(139, 92, 246, 0.1);
+		}
+        
+
+        /* 사이드바 아이콘 */
+        .nav-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            opacity: 1.2;
+        }
+
+        /* 축소된 사이드바 스타일 */
+        .nav-hidden {
+            width: 4.5rem;
+        }
+
+        .nav-hidden .nav-item {
+            justify-content: center;
+            padding: 0.875rem;
+            margin: 0 auto;
+            width: 3.5rem;
+        }
+
+        .nav-hidden .menu-text {
+            display: none;
+        }
+
+        /* 메인 컨텐츠 영역 */
+        .main-content {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin: 1.5rem;
+            padding: 1.5rem;
+        }
+        
+        
+    </style>
 </head>
-<body>
-  <h1>셀러</h1>
+<body class="bg-purple-50">
+
+    <!-- 헤더 섹션 -->
+    <header>
+        <div class="flex justify-between items-center px-6 py-4">
+        
+        	<!--  햄버거 메뉴와 타이틀 -->
+            <div class="flex items-center space-x-4">
+                <button id="sidebarToggle" class="p-2 hover:bg-purple-50 rounded-lg transition-colors">
+                    <i class="fas fa-bars text-gray-600"></i>
+                </button>
+                <h2 class="text-xl font-semibold text-gray-800">공연 관리자</h2>
+            </div>
+            <div class="flex items-center">
+                <span class="mr-3 text-gray-600">공연 관계 관리자 님</span>
+                <img src="/static/images/default-profile.png" alt="Profile" 
+                     class="w-10 h-10 rounded-full border-2 border-purple-100">
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 레이아웃 -->
+    <div class="flex min-h-screen">
+        <!-- 사이드바 -->
+        <nav id="sidebar" class="nav-transition w-64">
+            <div class="pt-4">
+                <ul class="space-y-2">
+                    <!-- 네비게이션 아이템들 -->
+                    <li>
+                        <a href="/seller/body/playRegisterForm" class="nav-item">
+                            <div class="nav-icon">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            <span class="menu-text ml-3 font-medium">공연정보등록</span>
+                        </a>
+                    <li>
+                        <a href="/admin/index" class="nav-item">
+                            <div class="nav-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <span class="menu-text ml-3 font-medium">공연정보수정</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/index" class="nav-item" 
+                        	th:classappend="${currentMenu == 'playList'} ? 'active' : ''">
+                            <div class="nav-icon">
+                                <i class="fas fa-users-cog"></i>
+                            </div>
+                            <span class="menu-text ml-3 font-medium">공연정보목록</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/index" class="nav-item">
+                            <div class="nav-icon">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <span class="menu-text ml-3 font-medium">예매 관리</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/index" class="nav-item">
+                            <div class="nav-icon">
+                                <i class="fas fa-list-alt"></i>
+                            </div>
+                            <span class="menu-text ml-3 font-medium">QnA 관리</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- 메인 컨텐츠 : 추후 변경 -->
+        <main class="flex-1 p-6 bg-purple-50">
+            <div class="main-content">
+                <div th:include="seller/body/playRegisterForm"></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            let isMenuHidden = false;
+            
+            // 사이드바 토글 기능(플래그로 상태변경)
+            sidebarToggle.addEventListener('click', function(){
+                isMenuHidden = !isMenuHidden;
+                sidebar.classList.toggle('nav-hidden');
+            });
+        });
+    </script>
 </body>
 </html>

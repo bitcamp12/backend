@@ -50,6 +50,10 @@ dependencies {
  	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
 	
+	//implementation 'org.springframework.boot:spring-boot-starter-security' // Spring Security 의존성 추가
+   	//implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6' // HTML 페이지를 위한 Thymeleaf 추가
+    //implementation 'org.springframework.security:spring-security-test' // Spring Security 의존성 추가
+   
 }
 
 

@@ -4,20 +4,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dto.MemberDTO;
+import com.example.demo.dto.member.IdCheckDTO;
+import com.example.demo.dto.member.MemberDTO;
 import com.example.demo.entity.Member;
 import com.example.demo.service.MemberService;
 import com.example.demo.util.ApiResponse;
 
 @RestController
-@RequestMapping("api/member")
+@RequestMapping("api/members")
 public class MemberController {
 	
 	@Autowired
@@ -36,14 +35,14 @@ public class MemberController {
         	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(400, "회원가입을 실패했습니다.", null));
         }
         
-    	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(400, "회원가입을 실패했습니다.", null));      
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "success", null));
     }
     
-    @GetMapping("/checkId")
-    public ResponseEntity<ApiResponse<Member>> checkId(@RequestParam("id") String id) {
-        System.out.println("Received data: " + id);
+    @PostMapping("/checkId")
+    public ResponseEntity<ApiResponse<Member>> checkId(@RequestBody IdCheckDTO dto) {
+        System.out.println("Received data: " + dto.getId());
         try {
-            int result = memberService.checkId(id);
+            int result = memberService.checkId(dto.getId());
             System.out.println(result);
             if (result == 1) {
                 return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "exist", null));

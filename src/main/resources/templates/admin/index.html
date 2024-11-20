@@ -28,21 +28,40 @@
 		    transition: all 0.3s ease;
 		    background: linear-gradient(to bottom, #ffffff, #FAFAFA);
 		    box-shadow: 1px 0 10px rgba(107, 70, 193, 0.08);
+		    padding: 0;
+		}
+		
+		/* ul 태그 스타일 수정 */
+		.nav-transition ul {
+		    padding: 0;
+		    margin: 0;
+		    width: 100%;
+		    display: flex;
+		    flex-direction: column;
+		    gap: 0.5rem;  /* 메뉴 간격 */
+		}
+		
+		.nav-transition ul li {
+		    width: 100%;
+		    display: flex;
+		    justify-content: center;
 		}
 
         /* 사이드바 네비게이션 아이템 */
-        .nav-item {
-            display: flex;
-            align-items: center;
-            padding: 0.875rem 1.5rem;
-            color: #6B7280;
-            transition: all 0.02s ease;
-            border-radius: 8px;
-            margin: 4px 8px;
-            width:calc(100%-16px);
-            position: relative;
-        }
-
+       .nav-item {
+		    display: flex;
+		    align-items: center;
+		    justify-content: flex-start;
+		    padding: 0.875rem 1.5rem;  /* 패딩 조정 */
+		    color: #6B7280;
+		    transition: all 0.2s ease;
+		    border-radius: 8px;
+		    margin: 0.25rem 0.75rem;  /* 마진 조정 */
+		    width: calc(100% - 1.5rem);  /* 너비 조정 */
+		    position: relative;
+		    height: 3rem;
+		}
+		
         .nav-item:hover {
 		    background: linear-gradient(135deg, #6D28D9 0%, #7C3AED 100%);
 		    color: white;
@@ -69,7 +88,8 @@
         .nav-hidden .nav-item {
             justify-content: center;
             padding: 0.875rem;
-        	transform: translateX(-70%); /*왼쪽으로 이동*/
+            margin: 0 auto;
+            width: 3.5rem;
         }
 
         .nav-hidden .menu-text {
@@ -99,15 +119,16 @@
                 <button id="sidebarToggle" class="p-2 hover:bg-purple-50 rounded-lg transition-colors">
                     <i class="fas fa-bars text-gray-600"></i>
                 </button>
-                <h2 class="text-xl font-semibold text-gray-800">Admin</h2>
+                <h2 class="text-xl font-semibold text-gray-800">사이트 관리자</h2>
             </div>
             <div class="flex items-center">
-                <span class="mr-3 text-gray-600">관리자 님</span>
+                <span class="mr-3 text-gray-600">사이트 관리자 님</span>
                 <img src="/static/images/default-profile.png" alt="Profile" 
                      class="w-10 h-10 rounded-full border-2 border-purple-100">
             </div>
         </div>
     </header>
+
 
     <!-- 메인 레이아웃 -->
     <div class="flex min-h-screen">
@@ -116,14 +137,14 @@
             <div class="pt-4">
                 <ul class="space-y-2">
                     <!-- 네비게이션 아이템들 -->
-                    <li>
+<!--                     <li>
                         <a href="/admin/index" class="nav-item">
                             <div class="nav-icon">
                                 <i class="fas fa-home"></i>
                             </div>
                             <span class="menu-text ml-3 font-medium">Home</span>
                         </a>
-                    <li>
+                    <li> -->
                         <a href="/admin/index" class="nav-item">
                             <div class="nav-icon">
                                 <i class="fas fa-users"></i>
@@ -171,17 +192,19 @@
                             <span class="menu-text ml-3 font-medium">이용자 분석</span>
                         </a>
                     </li>
-                </ul>
-            </div>
+             </ul>
+       	   </div>
         </nav>
 
         <!-- 메인 컨텐츠 : 추후 변경 -->
         <main class="flex-1 p-6 bg-purple-50">
             <div class="main-content">
+                <div th:include="seller/body/playList"></div>
                 <div th:include="seller/body/playRegisterForm"></div>
             </div>
         </main>
-    </div>
+	</div>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function(){
@@ -198,3 +221,4 @@
     </script>
 </body>
 </html>
+        
