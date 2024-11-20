@@ -29,5 +29,8 @@
     )
 </insert>
 
+<select id="checkId" parameterType="String" resultType="int">
+SELECT COALESCE(COUNT(*), 0) FROM member WHERE id = #{id}
+</select>
 
 </mapper>

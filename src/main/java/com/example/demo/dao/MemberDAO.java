@@ -7,7 +7,9 @@ import com.example.demo.dto.MemberDTO;
 @Mapper
 public interface MemberDAO {
 
-	public void signUp(MemberDTO memberDTO);
+	public int signUp(MemberDTO memberDTO);
+
+	public int checkId(String id);
 
 	
 }
