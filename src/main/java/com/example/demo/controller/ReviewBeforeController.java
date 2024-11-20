@@ -8,7 +8,7 @@ import com.example.demo.service.ReviewBeforeService;
 
 
 @RestController
-@RequestMapping(value="/api/reviewAfter")
+@RequestMapping(value="/api/reviewAfters")
 public class ReviewBeforeController {
     
 	@Autowired

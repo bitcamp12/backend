@@ -8,7 +8,7 @@ import com.example.demo.service.NoticeService;
 
 
 @RestController
-@RequestMapping(value="/api/notice")
+@RequestMapping(value="/api/notices")
 public class NoticeController {
     
 	@Autowired

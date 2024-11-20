@@ -9,7 +9,7 @@ import com.example.demo.service.TheaterService;
 
 
 @RestController
-@RequestMapping(value="/api/theater")
+@RequestMapping(value="/api/theaters")
 public class TheaterController {
     
 	@Autowired

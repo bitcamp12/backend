@@ -9,7 +9,7 @@ import com.example.demo.service.PlayTimeTableService;
 
 
 @RestController
-@RequestMapping(value="/api/playTimeTable")
+@RequestMapping(value="/api/playTimeTables")
 public class PlayTimeTableController {
     
 	@Autowired
