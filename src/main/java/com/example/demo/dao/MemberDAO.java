@@ -1,5 +1,7 @@
 package com.example.demo.dao;
 
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Mapper;
@@ -13,5 +15,18 @@ public interface MemberDAO {
     public int signUp(MemberDTO memberDTO);
 
     @Select("SELECT COALESCE(COUNT(*), 0) FROM member WHERE id = #{id}")
-    public int checkId(String id); 
+    public int checkId(String id);
+    
+    @Select("SELECT id FROM member WHERE name = #{name} AND phone = #{phone}")
+	public String findIdPhone(Map<String, String> map);
+    
+    @Select("SELECT COUNT(*) FROM member WHERE name = #{name} AND email = #{email}")
+    public int findIdByEmail(Map<String, String> map);
+    
+    @Select("SELECT id FROM member WHERE name = #{name} AND email = #{email}")
+	public String findIdByEmail2(Map<String, String> map);
+    
+    
+    
+
 }

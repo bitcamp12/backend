@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,5 +25,18 @@ public class MemberService {
 
 	public int checkId(String id) {
 		return memberDAO.checkId(id);
+	}
+	
+
+	public String findIdPhone(Map<String, String> map) {
+		return memberDAO.findIdPhone(map);
+	}
+
+	public int findIdByEmail(Map<String, String> map) {
+		return memberDAO.findIdByEmail(map);
+	}
+
+	public String findIdByEmail2(Map<String, String> map) {
+		return memberDAO.findIdByEmail2(map);
 	}
 }
