@@ -9,20 +9,35 @@ public class SmsService {
 
     private final SmsCertificationUtil smsCertificationUtil;
 
-    // Constructor injection
     public SmsService(SmsCertificationUtil smsCertificationUtil) {
         this.smsCertificationUtil = smsCertificationUtil;
     }
 
-    // Sending SMS with a random certification code
-    public void sendSms(SmsRequestDto smsRequestDto) {
-        String phoneNum = smsRequestDto.getPhoneNum(); // Get phone number from DTO
-        String certificationCode = generateCertificationCode(); // Generate a random 6-digit certification code
-        smsCertificationUtil.sendSMS(phoneNum, certificationCode); // Send SMS via utility
+    /**
+     * SMS 전송 요청
+     * @param phoneNum 수신자 전화번호
+     * @return 생성된 인증 코드
+     */
+    public String sendSms(String phoneNum) {
+        String certificationCode = generateCertificationCode(); // 인증 코드 생성
+        smsCertificationUtil.sendSMS(phoneNum, certificationCode); // SMS 전송
+        return certificationCode; // 인증 코드 반환
     }
 
-    // Method to generate a random 6-digit certification code
+    /**
+     * SMS 전송 요청 DTO 기반
+     * @param smsRequestDto SMS 요청 정보
+     * @return 생성된 인증 코드
+     */
+    public String sendSms(SmsRequestDto smsRequestDto) {
+        return sendSms(smsRequestDto.getPhoneNum());
+    }
+
+    /**
+     * 6자리 인증 코드 생성
+     * @return 6자리 인증 코드
+     */
     private String generateCertificationCode() {
-        return String.format("%06d", (int) (Math.random() * 1000000)); // 6-digit code
+        return String.format("%06d", (int) (Math.random() * 1000000)); // 6자리 랜덤 숫자
     }
 }

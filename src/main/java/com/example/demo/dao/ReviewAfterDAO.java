@@ -9,12 +9,10 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
-<<<<<<< HEAD
+
 import com.example.demo.dto.member.MemberDTO;
-=======
-import com.example.demo.dto.MemberDTO;
+
 import com.example.demo.dto.ReviewAfterDTO;
->>>>>>> 694caceb7fc25b86282f9e95ee11a1efcf0cfabe
 
 @Mapper
 public interface ReviewAfterDAO {
