@@ -12,8 +12,7 @@ import com.example.demo.dto.PlayDTO;
 public interface PlayDAO {
 
 	@Select("""
-			selete * from play
-			where play_seq=#{playSeq}
+			SELECT * FROM play WHERE play_seq = #{playSeq}
 			""")
 	PlayDTO getPlayOne(String playSeq);
 

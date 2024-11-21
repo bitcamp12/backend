@@ -14,9 +14,10 @@ public class ReviewAfterService {
 	@Autowired
 	private ReviewAfterDAO reviewAfterDAO;
 
-	public void reviewAWrite(int playSeq, int memberSeq, String content, String rating) {
-		
-		 reviewAfterDAO.reviewAWrite(playSeq,memberSeq,content,rating);
+	public int reviewAWrite(int playSeq, int memberSeq, String content, int rating) {
+		System.out.println(playSeq+rating+memberSeq+content);
+		 int result=reviewAfterDAO.reviewAWrite(playSeq,memberSeq,content,rating);
+		return result;
 	}
 
 	public List<ReviewAfterDTO> getReviewAList(int playSeq) {
@@ -24,19 +25,24 @@ public class ReviewAfterService {
 		return reviewAfterDAO.getReviewAList(playSeq);
 	}
 
-	public ReviewAfterDTO getReviewA(String reviewAfterSeq) {
+	public ReviewAfterDTO getReviewA(int reviewAfterSeq) {
 		
 		return reviewAfterDAO.getReviewA(reviewAfterSeq);
 	}
 
-	public void reviewAUpdate(String reviewAfterSeq, String content, String rating) {
+	public int reviewAUpdate(int  reviewAfterSeq, String content, int rating) {
 		
-		reviewAfterDAO.reviewAUpdate(reviewAfterSeq,content,rating);
+		System.out.println(content+rating+reviewAfterSeq);
+		int result =reviewAfterDAO.reviewAUpdate(reviewAfterSeq,content,rating);
+		System.out.println(result);
+		return result;
 	}
 
-	public void reviewADelete(String reviewAfterSeq) {
+	public int reviewADelete(int  reviewAfterSeq) {
 		// TODO Auto-generated method stub
-		reviewAfterDAO.reviewADelete(reviewAfterSeq);
+		int result= reviewAfterDAO.reviewADelete(reviewAfterSeq);
+		
+		return result;
 	}
 
 	
