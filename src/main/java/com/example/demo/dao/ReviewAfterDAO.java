@@ -9,7 +9,9 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
-import com.example.demo.dto.MemberDTO;
+
+import com.example.demo.dto.member.MemberDTO;
+
 import com.example.demo.dto.ReviewAfterDTO;
 
 @Mapper
