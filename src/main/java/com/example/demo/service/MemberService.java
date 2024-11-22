@@ -39,4 +39,9 @@ public class MemberService {
 	public String findIdByEmail2(Map<String, String> map) {
 		return memberDAO.findIdByEmail2(map);
 	}
+
+	public MemberDTO getUserInfo(String id) {
+		return memberDAO.getUserInfo(id);
+	}
+
 }

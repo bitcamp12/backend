@@ -25,6 +25,9 @@ public interface MemberDAO {
     
     @Select("SELECT id FROM member WHERE name = #{name} AND email = #{email}")
 	public String findIdByEmail2(Map<String, String> map);
+
+    @Select("SELECT * FROM member WHERE id= #{id}")
+	public MemberDTO getUserInfo(String id);
     
     
     
