@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +28,7 @@ public class QnaController {
 	@Autowired
 	private QnaService qnaService;
 	
-	@PostMapping("qnaWrite")
+	@PostMapping("qna")
 	public ResponseEntity<ApiResponse<Qna>> qnaWrite(@RequestParam("playSeq") int playSeq,
 			@RequestBody QnaDTO qnaDTO) {
 		
@@ -53,7 +55,7 @@ public class QnaController {
 	
 	
 	//qa list->공연 seq
-	@GetMapping("getQnaList")
+	@GetMapping("qnaList")
 	public ResponseEntity<ApiResponse<List<QnaDTO>>> getQnaList(@RequestParam("playSeq") int playSeq) {
 		
 		List<QnaDTO> list =qnaService.getQnaList(playSeq);
@@ -75,7 +77,7 @@ public class QnaController {
 	
 	
 	//qa one 조회
-	@GetMapping("getQnaOne")
+	@GetMapping("qna")
 	public ResponseEntity<ApiResponse<QnaDTO>> getQnaOne(@RequestBody QnaDTO qnaDTO) {
 		QnaDTO DTO=qnaService.getQnaOne(qnaDTO.getQnaSeq());
 		
@@ -98,7 +100,7 @@ public class QnaController {
 	
 	//aq 수정
 	
-	@PostMapping("updateQna")
+	@PutMapping("qna")
 	public ResponseEntity<ApiResponse<Qna>> updateQna(@RequestBody QnaDTO qnaDTO) {
 		
 		try {
@@ -120,7 +122,7 @@ public class QnaController {
 	}
 	
 	//qa 삭제
-	@PostMapping("deleteQna")
+	@DeleteMapping("qna")
 	public ResponseEntity<ApiResponse<Qna>> deleteQna(@RequestBody QnaDTO qnaDTO) {
 		int result=qnaService.deleteQna(qnaDTO.getQnaSeq());
 		

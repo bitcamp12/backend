@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,7 +41,7 @@ public class ReviewAfterController {
 	MemberService memberService;
 	
 	//리뷰 작성
-	@PostMapping("reviewAWrite")
+	@PostMapping("ReviewA")
 	public ResponseEntity<ApiResponse<ReviewAfter>> reviewWriteA(@RequestParam("playSeq") int playSeq,
 							@RequestBody ReviewAfterDTO reviewDTO) {
 		System.out.println(reviewDTO.getContent());
@@ -55,7 +56,7 @@ public class ReviewAfterController {
 		 return  ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "성공", null));
 	 }
 	 else { 
-		 return   ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(404 , "실패", null));
+		 return   ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(500 , "실패", null));
 	 } 
 			
 		} catch (Exception e) {
@@ -68,7 +69,7 @@ public class ReviewAfterController {
 	}
 	
 	//리뷰 list 출력
-	@GetMapping("getReviewAList")
+	@GetMapping("ReviewAList")
 	public  ResponseEntity<ApiResponse<List<ReviewAfterDTO>>> getReviewAList(@RequestParam("playSeq") int playSeq) {
 		
 		
@@ -90,7 +91,7 @@ public class ReviewAfterController {
 	}
 	
 	//리뷰 출력
-		@GetMapping("getReviewA")
+		@GetMapping("ReviewA")
 		public ResponseEntity<ApiResponse<ReviewAfterDTO>> getReviewA(@RequestBody ReviewAfterDTO reviewDTO) {
 			try {
 				System.out.println(reviewDTO.getReviewAfterSeq());
@@ -112,7 +113,7 @@ public class ReviewAfterController {
 	
 	
 	//리뷰 수정
-		@PostMapping("reviewAUpdate")
+		@PutMapping("ReviewA")
 		public ResponseEntity<ApiResponse<ReviewAfter>> reviewAUpdate(
 		        @RequestBody ReviewAfterDTO reviewDTO) {
 		    
@@ -134,12 +135,12 @@ public class ReviewAfterController {
 
 	
 	//리뷰 삭제
-	@PostMapping("reviewADelete")
-	public ResponseEntity<ApiResponse<ReviewAfter>> reviewADelete(@RequestParam("reviewAfterSeq") int  reviewAfterSeq) {
+	@DeleteMapping("ReviewA")
+	public ResponseEntity<ApiResponse<ReviewAfter>> reviewADelete(@RequestBody ReviewAfterDTO reviewDTO) {
 		
 		
 		try {
-			int result=reviewAfterService.reviewADelete(reviewAfterSeq);
+			int result=reviewAfterService.reviewADelete(reviewDTO.getReviewAfterSeq());
 		if(result==1) {
 			 return  ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "성공", null));
 		 }
