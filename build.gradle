@@ -25,7 +25,7 @@ repositories {
 
 dependencies {
     // Spring Data JPA 의존성 (JPA를 통한 데이터베이스 연동)
-    //implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     
     // Thymeleaf 템플릿 엔진 의존성
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
