@@ -2,6 +2,14 @@ package com.example.demo.entity;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,12 +17,29 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@Entity
+@Table(name = "review_after")
 public class ReviewAfter {
 
-	private int reviewAfterSeq;
-	private int memberSeq;
-	private int playSeq;
-	private String content;
-	private int rating;
-	private LocalDateTime createdDate; // LocalDateTime 타입으로 변경
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "review_after_seq")
+    private int reviewAfterSeq;
+
+    @ManyToOne
+    @JoinColumn(name = "member_seq", nullable = false)
+    private Member member;
+
+    @ManyToOne
+    @JoinColumn(name = "play_seq", nullable = false)
+    private Play play;
+
+    @Column(name = "content", nullable = false, length = 500)
+    private String content;
+
+    @Column(name = "rating")
+    private int rating;
+
+    @Column(name = "created_date", nullable = false, updatable = false)
+    private LocalDateTime createdDate;
 }
