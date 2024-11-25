@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,7 +30,7 @@ public class ReviewBeforeController {
 	private ReviewBeforeService reviewBeforeService;
 	
 	//리뷰 작성
-		@PostMapping("reviewBWrite")
+		@PostMapping("reviewB")
 		public ResponseEntity<ApiResponse<ReviewBefore>> reviewBWrite(@RequestParam("playSeq") int playSeq,
 								@RequestBody ReviewBeforeDTO reviewBeforeDTO) {
 			System.out.println(reviewBeforeDTO.getContent());
@@ -56,7 +58,7 @@ public class ReviewBeforeController {
 		}
 		
 		//리뷰 list 출력
-		@GetMapping("getReviewBList")
+		@GetMapping("reviewBList")
 		public  ResponseEntity<ApiResponse<List<ReviewBeforeDTO>>> getReviewBList(@RequestParam("playSeq") int playSeq) {
 			
 			
@@ -78,7 +80,7 @@ public class ReviewBeforeController {
 		}
 		
 		//리뷰 출력
-			@GetMapping("getReviewB")
+			@GetMapping("reviewB")
 			public ResponseEntity<ApiResponse<ReviewBeforeDTO>> getReviewB(@RequestBody ReviewBeforeDTO reviewDTO) {
 				try {
 					System.out.println(reviewDTO.getReviewBeforeSeq());
@@ -100,7 +102,7 @@ public class ReviewBeforeController {
 		
 		
 		//리뷰 수정
-			@PostMapping("reviewBUpdate")
+			@PutMapping("reviewB")
 			public ResponseEntity<ApiResponse<ReviewBefore>> reviewBUpdate(
 			        @RequestBody ReviewBeforeDTO reviewBeforeDTO) {
 			    try {
@@ -121,12 +123,12 @@ public class ReviewBeforeController {
 
 		
 		//리뷰 삭제
-		@PostMapping("reviewBDelete")
-		public ResponseEntity<ApiResponse<ReviewAfter>> reviewBDelete(@RequestParam("ReviewBeforeSeq") int  ReviewBeforeSeq) {
+		@DeleteMapping("reviewB")
+		public ResponseEntity<ApiResponse<ReviewAfter>> reviewBDelete(@RequestBody ReviewBeforeDTO reviewBeforeDTO) {
 			
 			
 			try {
-				int result=reviewBeforeService.reviewBDelete(ReviewBeforeSeq);
+				int result=reviewBeforeService.reviewBDelete(reviewBeforeDTO.getReviewBeforeSeq());
 			if(result==1) {
 				 return  ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "성공", null));
 			 }
