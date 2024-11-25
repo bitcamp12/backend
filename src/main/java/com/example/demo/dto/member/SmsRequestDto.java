@@ -11,4 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SmsRequestDto {
     private String phoneNum;
+    private String name;
 }

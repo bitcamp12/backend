@@ -44,4 +44,8 @@ public class MemberService {
 		return memberDAO.getUserInfo(id);
 	}
 
+	public int findIdByPhone(Map<String, String> map) {
+		return memberDAO.findIdByPhone(map);
+	}
+
 }
