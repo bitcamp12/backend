@@ -223,6 +223,7 @@ public class MemberController {
         }
     }
     
+    //회원가입 SMS
     @PostMapping("/sendPhoneNumber")
     public ResponseEntity<ApiResponse<String>> sendPhoneNumber(@RequestBody SmsRequestDto smsRequestDto) {
         try {
@@ -232,6 +233,52 @@ public class MemberController {
 
             // 전화번호와 인증 코드 저장
             String phoneNum = smsRequestDto.getPhoneNum();
+            emailVerificationCodes.put(phoneNum, certificationCode);
+            long expirationTime = System.currentTimeMillis() + EXPIRATION_TIME;
+            codeExpirationTimes.put(phoneNum, expirationTime);
+
+            // 만료 시간 이후 삭제 처리
+            scheduler.schedule(() -> {
+                if (System.currentTimeMillis() >= expirationTime) {
+                    emailVerificationCodes.remove(phoneNum);
+                    codeExpirationTimes.remove(phoneNum);
+                }
+            }, EXPIRATION_TIME, TimeUnit.MILLISECONDS);
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse<>(200, "인증번호 발송 완료", null));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(500, "SMS 발송 실패", null));
+        }
+    }
+    
+    //아이디찾기 SMS
+    @PostMapping("/sendPhoneVerificationCode")
+    public ResponseEntity<ApiResponse<String>> sendPhoneVerificationCode(@RequestBody SmsRequestDto smsRequestDto) {
+        try {
+            // 인증 코드 생성 및 SMS 전송
+            //String certificationCode = smsService.sendSms(smsRequestDto);
+        	 String certificationCode = "111";
+
+            // 전화번호와 인증 코드 저장
+            String phoneNum = smsRequestDto.getPhoneNum();
+            String name =smsRequestDto.getName();
+            
+            Map<String, String> map = new HashMap<>();
+            map.put("name", name);
+            map.put("phone", phoneNum);
+            
+        	int result = memberService.findIdByPhone(map);
+        	System.out.println("result"+result);
+        	if (result == 0) {
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(new ApiResponse<>(400, "nomember", null));
+        	}
+            
+            
+            
             emailVerificationCodes.put(phoneNum, certificationCode);
             long expirationTime = System.currentTimeMillis() + EXPIRATION_TIME;
             codeExpirationTimes.put(phoneNum, expirationTime);
