@@ -12,5 +12,6 @@ public class IdFindDTO {
 	private String name;
 	private String phone;
 	private String email;
+	private String id;
 
 }
