@@ -4,7 +4,10 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
 import com.example.demo.dto.member.MemberDTO;
 
 @Mapper
@@ -28,6 +31,9 @@ public interface MemberDAO {
 
     @Select("SELECT * FROM member WHERE id= #{id}")
 	public MemberDTO getUserInfo(String id);
+
+    @Update("UPDATE member SET phone=#{phone}, email=#{email} WHERE id=#{id}")
+	public void modifyUserInfo(MemberDTO modifiedData);
     
     
     
