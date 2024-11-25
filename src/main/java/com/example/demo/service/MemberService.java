@@ -44,4 +44,9 @@ public class MemberService {
 		return memberDAO.getUserInfo(id);
 	}
 
+	public void modifyUserInfo(MemberDTO modifiedData) {
+		memberDAO.modifyUserInfo(modifiedData);
+		
+	}
+
 }
