@@ -35,6 +35,9 @@ public interface MemberDAO {
     @Update("UPDATE member SET phone=#{phone}, email=#{email} WHERE id=#{id}")
 	public void modifyUserInfo(MemberDTO modifiedData);
     
+    @Select("SELECT COUNT(*) FROM member WHERE name = #{name} AND phone = #{phone}")
+	public int findIdByPhone(Map<String, String> map);
+    
     
     
 
