@@ -10,5 +10,8 @@ import lombok.Setter;
 public class IdCheckDTO {
 
     private String id;
+    private String email;
+    private String code;
+    private String name;
     
 }
