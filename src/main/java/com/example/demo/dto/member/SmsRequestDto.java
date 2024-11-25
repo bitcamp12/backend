@@ -12,4 +12,5 @@ import lombok.Setter;
 public class SmsRequestDto {
     private String phoneNum;
     private String name;
+    private String code;
 }
