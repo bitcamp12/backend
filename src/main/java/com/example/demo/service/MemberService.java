@@ -44,6 +44,10 @@ public class MemberService {
 		return memberDAO.getUserInfo(id);
 	}
 
+	public void modifyUserInfo(MemberDTO modifiedData) {
+		memberDAO.modifyUserInfo(modifiedData);
+	}
+
 	public int findIdByPhone(Map<String, String> map) {
 		return memberDAO.findIdByPhone(map);
 	}
