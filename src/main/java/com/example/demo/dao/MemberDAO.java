@@ -29,6 +29,9 @@ public interface MemberDAO {
     @Select("SELECT * FROM member WHERE id= #{id}")
 	public MemberDTO getUserInfo(String id);
     
+    @Select("SELECT COUNT(*) FROM member WHERE name = #{name} AND phone = #{phone}")
+	public int findIdByPhone(Map<String, String> map);
+    
     
     
 
