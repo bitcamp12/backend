@@ -69,6 +69,15 @@ public interface ReviewBeforeDAO {
 	            """)
 	    int reviewBDelete(int reviewBeforeSeq);
 
+	    
+	    
+	    @Select("""
+			    SELECT COUNT(*)
+			   FROM review_before
+			    WHERE play_seq = #{playSeq}
+			""")
+		int ReviewBcount(int playSeq);
+
 	
 
 	
