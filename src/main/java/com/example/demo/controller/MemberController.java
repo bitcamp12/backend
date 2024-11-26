@@ -11,10 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.member.IdCheckDTO;
@@ -53,6 +54,8 @@ public class MemberController {
 	
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<Member>> signUp(@RequestBody MemberDTO memberDTO) {
+    	String phone = memberDTO.getPhone().replaceAll("[^0-9]", "");
+    	memberDTO.setPhone(phone);
         System.out.println("Received data: " + memberDTO);
         try {
         	int result = memberService.signUp(memberDTO);
@@ -67,6 +70,7 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "success", null));
     }
     
+
     @PostMapping("/checkId")
     public ResponseEntity<ApiResponse<Member>> checkId(@RequestBody IdCheckDTO dto) {
         System.out.println("Received data: " + dto.getId());
@@ -87,8 +91,9 @@ public class MemberController {
     }
     
     //회원가입 이메일
-    @GetMapping("/sendNumber")
-    public ResponseEntity<ApiResponse<String>> sendNumber(@RequestParam("email") String email) {
+    @PostMapping("/sendNumber")
+    public ResponseEntity<ApiResponse<String>> sendNumber(@RequestBody MemberDTO dto) {
+    	String email = dto.getEmail();
         try {
         	System.out.println(email);
             // 랜덤 번호 생성 및 이메일로 전송
@@ -115,8 +120,10 @@ public class MemberController {
         }
     }
     //회원가입 이메일코드확인
-    @GetMapping("/verifyCode")
-    public ResponseEntity<ApiResponse<String>> verifyCode(@RequestParam("email") String email, @RequestParam("code") String code) {
+    @PostMapping("/verifyCode")
+    public ResponseEntity<ApiResponse<String>> verifyCode(@RequestBody IdCheckDTO dto) {
+    	String email=dto.getEmail();
+    	String code=dto.getCode();
         // 만료 시간 확인
     	System.out.println(email+code);
         Long expirationTime = codeExpirationTimes.get(email);
@@ -145,8 +152,10 @@ public class MemberController {
     
     
     //아이디찾기 이메일
-    @GetMapping("/sendEmailVerificationCode")
-    public ResponseEntity<ApiResponse<String>> sendNumber(@RequestParam("email") String email, @RequestParam("name") String name) {
+    @PostMapping("/sendEmailVerificationCode")
+    public ResponseEntity<ApiResponse<String>> sendEmailVerificationCode(@RequestBody MemberDTO dto) {
+    	String email = dto.getEmail();
+    	String name = dto.getName();
         try {
         	System.out.println(email+name);
             Map<String, String> map = new HashMap<>();
@@ -187,8 +196,11 @@ public class MemberController {
     
     
     //아이디찾기 이메일코드확인
-    @GetMapping("/verifyCodeId")
-    public ResponseEntity<ApiResponse<String>> verifyCode(@RequestParam("email") String email, @RequestParam("code") String code, @RequestParam("name") String name) {
+    @PostMapping("/verifyCodeId")
+    public ResponseEntity<ApiResponse<String>> verifyCodeId(@RequestBody IdCheckDTO dto) {
+    	String email=dto.getEmail();
+    	String code=dto.getCode();
+    	String name=dto.getName();
         // 만료 시간 확인
     	System.out.println(email+code+name);
         Long expirationTime = codeExpirationTimes.get(email);
@@ -221,6 +233,7 @@ public class MemberController {
         }
     }
     
+    //회원가입 SMS
     @PostMapping("/sendPhoneNumber")
     public ResponseEntity<ApiResponse<String>> sendPhoneNumber(@RequestBody SmsRequestDto smsRequestDto) {
         try {
@@ -251,8 +264,87 @@ public class MemberController {
         }
     }
     
-    @GetMapping("/verifyPhone")
-    public ResponseEntity<ApiResponse<String>> verifyPhoneNumberCode(@RequestParam("phoneNum") String phoneNum, @RequestParam("code") String code) {
+    //아이디찾기 SMS
+    @PostMapping("/sendPhoneVerificationCode")
+    public ResponseEntity<ApiResponse<String>> sendPhoneVerificationCode(@RequestBody SmsRequestDto smsRequestDto) {
+        try {
+            // 인증 코드 생성 및 SMS 전송
+            //String certificationCode = smsService.sendSms(smsRequestDto);
+        	 String certificationCode = "111";
+
+            // 전화번호와 인증 코드 저장
+        	 String phoneNum = smsRequestDto.getPhoneNum().replaceAll("[^0-9]", "");
+            String name =smsRequestDto.getName();
+            
+            Map<String, String> map = new HashMap<>();
+            map.put("name", name);
+            map.put("phone", phoneNum);
+            
+        	int result = memberService.findIdByPhone(map);
+        	System.out.println("result"+result);
+        	if (result == 0) {
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(new ApiResponse<>(400, "nomember", null));
+        	}
+            
+            
+            
+            emailVerificationCodes.put(phoneNum, certificationCode);
+            long expirationTime = System.currentTimeMillis() + EXPIRATION_TIME;
+            codeExpirationTimes.put(phoneNum, expirationTime);
+
+            // 만료 시간 이후 삭제 처리
+            scheduler.schedule(() -> {
+                if (System.currentTimeMillis() >= expirationTime) {
+                    emailVerificationCodes.remove(phoneNum);
+                    codeExpirationTimes.remove(phoneNum);
+                }
+            }, EXPIRATION_TIME, TimeUnit.MILLISECONDS);
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse<>(200, "인증번호 발송 완료", null));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(500, "SMS 발송 실패", null));
+        }
+    }
+    
+    //회원가입 sms
+    @PostMapping("/verifyPhone")
+    public ResponseEntity<ApiResponse<String>> verifyPhoneNumberCode(@RequestBody SmsRequestDto smsRequestDto) {
+    	String phoneNum =smsRequestDto.getPhoneNum();
+    	String code=smsRequestDto.getCode();
+        Long expirationTime = codeExpirationTimes.get(phoneNum);
+        System.out.println(phoneNum+code);
+        if (expirationTime != null && System.currentTimeMillis() > expirationTime) {
+            // 만료된 경우
+            emailVerificationCodes.remove(phoneNum);
+            codeExpirationTimes.remove(phoneNum);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse<>(400, "expired", null));
+        }
+
+        String storedCode = emailVerificationCodes.get(phoneNum);
+        System.out.println(storedCode);
+        if (storedCode != null && storedCode.equals(code)) {
+            // 인증 성공 시 코드 제거
+            emailVerificationCodes.remove(phoneNum);
+            codeExpirationTimes.remove(phoneNum);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse<>(200, "match", null));
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse<>(400, "not_match", null));
+        }
+    }
+    
+    //아이디찾기 sms
+    @PostMapping("/checkPhone")
+    public ResponseEntity<ApiResponse<String>> checkPhone(@RequestBody SmsRequestDto dto) {
+    	String phone=dto.getPhoneNum();
+    	String code=dto.getCode();
+    	 String phoneNum = phone.replaceAll("[^0-9]", "");
         Long expirationTime = codeExpirationTimes.get(phoneNum);
         System.out.println(phoneNum+code);
         if (expirationTime != null && System.currentTimeMillis() > expirationTime) {
@@ -283,7 +375,8 @@ public class MemberController {
             System.out.println("Received data: " + dto.getName() + " " + dto.getPhone());
 
             String name = dto.getName();
-            String phone = dto.getPhone();
+            String phone = dto.getPhone().replaceAll("[^0-9]", "");
+   
             
             Map<String, String> map = new HashMap<>();
             map.put("name", name);
@@ -318,6 +411,24 @@ public class MemberController {
 	public String login(Model model) {
         return "login";  
     }
+	
+
+	
+// -- 지현: 마이페이지(사용자정보) 수정 ---------------------------
+	
+	// 한 명의 사용자 정보를 가져옵니다.
+	@GetMapping("getUserInfo/{id}")
+	public MemberDTO getUserInfo(@PathVariable("id") String id) {
+		MemberDTO memberDTO = memberService.getUserInfo(id);
+		return memberDTO;
+	}
+	
+	// 회원 정보 수정 
+	@PutMapping("modifyUserInfo")
+	public void modifyUserInfo(@RequestBody MemberDTO modifiedData) {
+		System.out.println(modifiedData);
+		memberService.modifyUserInfo(modifiedData);
+	}
 	
 
 }
