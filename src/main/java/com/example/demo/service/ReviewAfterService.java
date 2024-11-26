@@ -45,6 +45,51 @@ public class ReviewAfterService {
 		return result;
 	}
 
+	public int reviewACount(int playSeq) {
+		// TODO Auto-generated method stub
+		return reviewAfterDAO.reviewACount(playSeq);
+	}
+
+	public Float ReviewAAvg(int playSeq) {
+		// TODO Auto-generated method stub
+		return reviewAfterDAO.ReviewAAvg(playSeq);
+	}
+
+	public List<ReviewAfterDTO> getReviewAListStar(int playSeq) {
+		// TODO Auto-generated method stub
+		return reviewAfterDAO.getReviewAListStar(playSeq);
+	}
+
+	public List<ReviewAfterDTO> ReviewASearch(String keyword) {
+		// TODO Auto-generated method stub
+		return reviewAfterDAO.ReviewASearch(keyword);
+	}
+
+	public List<ReviewAfterDTO> ReviewASearchId(String keyword) {
+		// TODO Auto-generated method stub
+		return reviewAfterDAO.ReviewASearchId(keyword);
+	}
+
+	public List<ReviewAfterDTO> ReviewASearchIdDate(String keyword) {
+		// TODO Auto-generated method stub
+		return reviewAfterDAO.ReviewASearchIdDate(keyword);
+	}
+
+	public List<ReviewAfterDTO> ReviewASearchIdRating(String keyword) {
+		// TODO Auto-generated method stub
+		return reviewAfterDAO.ReviewASearchIdRating(keyword);
+	}
+
+	public List<ReviewAfterDTO> ReviewASearchDate(String keyword) {
+		// TODO Auto-generated method stub
+		return reviewAfterDAO.ReviewASearchDate(keyword);
+	}
+
+	public List<ReviewAfterDTO> ReviewASearchRating(String keyword) {
+		// TODO Auto-generated method stub
+		return reviewAfterDAO.ReviewASearchRating(keyword);
+	}
+
 	
 	
 }
