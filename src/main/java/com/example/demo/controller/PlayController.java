@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import com.example.demo.util.ApiResponse;
 
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping(value="/api/plays")
 public class PlayController {
     
@@ -47,10 +49,10 @@ public class PlayController {
 	    }
 	}
 
-		
-			 
-
-		 
-	
-	
+	//민웅 사용자 메인 페이지
+	@GetMapping("/getPlayAll")
+	public ResponseEntity<ApiResponse<List<PlayDTO>>> getPlayAll(@RequestParam int page, @RequestParam int size) {
+		List<PlayDTO> plays = playService.getPlayAll(page, size);
+		return ResponseEntity.ok(new ApiResponse<>(200, "Data retrieved", plays));
+	}	
 }
