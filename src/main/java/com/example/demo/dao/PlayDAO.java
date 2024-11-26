@@ -25,5 +25,12 @@ public interface PlayDAO {
 			""")
 	List<PlayDTO> getPlayAll(@Param("offset") int offset, @Param("size") int size);
 
+
+	@Select("""
+			SELECT * FROM play
+			ORDER BY RAND() LIMIT 10;
+			""")
+    List<PlayDTO> getPlayRandom();
+
 	
 }
