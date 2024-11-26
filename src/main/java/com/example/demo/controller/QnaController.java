@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.QnaDTO;
+import com.example.demo.dto.ReviewBeforeDTO;
 import com.example.demo.entity.Qna;
+import com.example.demo.service.MemberService;
 import com.example.demo.service.QnaService;
 import com.example.demo.util.ApiResponse;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,16 +30,18 @@ public class QnaController {
     
 	@Autowired
 	private QnaService qnaService;
-	
+	@Autowired
+	MemberService memberService;
 	@PostMapping("qna")
 	public ResponseEntity<ApiResponse<Qna>> qnaWrite(@RequestParam("playSeq") int playSeq,
-			@RequestBody QnaDTO qnaDTO) {
+			@RequestBody QnaDTO qnaDTO,
+			@RequestParam("userId") String userId) {
 		
 		System.out.println(qnaDTO.getTitle()+qnaDTO.getContent());
 		
 		try {
-			int memberSeq=1;
-			int result=qnaService.qnaWrite(playSeq,memberSeq,qnaDTO.getTitle(),qnaDTO.getContent());
+			qnaDTO.setMemberSeq(memberService.getMemberSeq(userId));
+			int result=qnaService.qnaWrite(playSeq,qnaDTO.getMemberSeq(),qnaDTO.getTitle(),qnaDTO.getContent());
 			if(result==1) {
 				 return  ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "성공", null));
 			}
@@ -163,5 +168,41 @@ public class QnaController {
 	}
 	
 	
+	
+	@GetMapping("qnaSearch")
+	public  ResponseEntity<ApiResponse<List<QnaDTO>>> qnaSearch(
+			 @RequestParam("playSeq") int playSeq, 
+		        @RequestParam("searchType") String searchType,
+		        @RequestParam("keyword") String keyword) {
+		 try {
+        List<QnaDTO> list;
+        System.out.println(searchType+keyword+"qnaSearch");
+		if(searchType.equals("id")) {
+        	list =qnaService.qnaSearchId(keyword,playSeq);
+        }
+        else if( searchType.equals("title")){
+        	
+        	list =qnaService.qnaSearchKey(keyword,playSeq);
+        	
+        }
+        else {
+        	  return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                      .body(new ApiResponse<>(400, "유효하지 않은 검색 타입", null));
+        }
+        
+
+        if (!list.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "성공", list));
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(404 , "QA 없음",  list));
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(400, "오류", null));
+    }
+	
+	
+	}
 	
 }

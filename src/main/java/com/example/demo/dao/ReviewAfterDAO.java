@@ -102,39 +102,52 @@ public interface ReviewAfterDAO {
 	List<ReviewAfterDTO> getReviewAListStar(int playSeq);
 
 
-	 @Select("""
-	 		SELECT *
-    FROM review_after
-    WHERE content LIKE CONCAT('%', #{keyword}, '%')
-	 		
-	 		""")
+	
+
+
 	 
-	List<ReviewAfterDTO> ReviewASearch(String keyword);
 
 
+	// 아이디로 검색 - 날짜 순
 	 @Select("""
-		 		SELECT *
-	    FROM review_after
-	    WHERE member_seq LIKE CONCAT('%', #{keyword}, '%')
-		 		
-		 		""")
-	List<ReviewAfterDTO> ReviewASearchId(String keyword);
+	     SELECT *
+	     FROM review_after
+	     WHERE member_seq LIKE CONCAT('%', #{keyword}, '%')
+	       AND play_seq = #{playSeq}
+	     ORDER BY created_date DESC
+	 """)
+	 List<ReviewAfterDTO> ReviewASearchIdDate(@Param("keyword") String keyword, @Param("playSeq") int playSeq);
 
+	 // 아이디로 검색 - 별점 순
+	 @Select("""
+	     SELECT *
+	     FROM review_after
+	     WHERE member_seq LIKE CONCAT('%', #{keyword}, '%')
+	       AND play_seq = #{playSeq}
+	     ORDER BY rating DESC
+	 """)
+	 List<ReviewAfterDTO> ReviewASearchIdRating(@Param("keyword") String keyword, @Param("playSeq") int playSeq);
 
+	 // 내용으로 검색 - 날짜 순
+	 @Select("""
+	     SELECT *
+	     FROM review_after
+	     WHERE content LIKE CONCAT('%', #{keyword}, '%')
+	       AND play_seq = #{playSeq}
+	     ORDER BY created_date DESC
+	 """)
+	 List<ReviewAfterDTO> ReviewASearchDate(@Param("keyword") String keyword, @Param("playSeq") int playSeq);
 
-	List<ReviewAfterDTO> ReviewASearchIdDate(String keyword);
+	 // 내용으로 검색 - 별점 순
+	 @Select("""
+	     SELECT *
+	     FROM review_after
+	     WHERE content LIKE CONCAT('%', #{keyword}, '%')
+	       AND play_seq = #{playSeq}
+	     ORDER BY rating DESC
+	 """)
+	 List<ReviewAfterDTO> ReviewASearchRating(@Param("keyword") String keyword, @Param("playSeq") int playSeq);
 
-
-
-	List<ReviewAfterDTO> ReviewASearchIdRating(String keyword);
-
-
-
-	List<ReviewAfterDTO> ReviewASearchDate(String keyword);
-
-
-
-	List<ReviewAfterDTO> ReviewASearchRating(String keyword);
 	
 
 	
