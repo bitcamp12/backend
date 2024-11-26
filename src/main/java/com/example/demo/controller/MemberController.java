@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -465,13 +466,20 @@ public class MemberController {
 	
 
 	
-// -- 지현 : 마이페이지(사용자정보) 수정 ---------------------------
+// -- 지현: 마이페이지(사용자정보) 수정 ---------------------------
 	
 	// 한 명의 사용자 정보를 가져옵니다.
 	@GetMapping("getUserInfo/{id}")
 	public MemberDTO getUserInfo(@PathVariable("id") String id) {
 		MemberDTO memberDTO = memberService.getUserInfo(id);
 		return memberDTO;
+	}
+	
+	// 회원 정보 수정 
+	@PutMapping("modifyUserInfo")
+	public void modifyUserInfo(@RequestBody MemberDTO modifiedData) {
+		System.out.println(modifiedData);
+		memberService.modifyUserInfo(modifiedData);
 	}
 	
 
