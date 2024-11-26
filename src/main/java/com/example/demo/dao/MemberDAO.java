@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.annotations.Mapper;
 import com.example.demo.dto.member.MemberDTO;
 
@@ -32,6 +33,13 @@ public interface MemberDAO {
     @Select("SELECT COUNT(*) FROM member WHERE name = #{name} AND phone = #{phone}")
 	public int findIdByPhone(Map<String, String> map);
     
+    @Update("UPDATE member SET password = #{password} WHERE id = #{id}")
+    public int updatePwd(Map<String, String> map);
+    
+    @Select("SELECT COUNT(*) FROM member WHERE id = #{id} AND password = #{password}")
+    public int Login(Map<String, String> map);
+
+   
     
     
 
