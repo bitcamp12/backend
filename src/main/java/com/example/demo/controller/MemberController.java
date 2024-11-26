@@ -488,14 +488,14 @@ public class MemberController {
     }
     
     
-	// 한 명의 사용자 정보를 가져옵니다. (수정하기)
+	// 한 명의 사용자 정보를 가져옵니다. (ResponseEntity로수정하기)
 	@GetMapping("getUserInfo/me/{id}")
 	public MemberDTO getUserInfo(@PathVariable("id") String id) {
 		MemberDTO memberDTO = memberService.getUserInfo(id);
 		return memberDTO;
 	}
 	
-	// 회원 정보 수정 (수정하기)
+	// 회원 정보 수정 (ResponseEntity로수정하기)
 	@PutMapping("modifyUserInfo")
 	public void modifyUserInfo(@RequestBody MemberDTO modifiedData) {
 		System.out.println(modifiedData);
