@@ -61,4 +61,10 @@ public class PlayController {
 		List<PlayDTO> plays = playService.getPlayRandom();
 		return ResponseEntity.ok(new ApiResponse<>(200, "Data retrieved", plays));
 	}
+
+	@GetMapping("/getPlaySale")
+	public ResponseEntity<ApiResponse<List<PlayDTO>>> getPlaySale() {
+		List<PlayDTO> plays = playService.getPlaySale();
+		return ResponseEntity.ok(new ApiResponse<>(200, "Data retrieved", plays));
+	}
 }
