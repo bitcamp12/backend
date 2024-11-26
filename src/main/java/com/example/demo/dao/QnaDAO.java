@@ -60,5 +60,14 @@ public interface QnaDAO {
             """)
     int deleteQna(int qnaSeq);
 
+    
+    
+    @Select("""
+		    SELECT COUNT(*)
+		    FROM qna
+		    WHERE play_seq = #{playSeq}
+		""")
+	int qnaCount(int playSeq);
+
 	
 }

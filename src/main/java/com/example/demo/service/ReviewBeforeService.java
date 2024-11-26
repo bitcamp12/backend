@@ -39,5 +39,10 @@ public class ReviewBeforeService {
 		return reviewBeforeDAO.reviewBDelete(reviewBeforeSeq);
 	}
 
+	public int ReviewBcount(int playSeq) {
+		// TODO Auto-generated method stub
+		return reviewBeforeDAO.ReviewBcount(playSeq);
+	}
+
 	
 }
