@@ -33,11 +33,11 @@ public interface MemberDAO {
 	public MemberDTO getUserInfo(String id);
 
     @Update("UPDATE member SET phone=#{phone}, email=#{email} WHERE id=#{id}")
-	public void modifyUserInfo(MemberDTO modifiedData);
+    public void modifyUserInfo(MemberDTO modifiedData);
     
     @Select("SELECT COUNT(*) FROM member WHERE name = #{name} AND phone = #{phone}")
 	public int findIdByPhone(Map<String, String> map);
-    
+
     @Update("UPDATE member SET password = #{password} WHERE id = #{id}")
     public int updatePwd(Map<String, String> map);
     
@@ -45,7 +45,5 @@ public interface MemberDAO {
     public int Login(Map<String, String> map);
 
    
-    
-    
 
 }
