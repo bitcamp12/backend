@@ -25,7 +25,7 @@ repositories {
 
 dependencies {
     // Spring Data JPA 의존성 (JPA를 통한 데이터베이스 연동)
-    //implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     
     // Thymeleaf 템플릿 엔진 의존성
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
@@ -47,8 +47,25 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    // MyBatis Spring Boot Starter 의존성 (JPA 대신 MyBatis 사용)
-    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+ 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
+	
+	//이메일 인증
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	implementation 'net.nurigo:sdk:4.3.0'
+	
+	//implementation 'org.springframework.boot:spring-boot-starter-security' // Spring Security 의존성 추가
+   	//implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6' // HTML 페이지를 위한 Thymeleaf 추가
+    //implementation 'org.springframework.security:spring-security-test' // Spring Security 의존성 추가
+   
+      // Commons IO
+    implementation 'commons-io:commons-io:2.16.1'
+
+    // Commons FileUpload
+    implementation 'commons-fileupload:commons-fileupload:1.5'
+
+    // AWS S3 SDK
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.610'
 }
 
 
