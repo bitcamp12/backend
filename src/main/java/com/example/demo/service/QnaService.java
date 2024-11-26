@@ -46,4 +46,11 @@ public class QnaService {
 		// TODO Auto-generated method stub
 		return qnaDAO.deleteQna(qnaSeq);
 	}
+
+
+
+	public int qnaCount(int playSeq) {
+		// TODO Auto-generated method stub
+		return qnaDAO.qnaCount(playSeq);
+	}
 }

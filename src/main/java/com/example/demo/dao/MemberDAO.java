@@ -38,7 +38,12 @@ public interface MemberDAO {
     @Select("SELECT COUNT(*) FROM member WHERE name = #{name} AND phone = #{phone}")
 	public int findIdByPhone(Map<String, String> map);
 
+    @Update("UPDATE member SET password = #{password} WHERE id = #{id}")
+    public int updatePwd(Map<String, String> map);
     
-	
+    @Select("SELECT COUNT(*) FROM member WHERE id = #{id} AND password = #{password}")
+    public int Login(Map<String, String> map);
+
+   
 
 }

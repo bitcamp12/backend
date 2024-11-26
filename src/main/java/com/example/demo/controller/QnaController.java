@@ -104,6 +104,7 @@ public class QnaController {
 	public ResponseEntity<ApiResponse<Qna>> updateQna(@RequestBody QnaDTO qnaDTO) {
 		
 		try {
+			System.out.println(qnaDTO.getQnaSeq()+"하요");
 			int result=qnaService.updateQna(qnaDTO.getQnaSeq(),qnaDTO.getTitle(),qnaDTO.getContent());
 			if(result==1) {
 				 return  ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "성공", null));
@@ -141,7 +142,25 @@ public class QnaController {
 		
 	}
 	
-	
+
+	//갯수
+	@GetMapping("qnaCount")
+	public   ResponseEntity<ApiResponse<Integer>> qnaCount(@RequestParam("playSeq") int playSeq) {
+		   try {
+		        // 서비스 호출하여 업데이트
+		        int count = qnaService.qnaCount(playSeq);
+		        
+		        if (count >= 0) {
+		            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "성공", count));
+		        } else {
+		            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(404 , "실패", null));
+		        }
+
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(400, "오류", null));
+		    }
+	}
 	
 	
 	

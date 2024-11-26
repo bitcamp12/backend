@@ -52,4 +52,12 @@ public class MemberService {
 		return memberDAO.findIdByPhone(map);
 	}
 
+	public int updatePwd(Map<String, String> map) {
+		return memberDAO.updatePwd(map);
+	}
+
+	public int Login(Map<String, String> map) {
+		return memberDAO.Login(map);
+	}
+
 }
