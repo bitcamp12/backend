@@ -32,8 +32,13 @@ public class PlayService {
 
 	}
 
+	//민웅 사용자 메인 페이지
 	public List<PlayDTO> getPlayAll(int page, int size) {
 		int offset = (page - 1) * size;
 		return playDAO.getPlayAll(offset, size);
 	}
+
+    public List<PlayDTO> getPlayRandom() {
+        return playDAO.getPlayRandom();
+    }
 }
