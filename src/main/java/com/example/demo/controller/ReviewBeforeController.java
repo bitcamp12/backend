@@ -105,6 +105,8 @@ public class ReviewBeforeController {
 			@PutMapping("reviewB")
 			public ResponseEntity<ApiResponse<ReviewBefore>> reviewBUpdate(
 			        @RequestBody ReviewBeforeDTO reviewBeforeDTO) {
+				
+				System.out.println(reviewBeforeDTO.getContent()+reviewBeforeDTO.getReviewBeforeSeq());
 			    try {
 			        // 서비스 호출하여 업데이트
 			        int result = reviewBeforeService.reviewBUpdate(reviewBeforeDTO.getReviewBeforeSeq(), reviewBeforeDTO.getContent());
@@ -142,6 +144,25 @@ public class ReviewBeforeController {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(400, "오류", null));
 			}
 			
+		}
+		
+		//갯수
+		@GetMapping("ReviewBcount")
+		public   ResponseEntity<ApiResponse<Integer>> ReviewBcount(@RequestParam("playSeq") int playSeq) {
+			   try {
+			        // 서비스 호출하여 업데이트
+			        int count = reviewBeforeService.ReviewBcount(playSeq);
+			        
+			        if (count >= 0) {
+			            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "성공", count));
+			        } else {
+			            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(404 , "실패", null));
+			        }
+
+			    } catch (Exception e) {
+			        e.printStackTrace();
+			        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(400, "오류", null));
+			    }
 		}
 	
 	
