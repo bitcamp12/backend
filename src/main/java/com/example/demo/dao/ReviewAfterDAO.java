@@ -77,6 +77,64 @@ public interface ReviewAfterDAO {
 		        WHERE review_after_seq = #{reviewAfterSeq}
 		    """)
 	int reviewADelete(int reviewAfterSeq);
+
+
+	 @Select("""
+			    SELECT COUNT(*)
+			    FROM review_after
+			    WHERE play_seq = #{playSeq}
+			""")
+			int reviewACount(int playSeq);
+
+	 @Select("""
+			    SELECT AVG(rating) AS avg_rating
+			    FROM review_after
+			    WHERE play_seq = #{playSeq}
+			""")
+			Float ReviewAAvg(int playSeq);
+
+
+	 @Select("""
+		        SELECT * FROM  review_after
+		        WHERE play_seq = #{playSeq}
+		        ORDER BY rating DESC
+		    """)
+	List<ReviewAfterDTO> getReviewAListStar(int playSeq);
+
+
+	 @Select("""
+	 		SELECT *
+    FROM review_after
+    WHERE content LIKE CONCAT('%', #{keyword}, '%')
+	 		
+	 		""")
+	 
+	List<ReviewAfterDTO> ReviewASearch(String keyword);
+
+
+	 @Select("""
+		 		SELECT *
+	    FROM review_after
+	    WHERE member_seq LIKE CONCAT('%', #{keyword}, '%')
+		 		
+		 		""")
+	List<ReviewAfterDTO> ReviewASearchId(String keyword);
+
+
+
+	List<ReviewAfterDTO> ReviewASearchIdDate(String keyword);
+
+
+
+	List<ReviewAfterDTO> ReviewASearchIdRating(String keyword);
+
+
+
+	List<ReviewAfterDTO> ReviewASearchDate(String keyword);
+
+
+
+	List<ReviewAfterDTO> ReviewASearchRating(String keyword);
 	
 
 	
