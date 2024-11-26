@@ -57,6 +57,17 @@ public class MemberController {
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<Member>> signUp(@RequestBody MemberDTO memberDTO) {
     	String phone = memberDTO.getPhone().replaceAll("[^0-9]", "");
+    	
+    	String gender = memberDTO.getGender();
+    	if(gender.equals("male")) {
+    		memberDTO.setGender("M");
+    	}
+    	else {
+    		memberDTO.setGender("F");
+    	}
+    	System.out.println(gender);
+    	
+    	memberDTO.setRole("USER");
     	memberDTO.setPhone(phone);
         System.out.println("Received data: " + memberDTO);
         try {
@@ -366,7 +377,7 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse<>(200, "match", null));
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse<>(400, "not_match", null));
         }
     }
@@ -454,6 +465,23 @@ public class MemberController {
                 // 로그인 실패 (회원 정보 없음)
                 return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(404, null, "회원정보없음"));
             }
+        } catch (Exception e) {
+            // 예외 발생 시 에러 메시지 반환
+            System.err.println("Error occurred: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body(new ApiResponse<>(500, null, "에러"));
+        }
+    }
+    
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<String>> logout(HttpSession session, @RequestBody MemberDTO dto) {
+        try {
+        	
+            String id = dto.getId();
+            session.removeAttribute(id);
+            System.out.println(id);
+            // 로그아웃 성공
+                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, id , null));
         } catch (Exception e) {
             // 예외 발생 시 에러 메시지 반환
             System.err.println("Error occurred: " + e.getMessage());
