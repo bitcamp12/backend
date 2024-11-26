@@ -7,6 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +29,10 @@ public class Play {
 
     @Column(name = "name", nullable = false, length = 200)
     private String name;
+    
+    @ManyToOne
+    @JoinColumn(name = "member_seq", nullable = false)
+    private Member member;
 
     @Column(name = "start_time")
     private LocalDateTime startTime; 

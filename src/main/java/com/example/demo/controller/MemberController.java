@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +27,8 @@ import com.example.demo.service.EmailService;
 import com.example.demo.service.MemberService;
 import com.example.demo.service.SmsService;
 import com.example.demo.util.ApiResponse;
+
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("api/members")
@@ -395,31 +398,88 @@ public class MemberController {
         }
     }
 
-    
+    @PostMapping("/updatepassword")
+    public ResponseEntity<ApiResponse<String>> updatepassword(@RequestBody MemberDTO dto) {
+        try {
+            System.out.println("Received data: " + dto.getId() + " " +dto.getPassword());
 
+            String id = dto.getId();
+            String password = dto.getPassword();
+   
+            
+            Map<String, String> map = new HashMap<>();
+            map.put("id",id);
+            map.put("password", password);
 
-
-    
-
-
-    
-
-
-
-	@PostMapping("login")
-	public String login(Model model) {
-        return "login";  
+            int result = memberService.updatePwd(map);
+            
+            System.out.println(result);
+            
+            if (result == 1) {
+                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "success", null));
+            } else {
+                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(404, null, "회원정보없음"));
+            }
+        } catch (Exception e) {
+            System.err.println("Error occurred: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body(new ApiResponse<>(500, null, "에러"));
+        }
     }
+
+    
+
+
+
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<String>> login(HttpSession session, @RequestBody MemberDTO dto) {
+        try {
+            String id = dto.getId();
+            String password = dto.getPassword();
+
+            Map<String, String> map = new HashMap<>();
+            map.put("id", id);
+            map.put("password", password);
+
+            // 로그인 서비스 호출
+            int result = memberService.Login(map);
+
+            System.out.println(result);
+
+            // 로그인 성공
+            if (result == 1) {
+            	session.setAttribute("id", id);
+                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, id , null));
+            } else {
+                // 로그인 실패 (회원 정보 없음)
+                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(404, null, "회원정보없음"));
+            }
+        } catch (Exception e) {
+            // 예외 발생 시 에러 메시지 반환
+            System.err.println("Error occurred: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body(new ApiResponse<>(500, null, "에러"));
+        }
+    }
+
+
 	
 
 	
-// -- 지현 : 마이페이지(사용자정보) 수정 ---------------------------
+// -- 지현: 마이페이지(사용자정보) 수정 ---------------------------
 	
 	// 한 명의 사용자 정보를 가져옵니다.
 	@GetMapping("getUserInfo/{id}")
 	public MemberDTO getUserInfo(@PathVariable("id") String id) {
 		MemberDTO memberDTO = memberService.getUserInfo(id);
 		return memberDTO;
+	}
+	
+	// 회원 정보 수정 
+	@PutMapping("modifyUserInfo")
+	public void modifyUserInfo(@RequestBody MemberDTO modifiedData) {
+		System.out.println(modifiedData);
+		memberService.modifyUserInfo(modifiedData);
 	}
 	
 
