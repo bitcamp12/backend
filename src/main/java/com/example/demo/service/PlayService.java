@@ -41,4 +41,8 @@ public class PlayService {
     public List<PlayDTO> getPlayRandom() {
         return playDAO.getPlayRandom();
     }
+
+	public List<PlayDTO> getPlaySale() {
+		return playDAO.getPlaySale();
+	}
 }
