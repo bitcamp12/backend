@@ -78,6 +78,27 @@ public interface ReviewBeforeDAO {
 			""")
 		int ReviewBcount(int playSeq);
 
+	    
+	    
+	    
+	    @Select("""
+	   	     SELECT *
+	   	     FROM review_before
+	   	     WHERE member_seq LIKE CONCAT('%', #{keyword}, '%')
+	   	       AND play_seq = #{playSeq}
+	   	     ORDER BY created_date DESC
+	   	 """)
+		List<ReviewBeforeDTO> ReviewBSearchId(@Param("keyword") String keyword, @Param("playSeq") int playSeq);
+	    // 내용으로 검색 - 날짜 순
+		 @Select("""
+		     SELECT *
+		     FROM review_before
+		     WHERE content LIKE CONCAT('%', #{keyword}, '%')
+		       AND play_seq = #{playSeq}
+		     ORDER BY created_date DESC
+		 """)
+		List<ReviewBeforeDTO> ReviewBSearchKey(@Param("keyword") String keyword, @Param("playSeq") int playSeq);
+
 	
 
 	

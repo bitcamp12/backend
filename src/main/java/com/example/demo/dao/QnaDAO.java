@@ -69,5 +69,25 @@ public interface QnaDAO {
 		""")
 	int qnaCount(int playSeq);
 
+    
+    
+    @Select("""
+	   	     SELECT *
+	   	     FROM review_before
+	   	     WHERE member_seq LIKE CONCAT('%', #{keyword}, '%')
+	   	       AND play_seq = #{playSeq}
+	   	     ORDER BY created_date DESC
+	   	 """)
+	List<QnaDTO> qnaSearchId(@Param("keyword") String keyword, @Param("playSeq") int playSeq);
+
+    @Select("""
+		     SELECT *
+		     FROM review_before
+		     WHERE content LIKE CONCAT('%', #{keyword}, '%')
+		       AND play_seq = #{playSeq}
+		     ORDER BY created_date DESC
+		 """)
+	List<QnaDTO> qnaSearchKey(@Param("keyword") String keyword, @Param("playSeq") int playSeq);
+
 	
 }
