@@ -66,4 +66,10 @@ public class MemberService {
 
 	
 
+
+	public int getMemberSeq(String userId) {
+		// TODO Auto-generated method stub
+		return memberDAO.getMemberSeq(userId);
+	}
+
 }

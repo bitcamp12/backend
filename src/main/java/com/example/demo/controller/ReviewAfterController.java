@@ -44,13 +44,14 @@ public class ReviewAfterController {
 	//리뷰 작성
 	@PostMapping("ReviewA")
 	public ResponseEntity<ApiResponse<ReviewAfter>> reviewWriteA(@RequestParam("playSeq") int playSeq,
-							@RequestBody ReviewAfterDTO reviewDTO) {
-		System.out.println(reviewDTO.getContent());
+							@RequestBody ReviewAfterDTO reviewDTO,
+							@RequestParam("userId") String userId) {
+		System.out.println(userId);
 		try {
-			int memberSeq=1;
-//			memberService.getMemberSeq();
+			reviewDTO.setMemberSeq(memberService.getMemberSeq(userId));
+//			
 	//세션 구할거임
-	 int result=reviewAfterService.reviewAWrite(playSeq,memberSeq,reviewDTO.getContent(),reviewDTO.getRating());
+	 int result=reviewAfterService.reviewAWrite(playSeq,reviewDTO.getMemberSeq(),reviewDTO.getContent(),reviewDTO.getRating());
 	 System.out.println(result);
 	
 	 if(result==1) {
@@ -74,7 +75,7 @@ public class ReviewAfterController {
 	public  ResponseEntity<ApiResponse<List<ReviewAfterDTO>>> getReviewAList(@RequestParam("playSeq") int playSeq,
 			@RequestParam("selected") String selected) {
 		System.out.println(selected);
-		
+		//DTO 에 id 추가
 		try {
 	        List<ReviewAfterDTO> list;
 	        
@@ -112,6 +113,8 @@ public class ReviewAfterController {
 	//리뷰 출력
 		@GetMapping("ReviewA")
 		public ResponseEntity<ApiResponse<ReviewAfterDTO>> getReviewA(@RequestBody ReviewAfterDTO reviewDTO) {
+			
+			//
 			try {
 				System.out.println(reviewDTO.getReviewAfterSeq());
 				ReviewAfterDTO reviewAfterDTO= reviewAfterService.getReviewA(reviewDTO.getReviewAfterSeq());
@@ -218,35 +221,36 @@ public class ReviewAfterController {
 	
 	
 	@GetMapping("ReviewASearch")
-	public ResponseEntity<ApiResponse<List<ReviewAfterDTO>>> ReviewASearch(@RequestBody Map<String, String> requestBody) {
+	public ResponseEntity<ApiResponse<List<ReviewAfterDTO>>> ReviewASearch(
+			 @RequestParam("playSeq") int playSeq, 
+		        @RequestParam("searchType") String searchType,
+		        @RequestParam("keyword") String keyword,
+		        @RequestParam("selected") String selected) {
 		try {
-	        // 서비스 호출하여 업데이트
-			String searchType = requestBody.get("searchType");
-	        String keyword = requestBody.get("keyword");
-	        String selected=requestBody.get("selected");
+	        
 
 	        List<ReviewAfterDTO> list;
-	        if(searchType.equals("아이디")) {
+	        if(searchType.equals("id")) {
 	        	
 	        	if(selected.equals("latest")) {
 	        		///날짜순
-	        		list = reviewAfterService.ReviewASearchId(keyword);
+	        		list = reviewAfterService.ReviewASearchIdDate(keyword,playSeq);
 	        	}
 	        	else {
 	        		//별점순
-	        		list = reviewAfterService.ReviewASearchId(keyword);
+	        		list = reviewAfterService.ReviewASearchIdRating(keyword,playSeq);
 	        	}
 	        	
 	        }
-	        else if( searchType.equals("내용")){
+	        else if( searchType.equals("title")){
 	        	
 	        	if(selected.equals("latest")) {
 	        		///날짜순
-	        		list = reviewAfterService.ReviewASearch(keyword);
+	        		list = reviewAfterService.ReviewASearchDate(keyword,playSeq);
 	        	}
 	        	else {
 	        		//별점순
-	        		list = reviewAfterService.ReviewASearch(keyword);
+	        		list = reviewAfterService.ReviewASearchRating(keyword,playSeq);
 	        	}
 	        	
 	        }
@@ -258,7 +262,7 @@ public class ReviewAfterController {
 	        if (!list.isEmpty()) {
 	            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "성공", list));
 	        } else {
-	            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(404 , "실패",  list));
+	            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(404 , "리뷰 없음",  list));
 	        }
 
 	    } catch (Exception e) {
