@@ -75,7 +75,7 @@ public class ReviewAfterController {
 	public  ResponseEntity<ApiResponse<List<ReviewAfterDTO>>> getReviewAList(@RequestParam("playSeq") int playSeq,
 			@RequestParam("selected") String selected) {
 		System.out.println(selected);
-		
+		//DTO 에 id 추가
 		try {
 	        List<ReviewAfterDTO> list;
 	        
@@ -113,6 +113,8 @@ public class ReviewAfterController {
 	//리뷰 출력
 		@GetMapping("ReviewA")
 		public ResponseEntity<ApiResponse<ReviewAfterDTO>> getReviewA(@RequestBody ReviewAfterDTO reviewDTO) {
+			
+			//
 			try {
 				System.out.println(reviewDTO.getReviewAfterSeq());
 				ReviewAfterDTO reviewAfterDTO= reviewAfterService.getReviewA(reviewDTO.getReviewAfterSeq());
