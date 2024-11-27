@@ -60,34 +60,27 @@ public class ReviewAfterService {
 		return reviewAfterDAO.getReviewAListStar(playSeq);
 	}
 
-	public List<ReviewAfterDTO> ReviewASearch(String keyword) {
+	
+
+	
+	public List<ReviewAfterDTO> ReviewASearchIdDate(String keyword, int playSeq) {
 		// TODO Auto-generated method stub
-		return reviewAfterDAO.ReviewASearch(keyword);
+		return reviewAfterDAO.ReviewASearchIdDate(keyword,playSeq);
 	}
 
-	public List<ReviewAfterDTO> ReviewASearchId(String keyword) {
+	public List<ReviewAfterDTO> ReviewASearchIdRating(String keyword, int playSeq) {
 		// TODO Auto-generated method stub
-		return reviewAfterDAO.ReviewASearchId(keyword);
+		return reviewAfterDAO.ReviewASearchIdRating(keyword,playSeq);
 	}
 
-	public List<ReviewAfterDTO> ReviewASearchIdDate(String keyword) {
+	public List<ReviewAfterDTO> ReviewASearchDate(String keyword, int playSeq) {
 		// TODO Auto-generated method stub
-		return reviewAfterDAO.ReviewASearchIdDate(keyword);
+		return reviewAfterDAO.ReviewASearchDate(keyword,playSeq);
 	}
 
-	public List<ReviewAfterDTO> ReviewASearchIdRating(String keyword) {
+	public List<ReviewAfterDTO> ReviewASearchRating(String keyword, int playSeq) {
 		// TODO Auto-generated method stub
-		return reviewAfterDAO.ReviewASearchIdRating(keyword);
-	}
-
-	public List<ReviewAfterDTO> ReviewASearchDate(String keyword) {
-		// TODO Auto-generated method stub
-		return reviewAfterDAO.ReviewASearchDate(keyword);
-	}
-
-	public List<ReviewAfterDTO> ReviewASearchRating(String keyword) {
-		// TODO Auto-generated method stub
-		return reviewAfterDAO.ReviewASearchRating(keyword);
+		return reviewAfterDAO.ReviewASearchRating(keyword,playSeq);
 	}
 
 	

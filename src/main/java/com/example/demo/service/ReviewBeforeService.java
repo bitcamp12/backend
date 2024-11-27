@@ -44,5 +44,15 @@ public class ReviewBeforeService {
 		return reviewBeforeDAO.ReviewBcount(playSeq);
 	}
 
+	public List<ReviewBeforeDTO> ReviewBSearchId(String keyword, int playSeq) {
+		// TODO Auto-generated method stub
+		return reviewBeforeDAO.ReviewBSearchId(keyword,playSeq);
+	}
+
+	public List<ReviewBeforeDTO> ReviewBSearchKey(String keyword, int playSeq) {
+		// TODO Auto-generated method stub
+		return reviewBeforeDAO.ReviewBSearchKey(keyword,playSeq);
+	}
+
 	
 }
