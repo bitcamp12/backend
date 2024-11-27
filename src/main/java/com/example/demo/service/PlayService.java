@@ -38,16 +38,15 @@ public class PlayService {
 		return playDAO.getPlayAll(offset, size);
 	}
 
-<<<<<<< HEAD
 	public List<PlayDTO> searchList(String name) {
 		return playDAO.searchList(name);
-=======
+	}
+
     public List<PlayDTO> getPlayRandom() {
         return playDAO.getPlayRandom();
     }
 
 	public List<PlayDTO> getPlaySale() {
 		return playDAO.getPlaySale();
->>>>>>> 14ce637a012023cf1b93b029f2a5d490ecc6e480
 	}
 }
