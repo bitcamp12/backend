@@ -36,4 +36,8 @@ public class PlayService {
 		int offset = (page - 1) * size;
 		return playDAO.getPlayAll(offset, size);
 	}
+
+	public List<PlayDTO> searchList(String name) {
+		return playDAO.searchList(name);
+	}
 }

@@ -24,6 +24,13 @@ public interface PlayDAO {
 			    LIMIT #{size} OFFSET #{offset}
 			""")
 	List<PlayDTO> getPlayAll(@Param("offset") int offset, @Param("size") int size);
+	
+	
+	@Select("""
+	        SELECT * FROM play WHERE name LIKE CONCAT('%', #{name}, '%')
+	        """)
+	List<PlayDTO> searchList(String name);
+
 
 	
 }
