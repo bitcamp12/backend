@@ -35,13 +35,14 @@ public interface ReviewBeforeDAO {
                 @Param("memberSeq") int memberSeq, 
                 @Param("content") String content);
 
-	    // 리뷰 목록 조회 (별점 제외)
 	    @Select("""
-	            SELECT * FROM review_before
-	            WHERE play_seq = #{playSeq}
-	            ORDER BY created_date DESC
-	            """)
-	    List<ReviewBeforeDTO> getReviewBList(int playSeq);
+	    	    SELECT rb.*, m.id
+	    	    FROM review_before rb
+	    	    JOIN member m ON rb.member_seq = m.member_seq
+	    	    WHERE rb.play_seq = #{playSeq}
+	    	    ORDER BY rb.created_date DESC
+	    	""")
+	    	List<ReviewBeforeDTO> getReviewBList(int playSeq);
 
 	    // 특정 리뷰 조회 (별점 제외)
 	    @Select("""
@@ -77,6 +78,31 @@ public interface ReviewBeforeDAO {
 			    WHERE play_seq = #{playSeq}
 			""")
 		int ReviewBcount(int playSeq);
+
+	    
+	    
+	    
+	 // 아이디로 검색 - 날짜 순
+	    @Select("""
+	        SELECT rb.*, m.id
+	        FROM review_before rb
+	        JOIN member m ON rb.member_seq = m.member_seq
+	        WHERE rb.member_seq LIKE CONCAT('%', #{keyword}, '%')
+	          AND rb.play_seq = #{playSeq}
+	        ORDER BY rb.created_date DESC
+	    """)
+	    List<ReviewBeforeDTO> ReviewBSearchId(@Param("keyword") String keyword, @Param("playSeq") int playSeq);
+
+	    // 내용으로 검색 - 날짜 순
+	    @Select("""
+	        SELECT rb.*, m.id
+	        FROM review_before rb
+	        JOIN member m ON rb.member_seq = m.member_seq
+	        WHERE rb.content LIKE CONCAT('%', #{keyword}, '%')
+	          AND rb.play_seq = #{playSeq}
+	        ORDER BY rb.created_date DESC
+	    """)
+	    List<ReviewBeforeDTO> ReviewBSearchKey(@Param("keyword") String keyword, @Param("playSeq") int playSeq);
 
 	
 
