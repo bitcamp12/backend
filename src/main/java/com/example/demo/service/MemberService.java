@@ -60,4 +60,10 @@ public class MemberService {
 		return memberDAO.Login(map);
 	}
 
+	public void infoWithdrawal(String id) {
+		memberDAO.infoWithdrawal(id);
+	}
+
+	
+
 }

@@ -2,6 +2,7 @@ package com.example.demo.dao;
 
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -43,6 +44,9 @@ public interface MemberDAO {
     
     @Select("SELECT COUNT(*) FROM member WHERE id = #{id} AND password = #{password}")
     public int Login(Map<String, String> map);
+
+    @Delete("DELETE FROM member WHERE id=#{id}")
+	public void infoWithdrawal(String id);
 
    
 
