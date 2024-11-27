@@ -30,7 +30,7 @@ public interface QnaDAO {
 
 	// Q&A 목록 조회
 	 @Select("""
-	     SELECT q.*, m.member_id
+	     SELECT q.*, m.id
 	     FROM qna q
 	     JOIN member m ON q.member_seq = m.member_seq
 	     WHERE q.play_seq = #{playSeq}
