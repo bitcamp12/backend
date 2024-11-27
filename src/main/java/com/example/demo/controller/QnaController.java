@@ -32,12 +32,16 @@ public class QnaController {
 	private QnaService qnaService;
 	@Autowired
 	MemberService memberService;
+	
+	
 	@PostMapping("qna")
 	public ResponseEntity<ApiResponse<Qna>> qnaWrite(@RequestParam("playSeq") int playSeq,
 			@RequestBody QnaDTO qnaDTO,
 			@RequestParam("userId") String userId) {
 		
-		System.out.println(qnaDTO.getTitle()+qnaDTO.getContent());
+		  System.out.println("Received QnaDTO: " + qnaDTO); // 객체 전체 출력
+		    System.out.println("Title: " + qnaDTO.getTitle());
+		    System.out.println("Content: " + qnaDTO.getContent());
 		
 		try {
 			qnaDTO.setMemberSeq(memberService.getMemberSeq(userId));
