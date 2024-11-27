@@ -53,4 +53,18 @@ public class QnaService {
 		// TODO Auto-generated method stub
 		return qnaDAO.qnaCount(playSeq);
 	}
+
+
+
+	public List<QnaDTO> qnaSearchId(String keyword, int playSeq) {
+		// TODO Auto-generated method stub
+		return qnaDAO.qnaSearchId(keyword,playSeq);
+	}
+
+
+
+	public List<QnaDTO> qnaSearchKey(String keyword, int playSeq) {
+		// TODO Auto-generated method stub
+		return qnaDAO.qnaSearchKey(keyword,playSeq);
+	}
 }

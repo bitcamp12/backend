@@ -60,4 +60,9 @@ public class MemberService {
 		return memberDAO.Login(map);
 	}
 
+	public int getMemberSeq(String userId) {
+		// TODO Auto-generated method stub
+		return memberDAO.getMemberSeq(userId);
+	}
+
 }

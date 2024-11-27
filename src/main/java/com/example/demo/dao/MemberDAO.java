@@ -44,6 +44,10 @@ public interface MemberDAO {
     @Select("SELECT COUNT(*) FROM member WHERE id = #{id} AND password = #{password}")
     public int Login(Map<String, String> map);
 
+    
+    @Select("SELECT member_seq FROM member WHERE id = #{id}")
+	public int getMemberSeq(String userId);
+
    
 
 }
