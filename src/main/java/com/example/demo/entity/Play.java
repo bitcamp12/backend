@@ -56,7 +56,7 @@ public class Play {
     @Column(name = "total_actor", length = 300)
     private String totalActor;
     
-    @Column(name = "price", length = 100)
+    @Column(name = "price")
     private int price;
     
     @Column(name = "age_limit", length = 100)
