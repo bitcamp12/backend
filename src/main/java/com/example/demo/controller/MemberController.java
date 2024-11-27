@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -440,8 +441,6 @@ public class MemberController {
 
     
 
-
-
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<String>> login(HttpSession session, @RequestBody MemberDTO dto) {
         try {
@@ -495,15 +494,36 @@ public class MemberController {
 
 	
 // -- 지현: 마이페이지(사용자정보) 수정 ---------------------------
-	
-	// 한 명의 사용자 정보를 가져옵니다.
-	@GetMapping("getUserInfo/{id}")
+    // 세션얻어오기
+    @CrossOrigin(origins = "http://localhost:3000/member", allowCredentials = "true")
+    @GetMapping("getSession")
+    public ResponseEntity<ApiResponse<String>> getSession (HttpSession session) {
+    	try {
+    		String sessionId = (String) session.getAttribute("id");    		
+    		
+    		if(sessionId== null) {
+    			System.out.println("세션못얻음");
+    			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(401, "로그인하지 않은 사용자가 접근하였습니다.", ""));
+    		}else {
+    			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "세션Id를 가져왔습니다.", sessionId));
+    		}			
+		} catch (Exception e) {			
+			System.err.println("Error occurred: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body(new ApiResponse<>(500, null, "에러"));
+		}
+    	
+    }
+    
+    
+	// 한 명의 사용자 정보를 가져옵니다. (ResponseEntity로수정하기)
+	@GetMapping("getUserInfo/me/{id}")
 	public MemberDTO getUserInfo(@PathVariable("id") String id) {
 		MemberDTO memberDTO = memberService.getUserInfo(id);
 		return memberDTO;
 	}
 	
-	// 회원 정보 수정 
+	// 회원 정보 수정 (ResponseEntity로수정하기)
 	@PutMapping("modifyUserInfo")
 	public void modifyUserInfo(@RequestBody MemberDTO modifiedData) {
 		System.out.println(modifiedData);

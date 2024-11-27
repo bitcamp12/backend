@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import com.example.demo.dto.ReviewAfterDTO;
 import com.example.demo.dto.ReviewBeforeDTO;
 import com.example.demo.entity.ReviewAfter;
 import com.example.demo.entity.ReviewBefore;
+import com.example.demo.service.MemberService;
 import com.example.demo.service.ReviewBeforeService;
 import com.example.demo.util.ApiResponse;
 
@@ -28,17 +30,19 @@ public class ReviewBeforeController {
     
 	@Autowired
 	private ReviewBeforeService reviewBeforeService;
-	
+	@Autowired
+	MemberService memberService;
 	//리뷰 작성
 		@PostMapping("reviewB")
 		public ResponseEntity<ApiResponse<ReviewBefore>> reviewBWrite(@RequestParam("playSeq") int playSeq,
-								@RequestBody ReviewBeforeDTO reviewBeforeDTO) {
+								@RequestBody ReviewBeforeDTO reviewBeforeDTO,
+								@RequestParam("userId") String userId) {
 			System.out.println(reviewBeforeDTO.getContent());
 			try {
-				int memberSeq=1;
+				reviewBeforeDTO.setMemberSeq(memberService.getMemberSeq(userId));
 //				memberService.getMemberSeq();
 		//세션 구할거임
-		 int result=reviewBeforeService.reviewBWrite(playSeq,memberSeq,reviewBeforeDTO.getContent());
+		 int result=reviewBeforeService.reviewBWrite(playSeq,reviewBeforeDTO.getMemberSeq(),reviewBeforeDTO.getContent());
 		 System.out.println(result);
 		
 		 if(result==1) {
@@ -165,5 +169,41 @@ public class ReviewBeforeController {
 			    }
 		}
 	
-	
+		@GetMapping("ReviewBSearch")
+		public  ResponseEntity<ApiResponse<List<ReviewBeforeDTO>>> ReviewBSearch(
+				 @RequestParam("playSeq") int playSeq, 
+			        @RequestParam("searchType") String searchType,
+			        @RequestParam("keyword") String keyword
+			        ) {
+			 try {
+			
+	        List<ReviewBeforeDTO> list;
+	        
+			if(searchType.equals("id")) {
+	        	list =reviewBeforeService.ReviewBSearchId(keyword,playSeq);
+	        }
+	        else if( searchType.equals("title")){
+	        	
+	        	list =reviewBeforeService.ReviewBSearchKey(keyword,playSeq);
+	        	
+	        }
+	        else {
+	        	  return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                          .body(new ApiResponse<>(400, "유효하지 않은 검색 타입", null));
+	        }
+	        
+
+	        if (!list.isEmpty()) {
+	            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "성공", list));
+	        } else {
+	            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(404 , "리뷰 없음",  list));
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(400, "오류", null));
+	    }
+		
+		
+		}
 }

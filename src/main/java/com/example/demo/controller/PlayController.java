@@ -53,10 +53,11 @@ public class PlayController {
 
 	//민웅 사용자 메인 페이지
 	@GetMapping("/getPlayAll")
-	public ResponseEntity<ApiResponse<List<PlayDTO>>> getPlayAll(@RequestParam int page, @RequestParam int size) {
+	public ResponseEntity<ApiResponse<List<PlayDTO>>> getPlayAll(@RequestParam("page") int page, @RequestParam("size") int size) {
 		List<PlayDTO> plays = playService.getPlayAll(page, size);
 		return ResponseEntity.ok(new ApiResponse<>(200, "Data retrieved", plays));
 	}
+
 	
 	
 	@PostMapping("/searchList")
@@ -78,4 +79,17 @@ public class PlayController {
 	    }
 	}
 	
+
+	@GetMapping("/getPlayRandom")
+	public ResponseEntity<ApiResponse<List<PlayDTO>>> getPlayRandom() {
+		List<PlayDTO> plays = playService.getPlayRandom();
+		return ResponseEntity.ok(new ApiResponse<>(200, "Data retrieved", plays));
+	}
+
+	@GetMapping("/getPlaySale")
+	public ResponseEntity<ApiResponse<List<PlayDTO>>> getPlaySale() {
+		List<PlayDTO> plays = playService.getPlaySale();
+		return ResponseEntity.ok(new ApiResponse<>(200, "Data retrieved", plays));
+	}
+
 }

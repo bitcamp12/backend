@@ -19,9 +19,11 @@ public interface PlayDAO {
 			""")
 	PlayDTO getPlayOne(String playSeq);
 
+
+	//민웅 사용자 메인 페이지
 	@Select("""
-			    SELECT * FROM play
-			    LIMIT #{size} OFFSET #{offset}
+			SELECT * FROM play
+			LIMIT #{size} OFFSET #{offset}
 			""")
 	List<PlayDTO> getPlayAll(@Param("offset") int offset, @Param("size") int size);
 	
@@ -31,6 +33,18 @@ public interface PlayDAO {
 	        """)
 	List<PlayDTO> searchList(String name);
 
+
+	@Select("""
+			SELECT * FROM play
+			ORDER BY RAND() LIMIT 10;
+			""")
+    List<PlayDTO> getPlayRandom();
+
+	@Select("""
+			SELECT * FROM play
+			ORDER BY play_seq DESC LIMIT 12;
+			""")
+	List<PlayDTO> getPlaySale();
 
 	
 }
