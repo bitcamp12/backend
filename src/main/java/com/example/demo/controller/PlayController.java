@@ -16,6 +16,8 @@ import com.example.demo.service.PlayService;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.util.ApiResponse;
@@ -54,5 +56,26 @@ public class PlayController {
 	public ResponseEntity<ApiResponse<List<PlayDTO>>> getPlayAll(@RequestParam int page, @RequestParam int size) {
 		List<PlayDTO> plays = playService.getPlayAll(page, size);
 		return ResponseEntity.ok(new ApiResponse<>(200, "Data retrieved", plays));
-	}	
+	}
+	
+	
+	@PostMapping("/searchList")
+	public ResponseEntity<ApiResponse<List<PlayDTO>>> searchList(@RequestBody PlayDTO dto) {
+		System.out.println(dto.getName());
+	    if (dto.getName() == null || dto.getName().isEmpty()) {
+	        return ResponseEntity.badRequest()
+	                .body(new ApiResponse<>(400, "검색결과가 없습니다", null));
+	    }
+	    try {
+	        List<PlayDTO> searchList = playService.searchList(dto.getName());
+	        if (searchList.isEmpty()) {
+	            return ResponseEntity.ok(new ApiResponse<>(204, "검색된 데이터가없습니다", searchList));
+	        }
+	        return ResponseEntity.ok(new ApiResponse<>(200, "데이터 목록입니다", searchList));
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body(new ApiResponse<>(500, "서버 에러 발생", null));
+	    }
+	}
+	
 }
