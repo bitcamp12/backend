@@ -50,7 +50,7 @@ public class MemberController {
     private Map<String, Long> codeExpirationTimes = new HashMap<>();
     
     // 제한 시간 설정 (밀리초 단위, 예: 2분 = 2 * 60 * 1000)
-    private static final long EXPIRATION_TIME = 1 * 60 * 1000;
+    private static final long EXPIRATION_TIME = 2 * 60 * 1000;
 
     // 스케줄러를 사용하여 만료 시간 이후 데이터를 제거
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -89,11 +89,12 @@ public class MemberController {
     public ResponseEntity<ApiResponse<Member>> checkId(@RequestBody IdCheckDTO dto) {
         System.out.println("Received data: " + dto.getId());
         try {
-            int result = memberService.checkId(dto.getId());
+            int result = memberService.checkId(dto.getId());   // 유니온 
+            //int result2 = memberService.checkAdminId(dto.getId()); // 2번체크 
             System.out.println(result);
-            if (result == 1) {
+            if (result == 1 ) {
                 return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "exist", null));
-            } else if (result == 0) {
+            } else if (result == 0 ) {
                 return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "non_exist", null));
             }
         } catch (Exception e) {
@@ -171,7 +172,7 @@ public class MemberController {
     	String email = dto.getEmail();
     	String name = dto.getName();
         try {
-        	System.out.println(email+name);
+        	System.out.println("인증이메일"+email+"인증이름"+name);
             Map<String, String> map = new HashMap<>();
             map.put("name", name);
             map.put("email", email);
@@ -216,7 +217,7 @@ public class MemberController {
     	String code=dto.getCode();
     	String name=dto.getName();
         // 만료 시간 확인
-    	System.out.println(email+code+name);
+    	System.out.println("이메일인증"+email+"이메일인증"+code+"이메일인증"+name);
         Long expirationTime = codeExpirationTimes.get(email);
         if (expirationTime != null && System.currentTimeMillis() > expirationTime) {
             // 만료된 경우
@@ -242,8 +243,8 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse<>(200, id, null));
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ApiResponse<>(400, "not_match", null));
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse<>(204, "not_match", null));
         }
     }
     

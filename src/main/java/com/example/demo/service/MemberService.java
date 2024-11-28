@@ -65,4 +65,5 @@ public class MemberService {
 		return memberDAO.getMemberSeq(userId);
 	}
 
+
 }
