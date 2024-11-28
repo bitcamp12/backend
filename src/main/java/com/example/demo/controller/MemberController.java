@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -460,6 +461,7 @@ public class MemberController {
             // 로그인 성공
             if (result == 1) {
             	session.setAttribute("id", id);
+            	System.out.println(id);
                 return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, id , null));
             } else {
                 // 로그인 실패 (회원 정보 없음)
@@ -478,7 +480,7 @@ public class MemberController {
         try {
         	
             String id = dto.getId();
-            session.removeAttribute(id);
+            session.invalidate();
             System.out.println(id);
             // 로그아웃 성공
                 return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, id , null));
@@ -506,6 +508,7 @@ public class MemberController {
     			System.out.println("세션못얻음");
     			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(401, "로그인하지 않은 사용자가 접근하였습니다.", ""));
     		}else {
+    			System.out.println(session.getId());
     			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "세션Id를 가져왔습니다.", sessionId));
     		}			
 		} catch (Exception e) {			
@@ -517,19 +520,48 @@ public class MemberController {
     }
     
     
-	// 한 명의 사용자 정보를 가져옵니다. (ResponseEntity로수정하기)
-	@GetMapping("getUserInfo/me/{id}")
-	public MemberDTO getUserInfo(@PathVariable("id") String id) {
+	// 한 명의 사용자 정보를 가져옵니다. (ResponseEntity로 수정하기)
+	@GetMapping("getUserInfo/me")
+	public MemberDTO getUserInfo( HttpSession session) {
+		System.out.println("id : " +session.getAttribute("id"));
+		String id = (String) session.getAttribute("id");
 		MemberDTO memberDTO = memberService.getUserInfo(id);
 		return memberDTO;
 	}
 	
-	// 회원 정보 수정 (ResponseEntity로수정하기)
+	// 회원 정보 수정 (ResponseEntity로 수정하기)
 	@PutMapping("modifyUserInfo")
 	public void modifyUserInfo(@RequestBody MemberDTO modifiedData) {
 		System.out.println(modifiedData);
 		memberService.modifyUserInfo(modifiedData);
 	}
 	
+	// 회원 탈퇴
+	@DeleteMapping("infoWithdrawal/me")
+	public ResponseEntity<ApiResponse<String>> infoWithdrawal(HttpSession session) {
+		try {
+			String id = (String) session.getAttribute("id");
+			memberService.infoWithdrawal(id);
+			session.invalidate();
+			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "탈퇴", null));
+		} catch (Exception e) {
+			System.err.println("Error occurred: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body(new ApiResponse<>(500, null, "에러"));
+		}
+	}
+	
+	
+// 세션 존재 확인 (나중에 필요하면 지움)
+	
+	@GetMapping("/session-status")
+	public ResponseEntity<ApiResponse<String>> sessionStatus(HttpSession session) {
+	    if (session.getAttribute("id") == null) {
+	        return ResponseEntity.status(HttpStatus.OK)
+	                             .body(new ApiResponse<>(200, "세션 없음", null));
+	    }
+	    return ResponseEntity.status(HttpStatus.OK)
+	                         .body(new ApiResponse<>(200, "세션 있음", session.getId()));
+	}
 
 }
