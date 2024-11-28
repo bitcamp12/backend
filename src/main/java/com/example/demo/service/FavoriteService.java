@@ -10,4 +10,19 @@ public class FavoriteService {
 
 	@Autowired
 	private FavoriteDAO favoriteDAO;
+
+	public int favoritesInsert(int playSeq, int memberSeq) {
+		// TODO Auto-generated method stub
+		return favoriteDAO.favoritesInsert(playSeq,memberSeq);
+	}
+
+	public int favoritesCheck(int playSeq, int memberSeq) {
+		// TODO Auto-generated method stub
+		return favoriteDAO.favoritesCheck(playSeq,memberSeq);
+	}
+
+	public int favoritesDelete(int playSeq, int memberSeq) {
+		// TODO Auto-generated method stub
+		return favoriteDAO.favoritesDelete(playSeq,memberSeq);
+	}
 }
