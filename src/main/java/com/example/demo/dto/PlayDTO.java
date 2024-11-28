@@ -2,6 +2,7 @@ package com.example.demo.dto;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,4 +21,6 @@ public class PlayDTO {
 	private String description;
 	private String address;
 	private String totalActor;
+	private int price;
+	private String ageLimit;
 }
