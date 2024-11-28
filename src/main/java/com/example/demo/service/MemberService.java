@@ -60,6 +60,13 @@ public class MemberService {
 		return memberDAO.Login(map);
 	}
 
+	public void infoWithdrawal(String id) {
+		memberDAO.infoWithdrawal(id);
+	}
+
+	
+
+
 	public int getMemberSeq(String userId) {
 		// TODO Auto-generated method stub
 		return memberDAO.getMemberSeq(userId);
