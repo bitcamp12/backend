@@ -72,5 +72,13 @@ public class MemberService {
 		return memberDAO.getMemberSeq(userId);
 	}
 
+	public int findPwdByPhone(Map<String, String> map) {
+		return memberDAO.findPwdByPhone(map);
+	}
+
+	public int findPwdByEmail(Map<String, String> map) {
+		return memberDAO.findPwdByEmail(map);
+	}
+
 
 }
