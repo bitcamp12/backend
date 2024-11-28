@@ -476,14 +476,15 @@ public class MemberController {
     }
     
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<String>> logout(HttpSession session, @RequestBody MemberDTO dto) {
+    public ResponseEntity<ApiResponse<String>> logout(HttpSession session) {
         try {
         	
-            String id = dto.getId();
-            session.invalidate();
-            System.out.println(id);
+           
+            //session.removeAttribute("id");
+        	session.invalidate();
+            //System.out.println(session.getAttribute("id"));
             // 로그아웃 성공
-                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, id , null));
+                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "로그아웃", null));
         } catch (Exception e) {
             // 예외 발생 시 에러 메시지 반환
             System.err.println("Error occurred: " + e.getMessage());
@@ -557,9 +558,12 @@ public class MemberController {
 	@GetMapping("/session-status")
 	public ResponseEntity<ApiResponse<String>> sessionStatus(HttpSession session) {
 	    if (session.getAttribute("id") == null) {
-	        return ResponseEntity.status(HttpStatus.OK)
-	                             .body(new ApiResponse<>(200, "세션 없음", null));
+	    	System.out.println("404");
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                             .body(new ApiResponse<>(404, "세션 없음", null));
 	    }
+	    System.out.println("200");
+	    System.out.println(session.getAttribute("id"));
 	    return ResponseEntity.status(HttpStatus.OK)
 	                         .body(new ApiResponse<>(200, "세션 있음", session.getId()));
 	}
