@@ -479,11 +479,12 @@ public class MemberController {
     public ResponseEntity<ApiResponse<String>> logout(HttpSession session) {
         try {
         	
-           
+           System.out.println("11a");
             //session.removeAttribute("id");
         	session.invalidate();
             //System.out.println(session.getAttribute("id"));
             // 로그아웃 성공
+        	 System.out.println("11a");
                 return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "로그아웃", null));
         } catch (Exception e) {
             // 예외 발생 시 에러 메시지 반환
