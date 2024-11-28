@@ -172,6 +172,7 @@ public class MemberController {
     public ResponseEntity<ApiResponse<String>> sendEmailVerificationCode(@RequestBody MemberDTO dto) {
     	String email = dto.getEmail();
     	String name = dto.getName();
+    	String id = dto.getId();
         try {
         	System.out.println("인증이메일"+email+"인증이름"+name);
             Map<String, String> map = new HashMap<>();
@@ -179,6 +180,12 @@ public class MemberController {
             map.put("email", email);
             
         	int result = memberService.findIdByEmail(map);
+        	
+            if(id != null) {
+            	map.put("id", id);
+            	result = memberService.findPwdByEmail(map); //ID포함해서 비밀번호찾기용 검증 재활용
+            }
+        	
         	System.out.println("result"+result);
         	if (result == 0) {
                 return ResponseEntity.status(HttpStatus.OK)
@@ -291,12 +298,20 @@ public class MemberController {
             // 전화번호와 인증 코드 저장
         	 String phoneNum = smsRequestDto.getPhoneNum().replaceAll("[^0-9]", "");
             String name =smsRequestDto.getName();
+            String id=smsRequestDto.getId();
             
             Map<String, String> map = new HashMap<>();
             map.put("name", name);
             map.put("phone", phoneNum);
             
-        	int result = memberService.findIdByPhone(map);
+            int result = memberService.findIdByPhone(map);
+            
+            if(id != null) {
+            	map.put("id", id);
+            	result = memberService.findPwdByPhone(map); //ID포함해서 비밀번호찾기용 검증 재활용
+            }
+            
+        	
         	System.out.println("result"+result);
         	if (result == 0) {
                 return ResponseEntity.status(HttpStatus.OK)
@@ -442,7 +457,7 @@ public class MemberController {
     }
 
     
-
+    @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<String>> login(HttpSession session, @RequestBody MemberDTO dto) {
         try {
@@ -475,6 +490,7 @@ public class MemberController {
         }
     }
     
+    @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
     @PostMapping("/logout")
     public ResponseEntity<ApiResponse<String>> logout(HttpSession session) {
         try {
@@ -484,7 +500,6 @@ public class MemberController {
         	session.invalidate();
             //System.out.println(session.getAttribute("id"));
             // 로그아웃 성공
-        	 System.out.println("11a");
                 return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "로그아웃", null));
         } catch (Exception e) {
             // 예외 발생 시 에러 메시지 반환
@@ -556,7 +571,8 @@ public class MemberController {
 	
 // 세션 존재 확인 (나중에 필요하면 지움)
 	
-	@GetMapping("/session-status")
+	@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+	@GetMapping("/session-status" )
 	public ResponseEntity<ApiResponse<String>> sessionStatus(HttpSession session) {
 	    if (session.getAttribute("id") == null) {
 	    	System.out.println("404");
