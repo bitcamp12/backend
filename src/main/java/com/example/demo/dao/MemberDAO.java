@@ -60,5 +60,11 @@ public interface MemberDAO {
     @Select("SELECT member_seq FROM member WHERE id = #{id}")
 	public int getMemberSeq(String userId);
 
+    @Select("SELECT COUNT(*) FROM member WHERE name = #{name} AND phone = #{phone} AND id =#{id}")
+	public int findPwdByPhone(Map<String, String> map);
+    
+    @Select("SELECT COUNT(*) FROM member WHERE name = #{name} AND email = #{email} AND id =#{id}")
+	public int findPwdByEmail(Map<String, String> map);
+
 
 }
