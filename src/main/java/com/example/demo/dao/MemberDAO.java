@@ -17,9 +17,16 @@ public interface MemberDAO {
     @Insert("INSERT INTO member (id, name, password, email, phone, address, gender, sns_token, role) " +
             "VALUES (#{id}, #{name}, #{password}, #{email}, #{phone}, #{address}, #{gender}, #{snsToken}, #{role})")
     public int signUp(MemberDTO memberDTO);
-
-    @Select("SELECT COALESCE(COUNT(*), 0) FROM member WHERE id = #{id}")
-    public int checkId(String id);
+    
+    @Select("""
+    	    SELECT COUNT(*)
+    	    FROM (
+    	        SELECT id FROM member WHERE id = #{id}
+    	        UNION
+    	        SELECT id FROM admin WHERE id = #{id}
+    		    ) AS combined
+    		""")
+    	public int checkId(String id);
     
     @Select("SELECT id FROM member WHERE name = #{name} AND phone = #{phone}")
 	public String findIdPhone(Map<String, String> map);
@@ -45,15 +52,13 @@ public interface MemberDAO {
     @Select("SELECT COUNT(*) FROM member WHERE id = #{id} AND password = #{password}")
     public int Login(Map<String, String> map);
 
-<<<<<<< HEAD
+
     @Delete("DELETE FROM member WHERE id=#{id}")
 	public void infoWithdrawal(String id);
-=======
+
     
     @Select("SELECT member_seq FROM member WHERE id = #{id}")
 	public int getMemberSeq(String userId);
->>>>>>> 65244648661d0d8fd78a081a9b5dee4ce27c7677
 
-   
 
 }
