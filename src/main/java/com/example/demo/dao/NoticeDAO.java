@@ -12,6 +12,7 @@ public interface NoticeDAO {
 
     @Select("""
             SELECT * FROM notice
+            WHERE hide = 'N'
             """)
     List<NoticeDTO> getNoticeAll();
 
