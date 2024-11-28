@@ -45,4 +45,7 @@ public class Book {
 
     @Column(name = "payment", length = 100)
     private String payment;
+    
+    @Column(name = "total_price")
+    private int totalPrice;
 }
