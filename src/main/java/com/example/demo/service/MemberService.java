@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Select;
@@ -12,6 +13,8 @@ import com.example.demo.dto.member.MemberDTO;
 import com.example.demo.entity.Member;
 import com.example.demo.repository.AdminRepository;
 import com.example.demo.repository.MemberRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class MemberService {
@@ -121,10 +124,13 @@ public class MemberService {
 	}
 
 	public String findIdByEmail2Entity(String name, String email) {
-		
-		return memberRepository.findIdByNameAndEmail(name, email);
-		
-		
+		System.out.println("아이디찾기"); 
+		List<Member> list = memberRepository.findByNameAndEmail(name, email);
+		if(list.size() >= 1) {
+			return list.get(0).getId();
+		}else {
+			return "없음";
+		}	
 	}
 
 	public int findIdByPhoneEntity(String name, String phoneNum) {
@@ -135,22 +141,35 @@ public class MemberService {
 		return memberRepository.countByNameAndPhoneAndId(name, phoneNum,id);
 	}
 
+	
 	public String findIdPhoneEntity(String name, String phone) {
-		return memberRepository.findIdByNameAndPhone(name, phone);
+		System.out.println("아이디찾기"); 
+		List<Member> list = memberRepository.findByNameAndPhone(name, phone);
+		if(list.size() >= 1) {
+			return list.get(0).getId();
+		}else {
+			return "없음";
+		}
 	}
+		
 
+	@Transactional
 	public int updatePwdEntity(String id, String password) {
+		
         try {
-            int rowsUpdated = memberRepository.updatePasswordById(id, password);
-            return rowsUpdated; // 업데이트 성공한 행의 수 반환
+            Member member = memberRepository.findById(id);
+            member.setPassword(password);
+            memberRepository.save(member);
+            return 1;
         } catch (Exception e) {
             e.printStackTrace();
             return 0; // 실패
         }
 	}
+        
+		
 
 	public int LoginEntity(String id, String password) {
-		 System.out.println(id+password+"***entity");
 		return memberRepository.countByIdAndPassword(id,password);
 	}
 
