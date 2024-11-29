@@ -639,14 +639,14 @@ public class MemberController {
 			System.out.println("checkMyBook : " +id);
 			
 			List<CheckMyBookDTO> list = memberService.checkMyBook(id);
-			System.out.println("checkMyBook : " +list);
 			
-			if(list!=null && list.isEmpty()) {
+			if(list!=null && !list.isEmpty()) {
 				// 예약목록이 존재할 경우, 
+				System.out.println("checkMyBookList : " +list);
 				return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "예약목록이 있습니다.", list));				
 			}else {
 				// 예약 목록이 존재하지 않을 경우
-				return ResponseEntity.status(HttpStatus.OK).build();
+				return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "예약목록이 없습니다.", null));
 			}
 		} catch (Exception e) {
 			// 에러났을 경우 
