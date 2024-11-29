@@ -90,6 +90,7 @@ public class PlayController {
 	public ResponseEntity<ApiResponse<List<PlayDTO>>> getPlaySale() {
 		List<PlayDTO> plays = playService.getPlaySale();
 		return ResponseEntity.ok(new ApiResponse<>(200, "Data retrieved", plays));
+		
 	}
 
 }
