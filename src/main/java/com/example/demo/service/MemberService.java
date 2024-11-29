@@ -1,11 +1,13 @@
 package com.example.demo.service;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.MemberDAO;
+import com.example.demo.dto.CheckMyBookDTO;
 import com.example.demo.dto.member.MemberDTO;
 
 @Service
@@ -68,7 +70,6 @@ public class MemberService {
 
 
 	public int getMemberSeq(String userId) {
-		// TODO Auto-generated method stub
 		return memberDAO.getMemberSeq(userId);
 	}
 
@@ -79,6 +80,12 @@ public class MemberService {
 	public int findPwdByEmail(Map<String, String> map) {
 		return memberDAO.findPwdByEmail(map);
 	}
+
+	public List<CheckMyBookDTO> checkMyBook(String id) {
+		return memberDAO.checkMyBook(id);
+	}
+
+
 
 
 }
