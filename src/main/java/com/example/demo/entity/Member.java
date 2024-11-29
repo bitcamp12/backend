@@ -55,7 +55,7 @@ public class Member {
     @Column(name = "role", length = 10)
     private Role role;  // 역할 (ENUM)
 
-    @Column(name = "register_date", nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+	@Column(name = "register_date", insertable = false/*nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP"*/)
     private LocalDateTime registerDate;  // 가입 날짜
 
     public enum Gender {
