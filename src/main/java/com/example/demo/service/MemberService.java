@@ -163,7 +163,6 @@ public class MemberService {
 }
 
 	public List<CheckMyBookDTO> checkMyBook(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		return memberDAO.checkMyBook(id);
 	}
 }
