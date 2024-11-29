@@ -20,9 +20,12 @@ public class ReviewBeforeService {
 		return reviewBeforeDAO.reviewBWrite(playSeq,memberSeq,content);
 	}
 
-	public List<ReviewBeforeDTO> getReviewBList(int playSeq) {
-		// TODO Auto-generated method stub
-		return reviewBeforeDAO.getReviewBList(playSeq);
+	public List<ReviewBeforeDTO> getReviewBList(int playSeq, int page, int size) {
+		System.out.println(page);
+		int pages = (page - 1) * size ; // page가 0일 때 0으로 처리
+		System.out.println(pages);
+		 
+		return reviewBeforeDAO.getReviewBList(playSeq,pages,size);
 	}
 
 	public ReviewBeforeDTO getReviewB(int reviewBeforeSeq) {
@@ -44,14 +47,24 @@ public class ReviewBeforeService {
 		return reviewBeforeDAO.ReviewBcount(playSeq);
 	}
 
-	public List<ReviewBeforeDTO> ReviewBSearchId(String keyword, int playSeq) {
-		// TODO Auto-generated method stub
-		return reviewBeforeDAO.ReviewBSearchId(keyword,playSeq);
+	public List<ReviewBeforeDTO> ReviewBSearchId(String keyword, int playSeq, int page, int size) {
+		int pages=(page-1)*size;
+		return reviewBeforeDAO.ReviewBSearchId(keyword,playSeq,pages,size);
 	}
 
-	public List<ReviewBeforeDTO> ReviewBSearchKey(String keyword, int playSeq) {
+	public List<ReviewBeforeDTO> ReviewBSearchKey(String keyword, int playSeq, int page, int size) {
+		int pages=(page-1)*size;
+		return reviewBeforeDAO.ReviewBSearchKey(keyword,playSeq,pages,size);
+	}
+
+	public int ReviewBSearchIdCount(String keyword, int playSeq) {
 		// TODO Auto-generated method stub
-		return reviewBeforeDAO.ReviewBSearchKey(keyword,playSeq);
+		return reviewBeforeDAO.ReviewBSearchIdCount(keyword,playSeq);
+	}
+
+	public int ReviewBSearchKeyCount(String keyword, int playSeq) {
+		// TODO Auto-generated method stub
+		return reviewBeforeDAO.ReviewBSearchKeyCount(keyword,playSeq);
 	}
 
 	

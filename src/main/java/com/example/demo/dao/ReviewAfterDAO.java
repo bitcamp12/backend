@@ -41,13 +41,14 @@ public interface ReviewAfterDAO {
 	
 
 	@Select("""
-		    SELECT ra.*, m.id 
-		    FROM review_after ra
-		    JOIN member m ON ra.member_seq = m.member_seq
-		    WHERE ra.play_seq = #{playSeq}
-		    ORDER BY ra.created_date DESC
+		  SELECT ra.*, m.id 
+			FROM review_after ra
+			JOIN member m ON ra.member_seq = m.member_seq
+			WHERE ra.play_seq = #{playSeq}
+			ORDER BY ra.created_date DESC
+			LIMIT #{size} OFFSET #{pages}
 		""")
-		    List<ReviewAfterDTO> getReviewAList(@Param("playSeq") int playSeq);
+		    List<ReviewAfterDTO> getReviewAList(@Param("playSeq") int playSeq,@Param("pages") int pages,@Param("size") int size);
 	 
 	 
 	 
@@ -100,8 +101,9 @@ public interface ReviewAfterDAO {
 		        SELECT * FROM  review_after
 		        WHERE play_seq = #{playSeq}
 		        ORDER BY rating DESC
+		        LIMIT #{size} OFFSET #{pages}
 		    """)
-	List<ReviewAfterDTO> getReviewAListStar(int playSeq);
+	List<ReviewAfterDTO> getReviewAListStar(@Param("playSeq") int playSeq,@Param("pages") int pages,@Param("size") int size);
 
 
 	
@@ -118,8 +120,12 @@ public interface ReviewAfterDAO {
 	     WHERE ra.member_seq LIKE CONCAT('%', #{keyword}, '%')
 	     AND ra.play_seq = #{playSeq}
 	     ORDER BY ra.created_date DESC
+	      LIMIT #{size} OFFSET #{pages}
 	 """)
-	 List<ReviewAfterDTO> ReviewASearchIdDate(@Param("keyword") String keyword, @Param("playSeq") int playSeq);
+	 List<ReviewAfterDTO> ReviewASearchIdDate(@Param("keyword") String keyword, 
+			 								  @Param("playSeq") int playSeq, 
+			 								  @Param("pages") int pages,
+			 								  @Param("size") int size);
 
 	 // 아이디로 검색 - 별점 순
 	 @Select("""
@@ -129,20 +135,27 @@ public interface ReviewAfterDAO {
 	     WHERE ra.member_seq LIKE CONCAT('%', #{keyword}, '%')
 	     AND ra.play_seq = #{playSeq}
 	     ORDER BY ra.rating DESC
+	      LIMIT #{size} OFFSET #{pages}
 	 """)
-	 List<ReviewAfterDTO> ReviewASearchIdRating(@Param("keyword") String keyword, @Param("playSeq") int playSeq);
+	 List<ReviewAfterDTO> ReviewASearchIdRating(@Param("keyword") String keyword, 
+			 									@Param("playSeq") int playSeq, 
+			 									@Param("pages") int pages,
+			 									@Param("size") int size);
 
 	 // 내용으로 검색 - 날짜 순
 	 @Select("""
-	     SELECT ra.*, m.id
-	     FROM review_after ra
-	     JOIN member m ON ra.member_seq = m.member_seq
-	     WHERE ra.content LIKE CONCAT('%', #{keyword}, '%')
-	     AND ra.play_seq = #{playSeq}
-	     ORDER BY ra.created_date DESC
-	 """)
-	 List<ReviewAfterDTO> ReviewASearchDate(@Param("keyword") String keyword, @Param("playSeq") int playSeq);
-
+			    SELECT ra.*, m.id
+			    FROM review_after ra
+			    JOIN member m ON ra.member_seq = m.member_seq
+			    WHERE ra.content LIKE CONCAT('%', #{keyword}, '%')
+			    AND ra.play_seq = #{playSeq}
+			    ORDER BY ra.created_date DESC
+			     LIMIT #{size} OFFSET #{pages}
+			""")
+	 List<ReviewAfterDTO>   ReviewASearchDate(@Param("keyword") String keyword, 
+			                               @Param("playSeq") int playSeq, 
+			                               @Param("pages") int pages, 
+			                               @Param("size") int size);
 	 // 내용으로 검색 - 별점 순
 	 @Select("""
 	     SELECT ra.*, m.id
@@ -151,9 +164,56 @@ public interface ReviewAfterDAO {
 	     WHERE ra.content LIKE CONCAT('%', #{keyword}, '%')
 	     AND ra.play_seq = #{playSeq}
 	     ORDER BY ra.rating DESC
+	      LIMIT #{size} OFFSET #{pages}
 	 """)
-	 List<ReviewAfterDTO> ReviewASearchRating(@Param("keyword") String keyword, @Param("playSeq") int playSeq);
+	 List<ReviewAfterDTO> ReviewASearchRating(@Param("keyword") String keyword,
+			 								 @Param("playSeq") int playSeq,
+			 								 @Param("pages") int pages,
+			 								 @Param("size") int size);
 
+
+@Select("""
+		  SELECT COUNT(*)
+		  FROM review_after
+		  WHERE member_seq LIKE CONCAT('%', #{keyword}, '%')
+		  AND play_seq = #{playSeq} 
+		  ORDER BY created_date DESC
+		
+		""")
+	int ReviewASearchIdDateCount(@Param("keyword")String keyword,@Param("playSeq") int playSeq);
+
+
+@Select("""
+		  SELECT COUNT(*)
+		  FROM review_after
+		  WHERE member_seq LIKE CONCAT('%', #{keyword}, '%')
+		  AND play_seq = #{playSeq} 
+		  ORDER BY rating DESC
+		
+		""")
+int ReviewASearchIdRatingCount(@Param("keyword")String keyword,@Param("playSeq") int playSeq);
+
+
+@Select("""
+		  SELECT COUNT(*)
+		  FROM review_after
+		  WHERE content LIKE CONCAT('%', #{keyword}, '%')
+		  AND play_seq = #{playSeq} 
+		  ORDER BY created_date DESC
+		
+		""")
+int ReviewASearchDateCount(@Param("keyword")String keyword,@Param("playSeq") int playSeq);
+
+
+@Select("""
+		  SELECT COUNT(*)
+		  FROM review_after
+		  WHERE content LIKE CONCAT('%', #{keyword}, '%')
+		  AND play_seq = #{playSeq} 
+		   ORDER BY rating DESC
+		
+		""")
+int ReviewASearchRatingCount(@Param("keyword")String keyword,@Param("playSeq") int playSeq);
 	
 
 	
