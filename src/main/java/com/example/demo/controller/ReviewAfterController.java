@@ -204,8 +204,9 @@ public class ReviewAfterController {
 	public   ResponseEntity<ApiResponse<Float>> ReviewAAvg(@RequestParam("playSeq") int playSeq) {
 		   try {
 		        // 서비스 호출하여 업데이트
-			   Float avg = reviewAfterService.ReviewAAvg(playSeq);
-		        
+			   Float average = reviewAfterService.ReviewAAvg(playSeq);
+			   float avg = (average != null) ? average : 0.0f;
+		        System.out.println(avg+"avg");
 		        if (avg >= 0) {
 		            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "성공", avg));
 		        } else {

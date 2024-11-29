@@ -18,4 +18,5 @@ public class BookDTO {
     private int bookedX;
     private int bookedY;
     private String payment;
+    private int totalPrice;
 }
