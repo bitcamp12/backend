@@ -51,11 +51,12 @@ public class MemberController {
     private Map<String, Long> codeExpirationTimes = new HashMap<>();
     
     // 제한 시간 설정 (밀리초 단위, 예: 2분 = 2 * 60 * 1000)
-    private static final long EXPIRATION_TIME = 1 * 60 * 1000;
+    private static final long EXPIRATION_TIME = 2 * 60 * 1000;
 
     // 스케줄러를 사용하여 만료 시간 이후 데이터를 제거
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 	
+    /*
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<Member>> signUp(@RequestBody MemberDTO memberDTO) {
     	String phone = memberDTO.getPhone().replaceAll("[^0-9]", "");
@@ -84,17 +85,45 @@ public class MemberController {
         
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "success", null));
     }
+    */
     
+    @PostMapping("/signup")
+    public ResponseEntity<ApiResponse<Member>> signUp(@RequestBody Member member) {
+        try {
+            // 전화번호 숫자만 남기기
+            String phone = member.getPhone().replaceAll("[^0-9]", "");
+            member.setPhone(phone);
+            
+            // 역할 기본값 설정
+            member.setRole(Member.Role.USER);
 
+            // 회원가입 처리
+            int result = memberService.signUp(member);
+            if (result == 1) {
+                return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse<>(200, "회원가입을 축하드립니다.", null));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ApiResponse<>(400, "회원가입을 실패했습니다.", null));
+        }
+
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+            .body(new ApiResponse<>(409, "db에 중복된값이 존재합니다", null));
+    }
+    
+    /*
     @PostMapping("/checkId")
     public ResponseEntity<ApiResponse<Member>> checkId(@RequestBody IdCheckDTO dto) {
         System.out.println("Received data: " + dto.getId());
         try {
-            int result = memberService.checkId(dto.getId());
+            int result = memberService.checkId(dto.getId());   // 유니온 
+            //int result2 = memberService.checkAdminId(dto.getId()); // 2번체크 
             System.out.println(result);
-            if (result == 1) {
+            if (result == 1 ) {
                 return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "exist", null));
-            } else if (result == 0) {
+            } else if (result == 0 ) {
                 return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "non_exist", null));
             }
         } catch (Exception e) {
@@ -104,6 +133,27 @@ public class MemberController {
 
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "non_exist", null));
     }
+    */
+    @PostMapping("/checkId")
+    public ResponseEntity<ApiResponse<Member>> checkId(@RequestBody IdCheckDTO dto) {
+        System.out.println("Received data: " + dto.getId());
+        try {
+            boolean isExist = memberService.checkIdEntity(dto.getId());   // 아이디 중복 체크 entity
+            
+            if (isExist) {
+                return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse<>(200, "exist", null));  // 아이디가 존재하면 중복
+            } else {
+                return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse<>(200, "non_exist", null));  // 아이디가 없으면 사용 가능
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ApiResponse<>(400, "오류", null));
+        }
+    }
+
     
     //회원가입 이메일
     @PostMapping("/sendNumber")
@@ -146,6 +196,7 @@ public class MemberController {
             // 만료된 경우
             emailVerificationCodes.remove(email);
             codeExpirationTimes.remove(email);
+
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ApiResponse<>(400, "expired", null));
         }
@@ -171,13 +222,23 @@ public class MemberController {
     public ResponseEntity<ApiResponse<String>> sendEmailVerificationCode(@RequestBody MemberDTO dto) {
     	String email = dto.getEmail();
     	String name = dto.getName();
+    	String id = dto.getId();
         try {
-        	System.out.println(email+name);
+        	System.out.println("인증이메일"+email+"인증이름"+name);
             Map<String, String> map = new HashMap<>();
             map.put("name", name);
             map.put("email", email);
             
-        	int result = memberService.findIdByEmail(map);
+        	 // int result = memberService.findIdByEmail(map); dto 
+            
+            int result = memberService.findIdByEmailEntity(name,email); //Entity 
+        	
+            if(id != null) {
+            	map.put("id", id);
+            //	result = memberService.findPwdByEmail(map); //ID포함해서 비밀번호찾기용 검증 재활용
+           	result = memberService.findPwdByEmailEntity(name,email,id); //ID포함해서 비밀번호찾기용 검증 재활용 Entity
+            }
+        	
         	System.out.println("result"+result);
         	if (result == 0) {
                 return ResponseEntity.status(HttpStatus.OK)
@@ -217,7 +278,7 @@ public class MemberController {
     	String code=dto.getCode();
     	String name=dto.getName();
         // 만료 시간 확인
-    	System.out.println(email+code+name);
+    	System.out.println("이메일인증"+email+"이메일인증"+code+"이메일인증"+name);
         Long expirationTime = codeExpirationTimes.get(email);
         if (expirationTime != null && System.currentTimeMillis() > expirationTime) {
             // 만료된 경우
@@ -239,12 +300,13 @@ public class MemberController {
             emailVerificationCodes.remove(email);
             codeExpirationTimes.remove(email);
              
-            String id = memberService.findIdByEmail2(map);
+           // String id = memberService.findIdByEmail2(map);
+            String id = memberService.findIdByEmail2Entity(name,email);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse<>(200, id, null));
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ApiResponse<>(400, "not_match", null));
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ApiResponse<>(204, "not_match", null));
         }
     }
     
@@ -290,12 +352,22 @@ public class MemberController {
             // 전화번호와 인증 코드 저장
         	 String phoneNum = smsRequestDto.getPhoneNum().replaceAll("[^0-9]", "");
             String name =smsRequestDto.getName();
+            String id=smsRequestDto.getId();
             
             Map<String, String> map = new HashMap<>();
             map.put("name", name);
             map.put("phone", phoneNum);
             
-        	int result = memberService.findIdByPhone(map);
+            System.out.println("아이디"+id+"이름"+name+"번호"+phoneNum);
+            //int result = memberService.findIdByPhone(map);
+            int result = memberService.findIdByPhoneEntity(name,phoneNum);
+            if(id != null) {
+            	map.put("id", id);
+            	//result = memberService.findPwdByPhone(map); //ID포함해서 비밀번호찾기용 검증 재활용
+            	result = memberService.findPwdByPhoneEntity(name,phoneNum,id); //ID포함해서 비밀번호찾기용 검증 재활용
+            }
+            
+        	
         	System.out.println("result"+result);
         	if (result == 0) {
                 return ResponseEntity.status(HttpStatus.OK)
@@ -397,7 +469,8 @@ public class MemberController {
             map.put("name", name);
             map.put("phone", phone);
 
-            String result = memberService.findIdPhone(map);
+            //String result = memberService.findIdPhone(map);
+            String result = memberService.findIdPhoneEntity(name,phone); //Entity
             System.out.println(result);
             if (result != null) {
                 return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, result, null));
@@ -424,7 +497,8 @@ public class MemberController {
             map.put("id",id);
             map.put("password", password);
 
-            int result = memberService.updatePwd(map);
+           // int result = memberService.updatePwd(map);
+            int result = memberService.updatePwdEntity(id,password); //Entity
             
             System.out.println(result);
             
@@ -441,7 +515,7 @@ public class MemberController {
     }
 
     
-
+    @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<String>> login(HttpSession session, @RequestBody MemberDTO dto) {
         try {
@@ -451,9 +525,11 @@ public class MemberController {
             Map<String, String> map = new HashMap<>();
             map.put("id", id);
             map.put("password", password);
-
+            
+            System.out.println(id+password);
             // 로그인 서비스 호출
-            int result = memberService.Login(map);
+            //int result = memberService.Login(map);
+            int result = memberService.LoginEntity(id,password);
 
             System.out.println(result);
 
@@ -474,15 +550,17 @@ public class MemberController {
         }
     }
     
+    @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<String>> logout(HttpSession session, @RequestBody MemberDTO dto) {
+    public ResponseEntity<ApiResponse<String>> logout(HttpSession session) {
         try {
         	
-            String id = dto.getId();
-            session.invalidate();
-            System.out.println(id);
+           System.out.println("11a");
+            //session.removeAttribute("id");
+        	session.invalidate();
+            //System.out.println(session.getAttribute("id"));
             // 로그아웃 성공
-                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, id , null));
+                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "로그아웃", null));
         } catch (Exception e) {
             // 예외 발생 시 에러 메시지 반환
             System.err.println("Error occurred: " + e.getMessage());
@@ -553,12 +631,16 @@ public class MemberController {
 	
 // 세션 존재 확인 (나중에 필요하면 지움)
 	
-	@GetMapping("/session-status")
+	@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+	@GetMapping("/session-status" )
 	public ResponseEntity<ApiResponse<String>> sessionStatus(HttpSession session) {
 	    if (session.getAttribute("id") == null) {
-	        return ResponseEntity.status(HttpStatus.OK)
-	                             .body(new ApiResponse<>(200, "세션 없음", null));
+	    	System.out.println("404");
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                             .body(new ApiResponse<>(404, "세션 없음", null));
 	    }
+	    System.out.println("200");
+	    System.out.println(session.getAttribute("id"));
 	    return ResponseEntity.status(HttpStatus.OK)
 	                         .body(new ApiResponse<>(200, "세션 있음", session.getId()));
 	}
