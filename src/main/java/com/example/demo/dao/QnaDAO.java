@@ -35,8 +35,9 @@ public interface QnaDAO {
 	     JOIN member m ON q.member_seq = m.member_seq
 	     WHERE q.play_seq = #{playSeq}
 	     ORDER BY q.created_date DESC
+	     LIMIT #{size} OFFSET #{pages}
 	 """)
-	 List<QnaDTO> getQnaList(int playSeq);
+	 List<QnaDTO> getQnaList(@Param("playSeq")int playSeq,@Param("pages") int pages ,@Param("size") int size);
 
     // 특정 Q&A 조회
     @Select("""
