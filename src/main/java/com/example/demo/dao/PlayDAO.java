@@ -42,7 +42,7 @@ public interface PlayDAO {
 
 	@Select("""
 			SELECT * FROM play
-			ORDER BY play_seq ASC LIMIT 12 OFFSET 0;
+			ORDER BY ASC LIMIT 12;
 			""")
 	List<PlayDTO> getPlaySale();
 	
