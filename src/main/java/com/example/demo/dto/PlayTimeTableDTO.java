@@ -1,6 +1,8 @@
 package com.example.demo.dto;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

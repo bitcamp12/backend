@@ -16,7 +16,6 @@ public class PlayTimeTableService {
 	private PlayTimeTableDAO playTimeTableDAO;
 
 	public List<PlayTimeTableDTO> playTimeTables(int playSeq, String targetDate) {
-		// TODO Auto-generated method stub
 		return playTimeTableDAO.playTimeTables(playSeq,targetDate);
 	}
 }
