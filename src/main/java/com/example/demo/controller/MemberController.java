@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.CheckMyBookDTO;
 import com.example.demo.dto.member.IdCheckDTO;
 import com.example.demo.dto.member.IdFindDTO;
 import com.example.demo.dto.member.MemberDTO;
@@ -514,7 +516,7 @@ public class MemberController {
 
 	
 // -- 지현: 마이페이지(사용자정보) 수정 ---------------------------
-    // 세션얻어오기
+    // 세션얻어오기 => 필요없음(2024.11.27)
     @CrossOrigin(origins = "http://localhost:3000/member", allowCredentials = "true")
     @GetMapping("getSession")
     public ResponseEntity<ApiResponse<String>> getSession (HttpSession session) {
@@ -568,6 +570,32 @@ public class MemberController {
 		}
 	}
 	
+	
+	// 예약 정보 조회 
+	@GetMapping("checkMyBook")
+	public ResponseEntity<ApiResponse<List<CheckMyBookDTO>>> checkMyBook(HttpSession session) {
+		try {
+			String id = (String) session.getAttribute("id");
+			System.out.println("checkMyBook : " +id);
+			
+			List<CheckMyBookDTO> list = memberService.checkMyBook(id);
+			System.out.println("checkMyBook : " +list);
+			
+			if(list!=null && list.isEmpty()) {
+				// 예약목록이 존재할 경우, 
+				return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "예약목록이 있습니다.", list));				
+			}else {
+				// 예약 목록이 존재하지 않을 경우
+				return ResponseEntity.status(HttpStatus.OK).build();
+			}
+		} catch (Exception e) {
+			// 에러났을 경우 
+			System.err.println("Error occurred: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body(new ApiResponse<>(500, "예약목록을 불러오는 중 에러 발생", null));
+		}
+		
+	}
 	
 // 세션 존재 확인 (나중에 필요하면 지움)
 	

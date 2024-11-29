@@ -1,5 +1,6 @@
 package com.example.demo.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Delete;
@@ -9,6 +10,7 @@ import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.example.demo.dto.CheckMyBookDTO;
 import com.example.demo.dto.member.MemberDTO;
 
 @Mapper
@@ -63,6 +65,16 @@ public interface MemberDAO {
     
     @Select("SELECT COUNT(*) FROM member WHERE name = #{name} AND email = #{email} AND id =#{id}")
 	public int findPwdByEmail(Map<String, String> map);
+
+    @Select("SELECT member.id, book.book_seq, book.pay_date, book.payment, play.name, play_time_table.target_date "
+    	      + "FROM book "
+    	      + "LEFT JOIN play_time_table ON book.play_time_table_seq = play_time_table.play_time_table_seq "
+    	      + "LEFT JOIN play ON play_time_table.play_seq = play.play_seq "
+    	      + "LEFT JOIN member ON book.member_seq = member.member_seq "
+    	      + "WHERE member.id = #{id}")
+	public List<CheckMyBookDTO> checkMyBook(String id);
+
+  
 
 
 }
