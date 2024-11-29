@@ -18,6 +18,8 @@ import com.example.demo.service.FavoriteService;
 import com.example.demo.service.MemberService;
 import com.example.demo.util.ApiResponse;
 
+import jakarta.servlet.http.HttpSession;
+
 
 @RestController
 @RequestMapping(value="/api/favorites")
@@ -30,17 +32,21 @@ public class FavoriteController {
 	
 	@PostMapping("favorites")
 	public  ResponseEntity<ApiResponse<Favorite>> favoritesInsert(@RequestParam("playSeq") int playSeq,
-			@RequestParam("userId") String userId) {
+			HttpSession session) {
 		
-		System.out.println(userId+playSeq);
-		
+		String userId=(String) session.getAttribute("id");
+		System.out.println(userId);
 		try {
-			if(userId=="") {
+			if(userId==null) {
 				 return   ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(403 , "로그인안함", null));
 			}
 			else {
 				int memberSeq=memberService.getMemberSeq(userId);
+				System.out.println(memberSeq+"memberSeq");
+//				
+					System.out.println(memberSeq+"  "+playSeq);
 				 int result=favoriteService.favoritesInsert(playSeq,memberSeq);
+				 System.out.println(result+"result");
 				 
 				 if(result==1) {
 					 return  ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "성공", null));
@@ -58,16 +64,16 @@ public class FavoriteController {
 	
 	@GetMapping("favorites")
 	public  ResponseEntity<ApiResponse<Favorite>> favoritesCheck(@RequestParam("playSeq") int playSeq,
-																 @RequestParam("userId") String userId) {
+			HttpSession session) {
 		
+		String userId=(String) session.getAttribute("id");
 		try {
-			if(userId=="") {
+			if(userId==null) {
 				 return   ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(403 , "로그인안함", null));
 			}
 			else {
 				int memberSeq=memberService.getMemberSeq(userId);
-//			
-				System.out.println(memberSeq+"  "+playSeq);
+				
 	//세션 구할거임
 	 int result=favoriteService.favoritesCheck(playSeq,memberSeq);
 	
@@ -86,10 +92,10 @@ public class FavoriteController {
 	
 	@DeleteMapping("favorites")
 	public  ResponseEntity<ApiResponse<Favorite>> favoritesDelete(@RequestParam("playSeq") int playSeq,
-																 @RequestParam("userId") String userId) {
-		
+			HttpSession session) {
+		String userId=(String) session.getAttribute("id");
 		try {
-			if(userId=="") {
+			if(userId==null) {
 				 return   ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(403 , "로그인안함", null));
 			}
 			else {
