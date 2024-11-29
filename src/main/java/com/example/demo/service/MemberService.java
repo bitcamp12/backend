@@ -1,7 +1,10 @@
 package com.example.demo.service;
 
-import java.time.LocalDateTime;
+
 import java.util.List;
+
+import java.time.LocalDateTime;
+
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Select;
@@ -9,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.MemberDAO;
+import com.example.demo.dto.CheckMyBookDTO;
 import com.example.demo.dto.member.MemberDTO;
 import com.example.demo.entity.Member;
 import com.example.demo.repository.AdminRepository;
@@ -93,6 +97,7 @@ public class MemberService {
 		return memberDAO.findPwdByEmail(map);
 	}
 
+
 	 public int signUp(Member member) {
 	        try {
 //	        	member.setRegisterDate(LocalDateTime.now());
@@ -171,12 +176,11 @@ public class MemberService {
 
 	public int LoginEntity(String id, String password) {
 		return memberRepository.countByIdAndPassword(id,password);
+
+
+}
+
+	public List<CheckMyBookDTO> checkMyBook(String id) {
+		return memberDAO.checkMyBook(id);
 	}
-
-
-
-
-
-
-
 }
