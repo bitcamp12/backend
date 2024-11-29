@@ -45,7 +45,8 @@ public class ReviewAfterController {
 	@PostMapping("ReviewA")
 	public ResponseEntity<ApiResponse<ReviewAfter>> reviewWriteA(@RequestParam("playSeq") int playSeq,
 							@RequestBody ReviewAfterDTO reviewDTO,
-							@RequestParam("userId") String userId) {
+							HttpSession session) {
+		String userId=(String) session.getAttribute("id");
 		System.out.println(userId);
 		try {
 			reviewDTO.setMemberSeq(memberService.getMemberSeq(userId));
@@ -72,18 +73,21 @@ public class ReviewAfterController {
 	
 	//리뷰 list 출력
 	@GetMapping("ReviewAList")
-	public  ResponseEntity<ApiResponse<List<ReviewAfterDTO>>> getReviewAList(@RequestParam("playSeq") int playSeq,
-			@RequestParam("selected") String selected) {
-		System.out.println(selected);
+	public  ResponseEntity<ApiResponse<List<ReviewAfterDTO>>> getReviewAList(
+			@RequestParam("playSeq") int playSeq,
+	        @RequestParam("selected") String selected,
+	        @RequestParam(defaultValue = "1",name = "page") int page, 
+	        @RequestParam("size") int size) {
+		System.out.println(selected+size+page);
 		//DTO 에 id 추가
 		try {
 	        List<ReviewAfterDTO> list;
 	        
 	        // 문자열 비교 시 equals() 사용
 	        if (selected.equals("latest")) {
-	            list = reviewAfterService.getReviewAList(playSeq);  // 최신순
+	            list = reviewAfterService.getReviewAList(playSeq,page,size);  // 최신순
 	        } else if (selected.equals("rating")) {
-	            list = reviewAfterService.getReviewAListStar(playSeq);  // 별점순
+	            list = reviewAfterService.getReviewAListStar(playSeq,page,size);  // 별점순
 	        } else {
 	            // "latest"나 "rating" 외의 값이 들어왔을 경우 처리
 	            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -109,6 +113,8 @@ public class ReviewAfterController {
 	                .body(new ApiResponse<>(500, "서버 오류", null));
 	    }
 	}
+	
+	//
 	
 	//리뷰 출력
 		@GetMapping("ReviewA")
@@ -226,7 +232,9 @@ public class ReviewAfterController {
 			 @RequestParam("playSeq") int playSeq, 
 		        @RequestParam("searchType") String searchType,
 		        @RequestParam("keyword") String keyword,
-		        @RequestParam("selected") String selected) {
+		        @RequestParam("selected") String selected,
+		        @RequestParam(defaultValue = "1",name = "page") int page, 
+		        @RequestParam("size") int size) {
 		try {
 	        
 
@@ -235,11 +243,13 @@ public class ReviewAfterController {
 	        	
 	        	if(selected.equals("latest")) {
 	        		///날짜순
-	        		list = reviewAfterService.ReviewASearchIdDate(keyword,playSeq);
+	        		System.out.println(1);
+	        		list = reviewAfterService.ReviewASearchIdDate(keyword,playSeq,page,size);
 	        	}
 	        	else {
 	        		//별점순
-	        		list = reviewAfterService.ReviewASearchIdRating(keyword,playSeq);
+	        		System.out.println(2);
+	        		list = reviewAfterService.ReviewASearchIdRating(keyword,playSeq,page,size);
 	        	}
 	        	
 	        }
@@ -247,11 +257,13 @@ public class ReviewAfterController {
 	        	
 	        	if(selected.equals("latest")) {
 	        		///날짜순
-	        		list = reviewAfterService.ReviewASearchDate(keyword,playSeq);
+	        		System.out.println(3);
+	        		list = reviewAfterService.ReviewASearchDate(keyword,playSeq,page,size);
 	        	}
 	        	else {
 	        		//별점순
-	        		list = reviewAfterService.ReviewASearchRating(keyword,playSeq);
+	        		System.out.println(4);
+	        		list = reviewAfterService.ReviewASearchRating(keyword,playSeq,page,size);
 	        	}
 	        	
 	        }
@@ -264,6 +276,64 @@ public class ReviewAfterController {
 	            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "성공", list));
 	        } else {
 	            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(404 , "리뷰 없음",  list));
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(400, "오류", null));
+	    }
+		
+		
+	}
+	
+	@GetMapping("ReviewASearchCount")
+	public ResponseEntity<ApiResponse<Integer>> ReviewASearchCount(
+			 @RequestParam("playSeq") int playSeq, 
+		        @RequestParam("searchType") String searchType,
+		        @RequestParam("keyword") String keyword,
+		        @RequestParam("selected") String selected
+		        ) {
+		try {
+	        
+
+	       int count;
+	        if(searchType.equals("id")) {
+	        	
+	        	if(selected.equals("latest")) {
+	        		///날짜순
+	        		System.out.println(1);
+	        		count = reviewAfterService.ReviewASearchIdDateCount(keyword,playSeq);
+	        	}
+	        	else {
+	        		//별점순
+	        		System.out.println(2);
+	        		count = reviewAfterService.ReviewASearchIdRatingCount(keyword,playSeq);
+	        	}
+	        	
+	        }
+	        else if( searchType.equals("title")){
+	        	
+	        	if(selected.equals("latest")) {
+	        		///날짜순
+	        		System.out.println(3);
+	        		count = reviewAfterService.ReviewASearchDateCount(keyword,playSeq);
+	        	}
+	        	else {
+	        		//별점순
+	        		System.out.println(4);
+	        		count = reviewAfterService.ReviewASearchRatingCount(keyword,playSeq);
+	        	}
+	        	
+	        }
+	        else {
+	        	  return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                          .body(new ApiResponse<>(400, "유효하지 않은 검색 타입", null));
+	        }
+	        
+	        if (count!=0) {
+	            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "성공", count));
+	        } else {
+	            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(404 , "리뷰 없음",  0));
 	        }
 
 	    } catch (Exception e) {
