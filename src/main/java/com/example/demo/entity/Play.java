@@ -61,4 +61,7 @@ public class Play {
     
     @Column(name = "age_limit", length = 100)
     private String ageLimit;
+    
+    @Column(name = "running_time")
+    private int runningTime;
 }
