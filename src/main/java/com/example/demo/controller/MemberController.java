@@ -303,7 +303,10 @@ public class MemberController {
             codeExpirationTimes.remove(email);
              
            // String id = memberService.findIdByEmail2(map);
+   
             String id = memberService.findIdByEmail2Entity(name,email);
+            
+            
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ApiResponse<>(200, id, null));
         } else {
@@ -528,12 +531,10 @@ public class MemberController {
             map.put("id", id);
             map.put("password", password);
             
-            System.out.println(id+password);
             // 로그인 서비스 호출
             //int result = memberService.Login(map);
             int result = memberService.LoginEntity(id,password);
 
-            System.out.println(result);
 
             // 로그인 성공
             if (result == 1) {

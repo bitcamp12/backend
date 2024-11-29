@@ -23,6 +23,8 @@ import com.example.demo.service.MemberService;
 import com.example.demo.service.ReviewBeforeService;
 import com.example.demo.util.ApiResponse;
 
+import jakarta.servlet.http.HttpSession;
+
 
 @RestController
 @RequestMapping(value="/api/reviewBefores")
@@ -36,8 +38,8 @@ public class ReviewBeforeController {
 		@PostMapping("reviewB")
 		public ResponseEntity<ApiResponse<ReviewBefore>> reviewBWrite(@RequestParam("playSeq") int playSeq,
 								@RequestBody ReviewBeforeDTO reviewBeforeDTO,
-								@RequestParam("userId") String userId) {
-			System.out.println(reviewBeforeDTO.getContent());
+								HttpSession session) {
+			String userId=(String) session.getAttribute("id");
 			try {
 				reviewBeforeDTO.setMemberSeq(memberService.getMemberSeq(userId));
 //				memberService.getMemberSeq();
@@ -63,13 +65,16 @@ public class ReviewBeforeController {
 		
 		//리뷰 list 출력
 		@GetMapping("reviewBList")
-		public  ResponseEntity<ApiResponse<List<ReviewBeforeDTO>>> getReviewBList(@RequestParam("playSeq") int playSeq) {
+		public  ResponseEntity<ApiResponse<List<ReviewBeforeDTO>>> getReviewBList(@RequestParam("playSeq") int playSeq,
+				@RequestParam(defaultValue = "1",name = "page") int page, 
+		        @RequestParam("size") int size) {
 			
 			
 			try {
-				List<ReviewBeforeDTO> list=reviewBeforeService.getReviewBList(playSeq);
+				System.out.println(playSeq+" "+size+" "+page);
+				List<ReviewBeforeDTO> list=reviewBeforeService.getReviewBList(playSeq,page,size);
 				
-				System.out.println(list);
+				
 				if(!list.isEmpty()) {
 					
 					return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "성공", list));
@@ -173,18 +178,20 @@ public class ReviewBeforeController {
 		public  ResponseEntity<ApiResponse<List<ReviewBeforeDTO>>> ReviewBSearch(
 				 @RequestParam("playSeq") int playSeq, 
 			        @RequestParam("searchType") String searchType,
-			        @RequestParam("keyword") String keyword
+			        @RequestParam("keyword") String keyword,
+			        @RequestParam(defaultValue = "1",name = "page") int page, 
+			        @RequestParam("size") int size
 			        ) {
 			 try {
 			
 	        List<ReviewBeforeDTO> list;
 	        
 			if(searchType.equals("id")) {
-	        	list =reviewBeforeService.ReviewBSearchId(keyword,playSeq);
+	        	list =reviewBeforeService.ReviewBSearchId(keyword,playSeq,page,size);
 	        }
 	        else if( searchType.equals("title")){
 	        	
-	        	list =reviewBeforeService.ReviewBSearchKey(keyword,playSeq);
+	        	list =reviewBeforeService.ReviewBSearchKey(keyword,playSeq,page,size);
 	        	
 	        }
 	        else {
@@ -197,6 +204,46 @@ public class ReviewBeforeController {
 	            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "성공", list));
 	        } else {
 	            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(404 , "리뷰 없음",  list));
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(400, "오류", null));
+	    }
+		
+		
+		}
+
+		
+		
+		@GetMapping("ReviewBSearchCount")
+		public  ResponseEntity<ApiResponse<Integer>> ReviewBSearchCount(
+				 @RequestParam("playSeq") int playSeq, 
+			        @RequestParam("searchType") String searchType,
+			        @RequestParam("keyword") String keyword
+			        ) {
+			 try {
+			
+	        int count;
+	        
+			if(searchType.equals("id")) {
+				count =reviewBeforeService.ReviewBSearchIdCount(keyword,playSeq);
+	        }
+	        else if( searchType.equals("title")){
+	        	
+	        	count =reviewBeforeService.ReviewBSearchKeyCount(keyword,playSeq);
+	        	
+	        }
+	        else {
+	        	  return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                          .body(new ApiResponse<>(400, "유효하지 않은 검색 타입", null));
+	        }
+	        
+
+	        if (count!=0) {
+	            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "성공", count));
+	        } else {
+	            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(404 , "리뷰 없음",  0));
 	        }
 
 	    } catch (Exception e) {

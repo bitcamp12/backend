@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.PlayDAO;
 import com.example.demo.dto.PlayDTO;
+import com.example.demo.entity.Play;
+import com.example.demo.repository.PlayRepository;
 import com.example.demo.util.ApiResponse;
 
 @Service
@@ -20,15 +23,13 @@ public class PlayService {
 	private PlayDAO playDAO;
 	
 	
-
+	@Autowired
+	private PlayRepository playRepository;
 
 	public PlayDTO getPlayOne(String playSeq) {
 		
 		PlayDTO playDTO=playDAO.getPlayOne(playSeq);
-		return playDTO;
-		
-		
-         
+		return playDTO;     
 
 	}
 
@@ -48,5 +49,16 @@ public class PlayService {
 
 	public List<PlayDTO> getPlaySale() {
 		return playDAO.getPlaySale();
+	}
+
+	public List<Play> searchListEntity(String name) {
+		System.out.println(name+"**entity");
+		List<Play> list = playRepository.findByNameContaining(name);
+		
+		 if (!list.isEmpty()) {
+		        return list;
+		   } else {
+		        return new ArrayList<>(); 
+		  }
 	}
 }
