@@ -21,5 +21,6 @@ public interface PlayTimeTableDAO {
 		List<PlayTimeTableDTO> playTimeTables(@Param("playSeq") int playSeq, 
 		                                      @Param("targetDate") String targetDate);
 
+
 	
 }
