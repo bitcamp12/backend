@@ -41,8 +41,13 @@ public interface PlayDAO {
     List<PlayDTO> getPlayRandom();
 
 	@Select("""
-			SELECT * FROM play
-			ORDER BY ASC LIMIT 12;
+			SELECT 
+					p.*,
+					pt.*
+				FROM play p
+				LEFT JOIN play_time_table pt ON p.play_seq = pt.play_seq
+				ORDER BY p.play_seq ASC 
+				LIMIT 12;
 			""")
 	List<PlayDTO> getPlaySale();
 	
