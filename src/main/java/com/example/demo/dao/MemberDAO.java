@@ -58,6 +58,10 @@ public interface MemberDAO {
 	public void infoWithdrawal(String id);
 
 
+<<<<<<< HEAD
+    
+=======
+>>>>>>> 502cf63575cb64ef1ba88363da9b15ca1a352086
     @Select("SELECT member_seq FROM member WHERE id = #{id}")
 	public int getMemberSeq(String userId);
 
