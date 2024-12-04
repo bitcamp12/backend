@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.PlayDAO;
 import com.example.demo.dto.PlayDTO;
+import com.example.demo.dto.PlayDiscountDTO;
 import com.example.demo.entity.Play;
 import com.example.demo.repository.PlayRepository;
 import com.example.demo.util.ApiResponse;
@@ -47,8 +48,14 @@ public class PlayService {
         return playDAO.getPlayRandom();
     }
 
-	public List<PlayDTO> getPlaySale() {
-		return playDAO.getPlaySale();
+	public List<PlayDiscountDTO> getPlaySale() {
+		List<PlayDiscountDTO> discountedPlay = playDAO.getPlayWithDiscount();
+		for (PlayDiscountDTO playDiscountDTO : discountedPlay) {
+			double discountedPrice = playDiscountDTO.calculateSale();
+			playDiscountDTO.setDiscountedPrice(discountedPrice);
+		}
+		discountedPlay.sort((play1, play2) -> Double.compare(play2.getDiscountedPrice(), play1.getDiscountedPrice()));
+		return discountedPlay;
 	}
 
 	public List<Play> searchListEntity(String name) {

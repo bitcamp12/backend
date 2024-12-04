@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.PlayDTO;
+import com.example.demo.dto.PlayDiscountDTO;
 import com.example.demo.entity.Play;
 import com.example.demo.service.PlayService;
 
@@ -88,10 +89,22 @@ public class PlayController {
 		return ResponseEntity.ok(new ApiResponse<>(200, "Data retrieved", plays));
 	}
 
-	@GetMapping("/getPlaySale")
-	public ResponseEntity<ApiResponse<List<PlayDTO>>> getPlaySale() {
-		List<PlayDTO> plays = playService.getPlaySale();
-		return ResponseEntity.ok(new ApiResponse<>(200, "Data retrieved", plays));
+	
+	public ResponseEntity<ApiResponse<List<PlayDiscountDTO>>> getPlaySale() {
+		try {
+			List<PlayDiscountDTO> discountedPlay = playService.getPlaySale();
+			if (!discountedPlay.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.OK)
+						.body(new ApiResponse<>(200, "성공적으로 데이터를 불러왔습니다", discountedPlay));
+			} else {
+				return ResponseEntity.status(HttpStatus.OK)
+						.body(new ApiResponse<>(404, "데이터 없음", discountedPlay));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ApiResponse<>(500, "서버에러가 발생했습니다", null));
+		}
 	}
 
 }
