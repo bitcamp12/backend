@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.PlayDAO;
@@ -23,12 +24,12 @@ public class PlayService {
 	@Autowired
 	private PlayDAO playDAO;
 	
-	
 	@Autowired
 	private PlayRepository playRepository;
 
+	private List<PlayDiscountDTO> cachedDiscountedPlays;
+
 	public PlayDTO getPlayOne(String playSeq) {
-		
 		PlayDTO playDTO=playDAO.getPlayOne(playSeq);
 		return playDTO;     
 
@@ -49,14 +50,21 @@ public class PlayService {
     }
 
 	public List<PlayDiscountDTO> getPlaySale() {
-		List<PlayDiscountDTO> discountedPlay = playDAO.getPlayWithDiscount();
-		for (PlayDiscountDTO playDiscountDTO : discountedPlay) {
-			double discountedPrice = playDiscountDTO.calculateSale();
-			playDiscountDTO.setDiscountedPrice(discountedPrice);
-		}
-		discountedPlay.sort((play1, play2) -> Double.compare(play2.getDiscountedPrice(), play1.getDiscountedPrice()));
-		return discountedPlay;
-	}
+        return cachedDiscountedPlays;
+    }
+
+	@Scheduled(fixedRate = 60000)
+    public void updateDiscountedPrices() {
+        List<PlayDiscountDTO> discountedPlays = playDAO.getPlayWithDiscount();
+        
+        for (PlayDiscountDTO playDiscountDTO : discountedPlays) {
+            double discountedPrice = playDiscountDTO.calculateSale();
+            playDiscountDTO.setDiscountedPrice(discountedPrice);
+        }
+
+        discountedPlays.sort((play1, play2) -> Double.compare(play2.getDiscountedPrice(), play1.getDiscountedPrice()));
+        this.cachedDiscountedPlays = discountedPlays;
+    }
 
 	public List<Play> searchListEntity(String name) {
 		System.out.println(name+"**entity");
