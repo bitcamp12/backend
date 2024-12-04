@@ -21,9 +21,10 @@ public class QnaService {
 
 	
 
-	public List<QnaDTO> getQnaList(int playSeq) {
+	public List<QnaDTO> getQnaList(int playSeq, int page, int size) {
+		int pages=(page-1)*size;
 		// TODO Auto-generated method stub
-		return qnaDAO.getQnaList(playSeq);
+		return qnaDAO.getQnaList(playSeq,pages,size);
 	}
 
 

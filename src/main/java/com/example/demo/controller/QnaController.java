@@ -20,6 +20,9 @@ import com.example.demo.entity.Qna;
 import com.example.demo.service.MemberService;
 import com.example.demo.service.QnaService;
 import com.example.demo.util.ApiResponse;
+
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.web.bind.annotation.RequestBody;
 
 
@@ -37,7 +40,9 @@ public class QnaController {
 	@PostMapping("qna")
 	public ResponseEntity<ApiResponse<Qna>> qnaWrite(@RequestParam("playSeq") int playSeq,
 			@RequestBody QnaDTO qnaDTO,
-			@RequestParam("userId") String userId) {
+			HttpSession session) {
+		
+		String userId=(String) session.getAttribute("id");
 		
 		  System.out.println("Received QnaDTO: " + qnaDTO); // 객체 전체 출력
 		    System.out.println("Title: " + qnaDTO.getTitle());
@@ -65,9 +70,12 @@ public class QnaController {
 	
 	//qa list->공연 seq
 	@GetMapping("qnaList")
-	public ResponseEntity<ApiResponse<List<QnaDTO>>> getQnaList(@RequestParam("playSeq") int playSeq) {
+	public ResponseEntity<ApiResponse<List<QnaDTO>>> getQnaList(
+			@RequestParam("playSeq") int playSeq,
+			@RequestParam(defaultValue = "1",name = "page") int page, 
+	        @RequestParam("size") int size) {
 		
-		List<QnaDTO> list =qnaService.getQnaList(playSeq);
+		List<QnaDTO> list =qnaService.getQnaList(playSeq,page,size);
 		try {
 		if(!list.isEmpty()) {
 			
