@@ -55,6 +55,7 @@ public class PlayDiscountDTO {
 
 			// 할인율 공식
 			double discountRate = minRate + (maxRate - minRate) * timeRatio;
+			this.discountRate = discountRate;
 
 			//최종 가격 공식
 			return originalPrice * (100 - discountRate) / 100;
