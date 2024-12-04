@@ -89,7 +89,8 @@ public class PlayController {
 		return ResponseEntity.ok(new ApiResponse<>(200, "Data retrieved", plays));
 	}
 
-	
+
+	@GetMapping("/getPlaySale")
 	public ResponseEntity<ApiResponse<List<PlayDiscountDTO>>> getPlaySale() {
 		try {
 			List<PlayDiscountDTO> discountedPlay = playService.getPlaySale();
