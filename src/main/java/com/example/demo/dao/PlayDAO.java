@@ -64,6 +64,4 @@ public interface PlayDAO {
 			""")
 	List<PlayDiscountDTO> getPlayWithDiscount();
 
-	List<PlayDiscountDTO> orderDiscountedPlay(List<PlayDiscountDTO> discountedPlay);
-	
 }
