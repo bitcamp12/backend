@@ -658,7 +658,7 @@ public class MemberController {
 		
 	}
 	
-// 세션 존재 확인 (나중에 필요하면 지우기..)
+// 세션 존재 확인 (나중에 지우기)
 	
 	@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 	@GetMapping("/session-status" )
