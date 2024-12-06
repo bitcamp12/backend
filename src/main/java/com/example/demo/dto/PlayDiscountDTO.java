@@ -22,6 +22,8 @@ public class PlayDiscountDTO {
 	private LocalDate targetDate;
 	private double discountedPrice;
     private int playSeq;
+	private int playTimeTableSeq;
+	private String ageLimit;
 	private String name;
 	private LocalDate startDate;
 	private LocalDate endDate;
