@@ -42,26 +42,4 @@ public interface PlayDAO {
 			""")
     List<PlayDTO> getPlayRandom();
 
-	@Select("""
-			SELECT 
-				p.play_seq,
-				p.name,
-				p.price,
-				p.start_time AS start_date,
-				p.end_time AS end_date,
-				p.image_file_name,
-				p.image_original_file_name,
-				p.address,
-				pt.start_time,
-				pt.end_time,
-				pt.start_dis_time,
-				pt.end_dis_time,
-				pt.min_rate,
-				pt.max_rate,
-				pt.target_date
-			FROM play p
-			INNER JOIN play_time_table pt ON p.play_seq = pt.play_seq
-			""")
-	List<PlayDiscountDTO> getPlayWithDiscount();
-
 }
