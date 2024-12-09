@@ -2,6 +2,8 @@ package com.example.demo.dto;
 
 import java.time.LocalDateTime;
 
+import com.example.demo.entity.Book.PaymentStatus;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,4 +21,7 @@ public class BookDTO {
     private int bookedY;
     private String payment;
     private int totalPrice;
+    
+    private PaymentStatus paymentStatus = PaymentStatus.PAID; // 기본값 설정
+    
 }
