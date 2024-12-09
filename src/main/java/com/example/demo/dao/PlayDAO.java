@@ -60,7 +60,7 @@ public interface PlayDAO {
 
 	@Select("""
 			SELECT * FROM play
-			WHERE price >= 80000
+			WHERE price >= 60000
 			ORDER BY price DESC
 			LIMIT #{size} OFFSET #{offset}
 			""")
