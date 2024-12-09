@@ -1,6 +1,7 @@
 package com.example.demo.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -9,6 +10,7 @@ import org.apache.ibatis.annotations.Select;
 import com.example.demo.dto.member.MemberDTO;
 
 import com.example.demo.dto.PlayDTO;
+import com.example.demo.dto.PlayDiscountDTO;
 
 
 @Mapper
@@ -43,11 +45,4 @@ public interface PlayDAO {
 			""")
     List<PlayDTO> getPlayRandom();
 
-	@Select("""
-			SELECT * FROM play
-			ORDER BY play_seq DESC LIMIT 12;
-			""")
-	List<PlayDTO> getPlaySale();
-
-	
 }
