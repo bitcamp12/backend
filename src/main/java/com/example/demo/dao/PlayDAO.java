@@ -17,7 +17,10 @@ import com.example.demo.dto.PlayDiscountDTO;
 public interface PlayDAO {
 
 	@Select("""
-			SELECT * FROM play WHERE play_seq = #{playSeq}
+			 SELECT   p.*, t.discounted_price,t.discount_rate
+    FROM   play p
+    LEFT JOIN play_time_table t  ON  p.play_seq = t.play_seq
+    WHERE  p.play_seq = #{playSeq}
 			""")
 	PlayDTO getPlayOne(String playSeq);
 
