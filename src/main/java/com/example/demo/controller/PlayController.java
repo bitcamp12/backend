@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.PlayDTO;
+import com.example.demo.dto.PlayDiscountDTO;
 import com.example.demo.entity.Play;
 import com.example.demo.service.PlayService;
 
@@ -85,12 +86,6 @@ public class PlayController {
 	@GetMapping("/getPlayRandom")
 	public ResponseEntity<ApiResponse<List<PlayDTO>>> getPlayRandom() {
 		List<PlayDTO> plays = playService.getPlayRandom();
-		return ResponseEntity.ok(new ApiResponse<>(200, "Data retrieved", plays));
-	}
-
-	@GetMapping("/getPlaySale")
-	public ResponseEntity<ApiResponse<List<PlayDTO>>> getPlaySale() {
-		List<PlayDTO> plays = playService.getPlaySale();
 		return ResponseEntity.ok(new ApiResponse<>(200, "Data retrieved", plays));
 	}
 
