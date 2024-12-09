@@ -31,7 +31,7 @@ public class PlayController {
 	@Autowired
 	private PlayService playService;
 	
-	
+	//페이지 정보가져오기
 	@GetMapping("/getPlayOne")
 	public ResponseEntity<ApiResponse<PlayDTO>> getPlayOne(@RequestParam("playSeq") String playSeq) {
 	    System.out.println("Received playSeq: " + playSeq);
