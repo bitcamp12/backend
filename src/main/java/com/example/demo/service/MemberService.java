@@ -183,4 +183,10 @@ public class MemberService {
 	public List<CheckMyBookDTO> checkMyBook(String id) {
 		return memberDAO.checkMyBook(id);
 	}
+
+	public List<CheckMyBookDTO> checkBookingsByDate(Map<String, Object> map) {
+		return memberDAO.checkBookingsByDate(map);
+	}
+
+	
 }
