@@ -25,12 +25,11 @@ public class ReplyController {
 	public ResponseEntity<ApiResponse<ReplyDTO>> getReply(@RequestParam("qnaSeq") String qnaSeq) {
 		try {
 		ReplyDTO replyDTO=replyDAO.getReply(qnaSeq);
-		System.out.println(replyDTO.getContent());
 		if(replyDTO!=null) {
 			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "성공", replyDTO));
 		}
 		else {
-			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(404 , "데이터 없음", replyDTO));
+			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200 , "데이터 없음", replyDTO));
 		}
 		
 	} catch (Exception e) {

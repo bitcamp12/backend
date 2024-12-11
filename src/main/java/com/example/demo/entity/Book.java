@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -48,4 +50,15 @@ public class Book {
     
     @Column(name = "total_price")
     private int totalPrice;
+    
+    @Enumerated(EnumType.STRING) // Enum 타입을 문자열로 저장
+    @Column(name = "payment_status", columnDefinition = "ENUM('PAID', 'PENDING', 'REFUND_REQUESTED', 'REFUNDED') DEFAULT 'PAID'")
+    private PaymentStatus paymentStatus = PaymentStatus.PAID; // 기본값 설정
+    
+    public enum PaymentStatus {
+        PAID,
+        PENDING,
+        REFUND_REQUESTED,
+        REFUNDED
+    }
 }
