@@ -682,8 +682,6 @@ public class MemberController {
 				// 예약 목록이 존재하지 않을 경우
 				return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "년/월 검색 예약목록이 없습니다.", null));
 			}
-			
-			
 		} catch (Exception e) {
 			// 에러났을 경우 
 			System.err.println("Error occurred: " + e.getMessage());
@@ -696,7 +694,6 @@ public class MemberController {
 	
 	
 // 세션 존재 확인 (나중에 지우기)
-	
 	@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 	@GetMapping("/session-status" )
 	public ResponseEntity<ApiResponse<String>> sessionStatus(HttpSession session) {
