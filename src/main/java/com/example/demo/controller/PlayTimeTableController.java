@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.PlayDiscountDTO;
 import com.example.demo.dto.PlayTimeTableDTO;
 import com.example.demo.entity.Favorite;
 import com.example.demo.entity.PlayTimeTable;
@@ -16,6 +17,8 @@ import com.example.demo.service.PlayTimeTableService;
 import com.example.demo.util.ApiResponse;
 
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -30,7 +33,7 @@ public class PlayTimeTableController {
 	public ResponseEntity<ApiResponse<List<PlayTimeTableDTO>>> playTimeTables(
 			
 			@RequestParam("playSeq") int playSeq,
-			 @RequestParam("targetDate") String targetDate) {
+			@RequestParam("targetDate") String targetDate) {
 		try {
 			System.out.println(targetDate);
 		List<PlayTimeTableDTO> list =playTimeTableService.playTimeTables(playSeq,targetDate);
@@ -50,8 +53,25 @@ public class PlayTimeTableController {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	                .body(new ApiResponse<>(500, "서버 오류", null));
 	    }
-		
-		
 	}
+
+	@GetMapping("calculateDiscount")
+    public ResponseEntity<ApiResponse<List<PlayDiscountDTO>>> calculateDiscount() {
+        try {
+            List<PlayDiscountDTO> discountedPlay = playTimeTableService.calculateDiscount();
+            if (discountedPlay != null && !discountedPlay.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(new ApiResponse<>(200, "성공적으로 데이터를 불러왔습니다", discountedPlay));
+            } else {
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(new ApiResponse<>(404, "데이터 없음", discountedPlay));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(500, "서버에러가 발생했습니다", null));
+        }
+    }
+
 	
 }

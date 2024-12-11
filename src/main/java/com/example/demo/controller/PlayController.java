@@ -32,7 +32,7 @@ public class PlayController {
 	@Autowired
 	private PlayService playService;
 	
-	
+	//페이지 정보가져오기
 	@GetMapping("/getPlayOne")
 	public ResponseEntity<ApiResponse<PlayDTO>> getPlayOne(@RequestParam("playSeq") String playSeq) {
 	    System.out.println("Received playSeq: " + playSeq);
@@ -88,24 +88,5 @@ public class PlayController {
 		List<PlayDTO> plays = playService.getPlayRandom();
 		return ResponseEntity.ok(new ApiResponse<>(200, "Data retrieved", plays));
 	}
-
-
-	@GetMapping("/getPlaySale")
-    public ResponseEntity<ApiResponse<List<PlayDiscountDTO>>> getPlaySale() {
-        try {
-            List<PlayDiscountDTO> discountedPlay = playService.getPlaySale();
-            if (discountedPlay != null && !discountedPlay.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.OK)
-                        .body(new ApiResponse<>(200, "성공적으로 데이터를 불러왔습니다", discountedPlay));
-            } else {
-                return ResponseEntity.status(HttpStatus.OK)
-                        .body(new ApiResponse<>(404, "데이터 없음", discountedPlay));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse<>(500, "서버에러가 발생했습니다", null));
-        }
-    }
 
 }
