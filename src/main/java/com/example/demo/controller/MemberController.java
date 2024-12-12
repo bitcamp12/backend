@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.member.IdCheckDTO;
 import com.example.demo.dto.member.IdFindDTO;
+import com.example.demo.dto.member.JoinDTO;
 import com.example.demo.dto.member.MemberDTO;
 import com.example.demo.dto.member.SmsRequestDto;
 import com.example.demo.entity.Member;
@@ -29,6 +30,7 @@ import com.example.demo.service.EmailService;
 import com.example.demo.service.MemberService;
 import com.example.demo.service.SmsService;
 import com.example.demo.util.ApiResponse;
+import com.example.demo.util.JWTUtil;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -44,6 +46,10 @@ public class MemberController {
     
     @Autowired
     private SmsService smsService;
+    
+    @Autowired
+    private JWTUtil jwtUtil;
+    
 
     // 임시로 랜덤 번호를 저장할 Map
     private Map<String, String> emailVerificationCodes = new HashMap<>();
@@ -86,6 +92,13 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "success", null));
     }
     */
+    
+    @GetMapping("/jwt")
+    public String jwt() {
+    	return "main Controller";
+    }
+    
+    
     
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<Member>> signUp(@RequestBody Member member) {
@@ -521,24 +534,19 @@ public class MemberController {
     @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<String>> login(HttpSession session, @RequestBody MemberDTO dto) {
-        try {
+ 
+    	try {
             String id = dto.getId();
             String password = dto.getPassword();
 
-            Map<String, String> map = new HashMap<>();
-            map.put("id", id);
-            map.put("password", password);
-            
             // 로그인 서비스 호출
-            //int result = memberService.Login(map);
-            int result = memberService.LoginEntity(id,password);
-
+            int result = memberService.LoginEntity(id, password);
 
             // 로그인 성공
             if (result == 1) {
-            	session.setAttribute("id", id);
-            	System.out.println(id);
-                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, id , null));
+            	
+            	return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "success", null));
+  
             } else {
                 // 로그인 실패 (회원 정보 없음)
                 return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(404, null, "회원정보없음"));
@@ -547,9 +555,10 @@ public class MemberController {
             // 예외 발생 시 에러 메시지 반환
             System.err.println("Error occurred: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body(new ApiResponse<>(500, null, "에러"));
+                    .body(new ApiResponse<>(500, null, "에러"));
         }
     }
+
     
     @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
     @PostMapping("/logout")
