@@ -8,6 +8,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -681,6 +682,38 @@ public class MemberController {
 			}else {
 				// 예약 목록이 존재하지 않을 경우
 				return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "년/월 검색 예약목록이 없습니다.", null));
+			}
+		} catch (Exception e) {
+			// 에러났을 경우 
+			System.err.println("Error occurred: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body(new ApiResponse<>(500, "예약목록을 불러오는 중 에러 발생", null));
+		}
+		
+	}
+	
+	
+// ----	
+	// 예약정보조회-페이징
+	@GetMapping("checkMyBook/pagination")
+	public ResponseEntity<ApiResponse<List<CheckMyBookDTO>>> pagination(@RequestParam("page")int page, @RequestParam("size") int size, HttpSession session) {
+		try {
+			String id = (String) session.getAttribute("id");
+			
+			Map<String, Object> map = new HashMap<>();
+			map.put("id", id);
+			map.put("page", page);
+			map.put("size", size);
+			
+			Page<CheckMyBookDTO> list = null ;// = memberService.checkMyBookPagination(page, size);
+			
+			if(list!=null && !list.isEmpty()) {
+				// 예약목록이 존재할 경우, 
+				System.out.println("checkMyBookList : " +list);
+				return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "예약목록이 있습니다.", null));				
+			}else {
+				// 예약 목록이 존재하지 않을 경우
+				return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "예약목록이 없습니다.", null));
 			}
 		} catch (Exception e) {
 			// 에러났을 경우 

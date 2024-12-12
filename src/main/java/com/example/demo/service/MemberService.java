@@ -9,6 +9,9 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Select;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.MemberDAO;
@@ -16,6 +19,7 @@ import com.example.demo.dto.CheckMyBookDTO;
 import com.example.demo.dto.member.MemberDTO;
 import com.example.demo.entity.Member;
 import com.example.demo.repository.AdminRepository;
+
 import com.example.demo.repository.MemberRepository;
 
 import jakarta.transaction.Transactional;
@@ -31,7 +35,9 @@ public class MemberService {
     
     @Autowired
     private AdminRepository adminRepository;
-	
+    
+
+    
 	public String test() {
 		return "테스트입니다.";
 	}
@@ -187,6 +193,19 @@ public class MemberService {
 	public List<CheckMyBookDTO> checkBookingsByDate(Map<String, Object> map) {
 		return memberDAO.checkBookingsByDate(map);
 	}
+
+/*
+	//페이징 예약확인
+	public Page<CheckMyBookDTO> checkMyBookPagination(int page, int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		System.out.println("[MemberService]checkMyBookPagination : " + pageable);
+//		System.out.println("[MemberService]checkMyBookPagination findeAll()  : " + checkMyBookRepository.findAll(pageable) );
+		//bookRepository.findAll(pageable);
+		return null; 
+		
+	}
+*/
+
 
 	
 }
