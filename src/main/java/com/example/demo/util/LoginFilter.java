@@ -4,6 +4,7 @@ import com.example.demo.dto.member.MemberDTO;
 import com.example.demo.service.CustomUserDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -67,8 +68,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String role = auth.getAuthority();
 
         String token = jwtUtil.createJwt(username, role, 60*60*10L);
-
+        
+        
+        response.setStatus(200);
         response.addHeader("Authorization", "Bearer " + token);
+        
+  
     }
 
     @Override

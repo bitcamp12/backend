@@ -544,7 +544,7 @@ public class MemberController {
 
             // 로그인 성공
             if (result == 1) {
-            	
+            	System.out.println("로그인성공");
             	return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "success", null));
   
             } else {
