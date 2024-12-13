@@ -14,6 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Configuration
 @EnableWebSecurity
@@ -23,10 +26,18 @@ public class SecurityConfig {
 
     @Autowired
     private JWTUtil jwtUtil;
+    
+
 
     public SecurityConfig(AuthenticationConfiguration authenticationConfiguration) {
         this.authenticationConfiguration = authenticationConfiguration;
     }
+    
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
+        return new JwtAuthenticationFilter(jwtUtil, authenticationManager());
+    }
+    
 
     // AuthenticationManager Bean 등록
     @Bean
@@ -43,35 +54,53 @@ public class SecurityConfig {
     // Security Filter Chain 설정
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // CORS 설정
-        http.cors().configurationSource(request -> {
-            CorsConfiguration configuration = new CorsConfiguration();
-            configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-            configuration.setAllowedMethods(Collections.singletonList("*"));
-            configuration.setAllowCredentials(true);
-            configuration.setAllowedHeaders(Collections.singletonList("*"));
-            configuration.setMaxAge(3600L);
-            configuration.setExposedHeaders(Collections.singletonList("Authorization"));
-            return configuration;
-        });
+    		
+    		http
+                .cors((corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
 
-        // CSRF, Form Login, HTTP Basic 인증 비활성화
-        http.csrf().disable();
-        http.formLogin().disable();
-        http.httpBasic().disable();
+                    @Override
+                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
 
-        // 요청에 대한 권한 설정
-        http.authorizeRequests()
-            .requestMatchers("/**").authenticated() // 모든 요청 허용 (필요에 맞게 수정 가능)
-            .anyRequest().permitAll();  // 나머지 요청은 인증 필요
+                        CorsConfiguration configuration = new CorsConfiguration();
 
-        // JWT 로그인 처리를 위한 커스텀 필터 추가
-        http.addFilterAt(new LoginFilter(authenticationManager(), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                        configuration.setAllowedMethods(Collections.singletonList("*"));
+                        configuration.setAllowCredentials(true);
+                        configuration.setAllowedHeaders(Collections.singletonList("*"));
+                        configuration.setMaxAge(3600L);
 
-        // JWT 사용 시 세션 관리 비활성화 (상태 없는 인증 방식)
-        http.sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    										configuration.setExposedHeaders(Collections.singletonList("Authorization"));
 
-        return http.build();
-    }
+                        return configuration;
+                    }
+                })));
+
+			//csrf disable
+            http
+                    .csrf((auth) -> auth.disable());
+
+    				//From 로그인 방식 disable
+            http
+                    .formLogin((auth) -> auth.disable());
+
+    				//http basic 인증 방식 disable
+            http
+                    .httpBasic((auth) -> auth.disable());
+            
+				//세션 설정
+            http
+                    .sessionManagement((session) -> session
+                            .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+    				//경로별 인가 작업
+            http
+            .authorizeHttpRequests((auth) -> auth
+                .requestMatchers("/**").permitAll() // 기본 페이지는 전체 허용
+                //.requestMatchers("/api/**").hasAuthority("ROLE_USER") // 유저만 api관련 인증가능
+                .anyRequest().authenticated()) // 나머지 요청은 인증 필요
+            .addFilterAt(new LoginFilter(authenticationManager(), jwtUtil), UsernamePasswordAuthenticationFilter.class) // LoginFilter 추가
+            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // JWT 필터 추가
+
+            return http.build();
+        }
 }
