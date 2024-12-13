@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -637,6 +638,28 @@ public class MemberController {
                                  .body(new ApiResponse<>(500, null, "에러"));
 		}
 	}
+	
+	
+	
+	@GetMapping("/verify-token")
+    public ResponseEntity<?> verifyToken(@RequestHeader("Authorization") String authorizationHeader) {
+        // "Authorization: Bearer <token>" 형식에서 토큰 추출
+		System.out.println("메인페이지 토큰검증중");
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7); // "Bearer " 이후의 부분
+            System.out.println(token);
+            if (!jwtUtil.isExpired(token)) {
+                // 토큰이 유효하면 200 OK 반환
+                return ResponseEntity.status(HttpStatus.OK).body("Token is valid.");
+            } else {
+                // 토큰이 만료되었거나 유효하지 않으면 401 Unauthorized 반환
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token is invalid or expired.");
+            }
+        } else {
+            // Authorization 헤더가 없거나 형식이 올바르지 않으면 400 Bad Request 반환
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Authorization header is missing or invalid.");
+        }
+    }
 	
 	
 // 세션 존재 확인 (나중에 필요하면 지움)

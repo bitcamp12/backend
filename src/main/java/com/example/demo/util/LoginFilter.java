@@ -5,6 +5,7 @@ import com.example.demo.service.CustomUserDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -67,11 +68,28 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         String role = auth.getAuthority();
 
-        String token = jwtUtil.createJwt(username, role, 60*60*10L);
+
         
         
+        // 리프레시 토큰 생성 (만료 시간 7일)
+        String refreshToken = jwtUtil.createRefreshToken(username, role, 60 * 60 * 24 * 7 * 1000L); // 7일
+           
+        // 리프레시 토큰을 쿠키에 설정
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true); // HTTPS에서만 전송
+        refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7); // 7일 유효
+        refreshTokenCookie.setPath("/"); // 전체 도메인에서 접근 가능
+        response.addCookie(refreshTokenCookie);
+        
+        System.out.println("리프레쉬발급"+refreshToken);
+        //액세스 토큰
+        
+        String token = jwtUtil.createJwt(username, role, 60 * 60 * 1000L); //60 * 60 * 1000L 60분
         response.setStatus(200);
         response.addHeader("Authorization", "Bearer " + token);
+        
+        System.out.println("액세스토큰발급"+token);
         
   
     }
