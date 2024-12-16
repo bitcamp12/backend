@@ -21,13 +21,13 @@ import com.example.demo.util.ApiResponse;
 public class TheaterController {
     
 	@Autowired
-	private TheaterService reviewBeforeService;
+	private TheaterService theaterService;
 
 	@GetMapping("getTheaterInfo")
 	public ResponseEntity<ApiResponse<List<TheaterDTO>>> getTheaterInfo(
 			) {
 		try {
-		List<TheaterDTO> list =reviewBeforeService.getTheaterInfo();
+		List<TheaterDTO> list = theaterService.getTheaterInfo();
 		
 		 // 리스트가 비어있지 않으면 성공 반환
 		if (!list.isEmpty()) {
