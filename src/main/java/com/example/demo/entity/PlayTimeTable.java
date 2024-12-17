@@ -56,5 +56,10 @@ public class PlayTimeTable {
     @Column(name = "target_date", nullable = false)
     private LocalDateTime targetDate;
 
+    @Column(name = "discount_rate", nullable = true)
+    private Integer discountRate;
+
+    @Column(name = "discounted_price", nullable = true)
+    private Integer discountedPrice;
 }
 	

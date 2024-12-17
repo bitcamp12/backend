@@ -41,8 +41,9 @@ public interface ReviewBeforeDAO {
 	    	    JOIN member m ON rb.member_seq = m.member_seq
 	    	    WHERE rb.play_seq = #{playSeq}
 	    	    ORDER BY rb.created_date DESC
+	    	    LIMIT #{size} OFFSET #{pages} 
 	    	""")
-	    	List<ReviewBeforeDTO> getReviewBList(int playSeq);
+	    	List<ReviewBeforeDTO> getReviewBList(@Param("playSeq")int playSeq, @Param("pages")int pages, @Param("size")int size);
 
 	    // 특정 리뷰 조회 (별점 제외)
 	    @Select("""
@@ -90,8 +91,9 @@ public interface ReviewBeforeDAO {
 	        WHERE rb.member_seq LIKE CONCAT('%', #{keyword}, '%')
 	          AND rb.play_seq = #{playSeq}
 	        ORDER BY rb.created_date DESC
+	         LIMIT #{size} OFFSET #{pages}
 	    """)
-	    List<ReviewBeforeDTO> ReviewBSearchId(@Param("keyword") String keyword, @Param("playSeq") int playSeq);
+	    List<ReviewBeforeDTO> ReviewBSearchId(@Param("keyword") String keyword, @Param("playSeq") int playSeq,@Param("pages") int pages,@Param("size") int size);
 
 	    // 내용으로 검색 - 날짜 순
 	    @Select("""
@@ -101,8 +103,28 @@ public interface ReviewBeforeDAO {
 	        WHERE rb.content LIKE CONCAT('%', #{keyword}, '%')
 	          AND rb.play_seq = #{playSeq}
 	        ORDER BY rb.created_date DESC
+	         LIMIT #{size} OFFSET #{pages}
 	    """)
-	    List<ReviewBeforeDTO> ReviewBSearchKey(@Param("keyword") String keyword, @Param("playSeq") int playSeq);
+	    List<ReviewBeforeDTO> ReviewBSearchKey(@Param("keyword") String keyword, @Param("playSeq") int playSeq,@Param("pages") int pages,@Param("size") int size);
+
+	    
+	    
+	    @Select("""
+			    SELECT COUNT(*)
+			   FROM review_before
+			    WHERE play_seq = #{playSeq}
+			    and member_seq LIKE CONCAT('%', #{keyword}, '%')
+			     ORDER BY created_date DESC
+			""")
+		int ReviewBSearchIdCount(@Param("keyword")String keyword,@Param("playSeq") int playSeq);
+	    @Select("""
+			    SELECT COUNT(*)
+			   FROM review_before
+			    WHERE play_seq = #{playSeq}
+			    and content LIKE CONCAT('%', #{keyword}, '%')
+			     ORDER BY created_date DESC
+			""")
+		int ReviewBSearchKeyCount(@Param("keyword")String keyword,@Param("playSeq") int playSeq);
 
 	
 
