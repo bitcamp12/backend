@@ -17,4 +17,10 @@ public class BookService {
     public List<BookDTO> getBookedSeats(int playTimeTableSeq) {
         return bookDAO.getBookedSeats(playTimeTableSeq);
     }
+
+    public void purchaseSeats(List<BookDTO> list) {
+        for (BookDTO seat : list) {
+            bookDAO.insertSeat(seat);
+        }
+    }
 }

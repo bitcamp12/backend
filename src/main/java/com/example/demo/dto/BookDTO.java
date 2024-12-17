@@ -1,6 +1,7 @@
 package com.example.demo.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.example.demo.entity.Book.PaymentStatus;
 
@@ -22,5 +23,6 @@ public class BookDTO {
     private String payment;
     private int totalPrice;
     private PaymentStatus paymentStatus = PaymentStatus.PAID; // 기본값 설정
+    private List<BookDTO> selectedSeats;
     
 }
