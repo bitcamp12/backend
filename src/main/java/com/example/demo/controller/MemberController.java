@@ -8,6 +8,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -16,12 +17,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.CheckMyBookDTO;
@@ -30,6 +31,7 @@ import com.example.demo.dto.member.IdFindDTO;
 import com.example.demo.dto.member.JoinDTO;
 import com.example.demo.dto.member.MemberDTO;
 import com.example.demo.dto.member.SmsRequestDto;
+import com.example.demo.entity.Book;
 import com.example.demo.entity.Member;
 import com.example.demo.service.CustomUserDetails;
 import com.example.demo.service.EmailService;
@@ -699,9 +701,90 @@ public class MemberController {
 		
 	}
 
+	// 특정 년/월의 예약 정보 조회 
+	@GetMapping("checkMyBook/checkBookingsByDate")
+	public ResponseEntity<ApiResponse<List<CheckMyBookDTO>>> checkBookingsByDate (@RequestParam("classify") String classify, @RequestParam("year") int year, @RequestParam("month") int month, HttpSession session) {
+				
+		try {
+			String id = (String) session.getAttribute("id");
+			System.out.println("checkMyBook/checkBookingsByDate : " + id  + ", "+ classify + ", " + year+ ", " + month);
+			
+			Map<String, Object> map = new HashMap<>();
+			map.put("id", id);
+			map.put("classify", classify);
+			map.put("year", year);
+			map.put("month", month);
+			
+			List<CheckMyBookDTO> list = memberService.checkBookingsByDate(map);
+			
+			if(list!=null && !list.isEmpty()) {
+				// 예약목록이 존재할 경우, 
+				System.out.println("checkBookingsByDate : " +list);
+				return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "년/월 검색 예약목록이 있습니다.", list));				
+			}else {
+				// 예약 목록이 존재하지 않을 경우
+				return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "년/월 검색 예약목록이 없습니다.", null));
+			}
+		} catch (Exception e) {
+			// 에러났을 경우 
+			System.err.println("Error occurred: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body(new ApiResponse<>(500, "예약목록을 불러오는 중 에러 발생", null));
+		}
+		
+	}
 	
-// 세션 존재 확인 (나중에 필요하면 지움)
 	
+	// 예약정보조회-페이징
+	@GetMapping("checkMyBook/pagination")
+	public Page<Book> pagination(@RequestParam("currentPage")int currentPage,@RequestParam("classify") String classify, @RequestParam("year") String year, @RequestParam("month") String month, HttpSession session) {
+		String id = (String) session.getAttribute("id");
+		
+		int pageSize = 3; // 한 페이지에 보여줄 내용
+	
+		Page<Book> pageResult;
+		
+
+		// 년월 검색조회
+		if (!classify.isEmpty() && !year.isEmpty()&& !month.isEmpty()) {
+			if(classify.equals("pay_date")) {
+				System.out.println("년월조회");
+				pageResult = memberService.checkMyBookPagination(id, year, month, currentPage, pageSize);    				
+			}else {
+				pageResult=null;
+			}
+		} else {
+			// 일반 조회
+			System.out.println("일반조회");
+			pageResult = memberService.checkMyBookPagination(id, currentPage, pageSize);
+		}
+		
+		System.out.println("[MemberContsroller] pagination : "  + pageResult);
+		
+		return pageResult;
+	}
+	
+	
+	
+//	// 예약정보조회-페이징
+//	@GetMapping("checkMyBook/pagination")
+//	public Page<Book> pagination(@RequestParam("currentPage")int currentPage, HttpSession session) {
+//		String id = (String) session.getAttribute("id");
+//		
+//		int pageSize = 3; // 한 페이지에 보여줄 내용
+//	
+//		// 일반 조회
+//		Page<Book> pageResult = memberService.checkMyBookPagination(id, currentPage, pageSize);
+//
+//		// 년월 검색조회
+//		System.out.println("[MemberContsroller] pagination : "  + pageResult);
+//		
+//		return pageResult;
+//	}
+//	
+
+	
+// 세션 존재 확인 (나중에 지우기)
 	@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 	@GetMapping("/session-status" )
 	public ResponseEntity<ApiResponse<String>> sessionStatus() {

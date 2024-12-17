@@ -2,21 +2,25 @@ package com.example.demo.service;
 
 
 import java.util.List;
-
-import java.time.LocalDateTime;
-
 import java.util.Map;
 
-import org.apache.ibatis.annotations.Select;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.MemberDAO;
 import com.example.demo.dto.CheckMyBookDTO;
 import com.example.demo.dto.member.MemberDTO;
+import com.example.demo.entity.Book;
+import com.example.demo.entity.CheckMyBook;
 import com.example.demo.entity.Member;
 import com.example.demo.repository.AdminRepository;
+import com.example.demo.repository.BookRepository;
+import com.example.demo.repository.CheckMyBookRepository;
 import com.example.demo.repository.MemberRepository;
 
 import jakarta.transaction.Transactional;
@@ -32,6 +36,12 @@ public class MemberService {
     
     @Autowired
     private AdminRepository adminRepository;
+    
+    @Autowired
+    private CheckMyBookRepository checkMyBookRepository;
+
+    @Autowired
+    private BookRepository BookRepository;
     
 
     @Autowired
@@ -201,5 +211,46 @@ public class MemberService {
 	public List<CheckMyBookDTO> checkMyBook(String id) {
 		return memberDAO.checkMyBook(id);
 	}
+
+
+	public List<CheckMyBookDTO> checkBookingsByDate(Map<String, Object> map) {
+		return memberDAO.checkBookingsByDate(map);
+	}
+
+	public Page<Book> checkMyBookPagination(String id, int currentPage, int pageSize) {
+		Pageable pageable = PageRequest.of(currentPage, pageSize);
+		System.out.println("[MemberService]checkMyBookPagination : " + pageable);
+		//System.out.println("[MemberService]checkMyBookPagination : " + checkMyBookRepository.findByMemberId(id, pageable));
+		//return checkMyBookRepository.findByMemberId(id, pageable);
+		
+		Member member = memberRepository.findById(id); // select * from member where id = ' ' 
+		
+		Page<Book> books = BookRepository.findByMember(member, pageable); //select * from book where member_seq = ?
+
+		return books;
+	}
+
+	public Page<Book> checkMyBookPagination(String id, String year, String month, int currentPage, int pageSize) {
+		Pageable pageable = PageRequest.of(currentPage, pageSize);
+		System.out.println("[MemberService]checkMyBookPagination : " + pageable);
+
+		
+		Member member = memberRepository.findById(id); // select * from member where id = ' ' 		
+		 Page<Book> books = BookRepository.findByMemberAndPayDateYearAndPayDateMonth(member, year, month, pageable); // select * from book where member_seq = ? and year(pay_date) = ? and month(pay_date) = ?
+		
+
+		return books;
+	}
+
+	
+	/*
+	// 페이징 예약 확인
+	public Page<CheckMyBook> checkMyBookPagination(int currentPage, int pageSize) {
+		Pageable pageable = PageRequest.of(currentPage, pageSize);
+		System.out.println("[MemberService]checkMyBookPagination : " + pageable);
+		System.out.println("[MemberService]checkMyBookPagination findeAll()  : " + checkMyBookRepository.findAll(pageable));
+		return checkMyBookRepository.findAll(pageable); 
+	}
+	*/
 	
 }
