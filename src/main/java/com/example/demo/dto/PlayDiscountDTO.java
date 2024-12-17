@@ -34,6 +34,7 @@ public class PlayDiscountDTO {
     private double discountRate;
 
     public double calculateSale() {
+    	System.out.println(LocalDate.now()+startDisTime);
 			// 원래 가격 PlayDTO에서 가져오기
 			double originalPrice = getPrice();
 
