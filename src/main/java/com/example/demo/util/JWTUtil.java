@@ -40,6 +40,7 @@ public class JWTUtil {
         Claims claims = Jwts.claims();
         claims.put("username", username);
         claims.put("role", role);
+        
 
         return Jwts.builder()
                 .setClaims(claims)
