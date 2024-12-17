@@ -39,5 +39,6 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
 	List<Member> findByNameAndPhone(String name, String phone);
 
 
+
 }
 
