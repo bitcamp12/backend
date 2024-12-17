@@ -29,4 +29,6 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedHeaders("*") // 모든 헤더 허용
                 .allowCredentials(true); // 쿠키 포함 여부
     }
+    
+    
 }
