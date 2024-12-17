@@ -10,6 +10,8 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,20 +20,27 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.CheckMyBookDTO;
 import com.example.demo.dto.member.IdCheckDTO;
 import com.example.demo.dto.member.IdFindDTO;
+import com.example.demo.dto.member.JoinDTO;
 import com.example.demo.dto.member.MemberDTO;
 import com.example.demo.dto.member.SmsRequestDto;
 import com.example.demo.entity.Member;
+import com.example.demo.service.CustomUserDetails;
 import com.example.demo.service.EmailService;
 import com.example.demo.service.MemberService;
 import com.example.demo.service.SmsService;
 import com.example.demo.util.ApiResponse;
+import com.example.demo.util.AuthenticationFacade;
+import com.example.demo.util.JWTUtil;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
@@ -46,6 +55,13 @@ public class MemberController {
     
     @Autowired
     private SmsService smsService;
+    
+    @Autowired
+    private JWTUtil jwtUtil;
+    
+    @Autowired
+    private AuthenticationFacade authenticationFacade;
+    
 
     // 임시로 랜덤 번호를 저장할 Map
     private Map<String, String> emailVerificationCodes = new HashMap<>();
@@ -88,6 +104,13 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "success", null));
     }
     */
+    
+    @GetMapping("/jwt")
+    public String jwt() {
+    	return "main Controller";
+    }
+    
+    
     
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<Member>> signUp(@RequestBody Member member) {
@@ -523,24 +546,19 @@ public class MemberController {
     @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<String>> login(HttpSession session, @RequestBody MemberDTO dto) {
-        try {
+ 
+    	try {
             String id = dto.getId();
             String password = dto.getPassword();
 
-            Map<String, String> map = new HashMap<>();
-            map.put("id", id);
-            map.put("password", password);
-            
             // 로그인 서비스 호출
-            //int result = memberService.Login(map);
-            int result = memberService.LoginEntity(id,password);
-
+            int result = memberService.LoginEntity(id, password);
 
             // 로그인 성공
             if (result == 1) {
-            	session.setAttribute("id", id);
-            	System.out.println(id);
-                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, id , null));
+            	System.out.println("로그인성공");
+            	return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "success", null));
+  
             } else {
                 // 로그인 실패 (회원 정보 없음)
                 return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(404, null, "회원정보없음"));
@@ -549,9 +567,10 @@ public class MemberController {
             // 예외 발생 시 에러 메시지 반환
             System.err.println("Error occurred: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body(new ApiResponse<>(500, null, "에러"));
+                    .body(new ApiResponse<>(500, null, "에러"));
         }
     }
+
     
     @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
     @PostMapping("/logout")
@@ -632,6 +651,28 @@ public class MemberController {
 	}
 	
 	
+
+	// 테스트용 
+	@GetMapping("/verify-token")
+    public void verifyToken(@RequestHeader("Authorization") String authorizationHeader ,HttpServletRequest request) {
+            String token = authorizationHeader.substring(7); 
+            
+            System.out.println("*verify-token 컨트롤러입니다--------------*");
+            System.out.println("액세스 토큰"+token); // 액세스 토큰
+            
+            Cookie[] cookies = request.getCookies();
+            
+            System.out.println("리프레쉬 토큰 " + cookies);
+    
+            Member member = authenticationFacade.getCurrentMember(); // jwt 인증시 로그인된 멤버 엔티티 정보획득
+
+            System.out.println("현재로그인아이디"+member.getId());  // 아이디 가져오는예시 
+            System.out.println("현재로그인이메일"+member.getEmail()); // 이메일 예시 가져오는예시 
+            System.out.println("현재로그인시퀀스"+member.getMemberSeq());   // 시퀀스 예시 가져오는예시       
+
+    }
+	
+
 	// 예약 정보 조회 
 	@GetMapping("checkMyBook")
 	public ResponseEntity<ApiResponse<List<CheckMyBookDTO>>> checkMyBook(HttpSession session) {
@@ -657,21 +698,27 @@ public class MemberController {
 		}
 		
 	}
+
 	
 // 세션 존재 확인 (나중에 필요하면 지움)
 	
 	@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 	@GetMapping("/session-status" )
-	public ResponseEntity<ApiResponse<String>> sessionStatus(HttpSession session) {
-	    if (session.getAttribute("id") == null) {
+	public ResponseEntity<ApiResponse<String>> sessionStatus() {
+	    String id = authenticationFacade.getCurrentUserId(); // 시큐리티 인증된정보로 멤버 엔티티 정보획득
+		
+	    if (id == null) {
 	    	System.out.println("404");
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
 	                             .body(new ApiResponse<>(404, "세션 없음", null));
 	    }
+	    
 	    System.out.println("200");
-	    System.out.println(session.getAttribute("id"));
+	    
+	    
 	    return ResponseEntity.status(HttpStatus.OK)
-	                         .body(new ApiResponse<>(200, "세션 있음", session.getId()));
-	}
+	                         .body(new ApiResponse<>(200, "세션 있음", id));		 
+		 }
+	
 
 }

@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Select;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.MemberDAO;
@@ -31,6 +32,10 @@ public class MemberService {
     
     @Autowired
     private AdminRepository adminRepository;
+    
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 	
 	public String test() {
 		return "테스트입니다.";
@@ -101,6 +106,9 @@ public class MemberService {
 	 public int signUp(Member member) {
 	        try {
 //	        	member.setRegisterDate(LocalDateTime.now());
+	        	
+	            String encodedPassword = passwordEncoder.encode(member.getPassword());
+	            member.setPassword(encodedPassword);  // 암호화된 비밀번호 저장
 	            memberRepository.save(member); // 엔티티 저장
 	            return 1; // 성공
 	        } catch (Exception e) {
@@ -175,12 +183,23 @@ public class MemberService {
 		
 
 	public int LoginEntity(String id, String password) {
-		return memberRepository.countByIdAndPassword(id,password);
 
+	    // 사용자 ID로 회원 정보 조회
+	    Member member = memberRepository.findById(id);
+	    
+	    System.out.println("로그인엔티티");
+	    if (member != null && passwordEncoder.matches(password, member.getPassword())) {
+	        return 1;  // 비밀번호가 일치하는 경우 로그인 성공
+	    }
+	    
+	    return 0;  // 비밀번호가 일치하지 않거나 회원이 존재하지 않는 경우
 
 }
+
+
 
 	public List<CheckMyBookDTO> checkMyBook(String id) {
 		return memberDAO.checkMyBook(id);
 	}
+	
 }
