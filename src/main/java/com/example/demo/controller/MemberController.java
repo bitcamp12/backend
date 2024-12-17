@@ -704,9 +704,11 @@ public class MemberController {
 	// 특정 년/월의 예약 정보 조회 
 	@GetMapping("checkMyBook/checkBookingsByDate")
 	public ResponseEntity<ApiResponse<List<CheckMyBookDTO>>> checkBookingsByDate (@RequestParam("classify") String classify, @RequestParam("year") int year, @RequestParam("month") int month, HttpSession session) {
-				
-		try {
-			String id = (String) session.getAttribute("id");
+			
+		String id =authenticationFacade.getCurrentUserId();  // 아이디 가져오는예시 
+		System.out.println("pagination JWT ID : " +id);
+		
+		try {	
 			System.out.println("checkMyBook/checkBookingsByDate : " + id  + ", "+ classify + ", " + year+ ", " + month);
 			
 			Map<String, Object> map = new HashMap<>();
@@ -738,15 +740,20 @@ public class MemberController {
 	// 예약정보조회-페이징
 	@GetMapping("checkMyBook/pagination")
 	public Page<Book> pagination(@RequestParam("currentPage")int currentPage,@RequestParam("classify") String classify, @RequestParam("year") String year, @RequestParam("month") String month, HttpSession session) {
-		String id = (String) session.getAttribute("id");
+		//String id = (String) session.getAttribute("id");
 		
+		//JWT 
+		String id =authenticationFacade.getCurrentUserId();  
+		System.out.println("pagination JWT ID : " +id);
+
+		System.out.println(classify+ year + month);
+
 		int pageSize = 3; // 한 페이지에 보여줄 내용
-	
 		Page<Book> pageResult;
 		
 
 		// 년월 검색조회
-		if (!classify.isEmpty() && !year.isEmpty()&& !month.isEmpty()) {
+		if (!classify.isEmpty() && !year.isEmpty() && !month.isEmpty()) {
 			if(classify.equals("pay_date")) {
 				System.out.println("년월조회");
 				pageResult = memberService.checkMyBookPagination(id, year, month, currentPage, pageSize);    				
@@ -759,14 +766,14 @@ public class MemberController {
 			pageResult = memberService.checkMyBookPagination(id, currentPage, pageSize);
 		}
 		
-		System.out.println("[MemberContsroller] pagination : "  + pageResult);
+		System.out.println("[MemberContsroller] pagination111 : "  + pageResult);
 		
 		return pageResult;
 	}
 	
 	
-	
-//	// 예약정보조회-페이징
+//	
+//	// 예약정보조회-페이징 (되는거)
 //	@GetMapping("checkMyBook/pagination")
 //	public Page<Book> pagination(@RequestParam("currentPage")int currentPage, HttpSession session) {
 //		String id = (String) session.getAttribute("id");
@@ -776,18 +783,18 @@ public class MemberController {
 //		// 일반 조회
 //		Page<Book> pageResult = memberService.checkMyBookPagination(id, currentPage, pageSize);
 //
-//		// 년월 검색조회
 //		System.out.println("[MemberContsroller] pagination : "  + pageResult);
 //		
 //		return pageResult;
 //	}
-//	
+	
 
 	
 // 세션 존재 확인 (나중에 지우기)
 	@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 	@GetMapping("/session-status" )
 	public ResponseEntity<ApiResponse<String>> sessionStatus() {
+		
 	    String id = authenticationFacade.getCurrentUserId(); // 시큐리티 인증된정보로 멤버 엔티티 정보획득
 		
 	    if (id == null) {
@@ -802,6 +809,8 @@ public class MemberController {
 	    return ResponseEntity.status(HttpStatus.OK)
 	                         .body(new ApiResponse<>(200, "세션 있음", id));		 
 		 }
+	
+
 	
 
 }
