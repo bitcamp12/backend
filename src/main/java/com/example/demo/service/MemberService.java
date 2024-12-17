@@ -1,7 +1,10 @@
 package com.example.demo.service;
 
-import java.time.LocalDateTime;
+
 import java.util.List;
+
+import java.time.LocalDateTime;
+
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Select;
@@ -10,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.MemberDAO;
+import com.example.demo.dto.CheckMyBookDTO;
 import com.example.demo.dto.member.MemberDTO;
 import com.example.demo.entity.Member;
 import com.example.demo.repository.AdminRepository;
@@ -98,6 +102,7 @@ public class MemberService {
 		return memberDAO.findPwdByEmail(map);
 	}
 
+
 	 public int signUp(Member member) {
 	        try {
 //	        	member.setRegisterDate(LocalDateTime.now());
@@ -178,6 +183,7 @@ public class MemberService {
 		
 
 	public int LoginEntity(String id, String password) {
+
 	    // 사용자 ID로 회원 정보 조회
 	    Member member = memberRepository.findById(id);
 	    
@@ -187,13 +193,13 @@ public class MemberService {
 	    }
 	    
 	    return 0;  // 비밀번호가 일치하지 않거나 회원이 존재하지 않는 경우
+
+}
+
+
+
+	public List<CheckMyBookDTO> checkMyBook(String id) {
+		return memberDAO.checkMyBook(id);
 	}
-
-
-
-
-
-
-
-
+	
 }

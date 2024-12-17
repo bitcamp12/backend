@@ -1,6 +1,9 @@
 package com.example.demo.dto;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,4 +23,7 @@ public class PlayTimeTableDTO {
 	private int minRate;
 	private int maxRate;
 	private LocalDate targetDate;
+	private double discountRate;
+	private double discountedPrice;
+	private int price;
 }
