@@ -16,6 +16,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import com.example.demo.service.CustomUserDetailsService;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 @Configuration
@@ -27,6 +29,8 @@ public class SecurityConfig {
     @Autowired
     private JWTUtil jwtUtil;
     
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
 
 
     public SecurityConfig(AuthenticationConfiguration authenticationConfiguration) {
@@ -35,7 +39,7 @@ public class SecurityConfig {
     
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-        return new JwtAuthenticationFilter(jwtUtil, authenticationManager());
+        return new JwtAuthenticationFilter(jwtUtil, authenticationManager(),customUserDetailsService);
     }
     
 

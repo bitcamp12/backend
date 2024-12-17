@@ -85,7 +85,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         System.out.println("리프레쉬발급"+refreshToken);
         //액세스 토큰
         
-        String token = jwtUtil.createJwt(username, role, 60 * 60 * 1000L); //60 * 60 * 1000L 60분
+        String token = jwtUtil.createJwt(username, role, 60 * 60 * 10000L); //60 * 60 * 1000L 60분
         response.setStatus(200);
         response.addHeader("Authorization", "Bearer " + token);
         

@@ -9,6 +9,8 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,12 +29,16 @@ import com.example.demo.dto.member.JoinDTO;
 import com.example.demo.dto.member.MemberDTO;
 import com.example.demo.dto.member.SmsRequestDto;
 import com.example.demo.entity.Member;
+import com.example.demo.service.CustomUserDetails;
 import com.example.demo.service.EmailService;
 import com.example.demo.service.MemberService;
 import com.example.demo.service.SmsService;
 import com.example.demo.util.ApiResponse;
+import com.example.demo.util.AuthenticationFacade;
 import com.example.demo.util.JWTUtil;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
@@ -50,6 +56,9 @@ public class MemberController {
     
     @Autowired
     private JWTUtil jwtUtil;
+    
+    @Autowired
+    private AuthenticationFacade authenticationFacade;
     
 
     // 임시로 랜덤 번호를 저장할 Map
@@ -640,25 +649,24 @@ public class MemberController {
 	}
 	
 	
-	
+	// 테스트용 
 	@GetMapping("/verify-token")
-    public ResponseEntity<?> verifyToken(@RequestHeader("Authorization") String authorizationHeader) {
-        // "Authorization: Bearer <token>" 형식에서 토큰 추출
-		System.out.println("메인페이지 토큰검증중");
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String token = authorizationHeader.substring(7); // "Bearer " 이후의 부분
-            System.out.println(token);
-            if (!jwtUtil.isExpired(token)) {
-                // 토큰이 유효하면 200 OK 반환
-                return ResponseEntity.status(HttpStatus.OK).body("Token is valid.");
-            } else {
-                // 토큰이 만료되었거나 유효하지 않으면 401 Unauthorized 반환
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token is invalid or expired.");
-            }
-        } else {
-            // Authorization 헤더가 없거나 형식이 올바르지 않으면 400 Bad Request 반환
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Authorization header is missing or invalid.");
-        }
+    public void verifyToken(@RequestHeader("Authorization") String authorizationHeader ,HttpServletRequest request) {
+            String token = authorizationHeader.substring(7); 
+            
+            System.out.println("*verify-token 컨트롤러입니다--------------*");
+            System.out.println("액세스 토큰"+token); // 액세스 토큰
+            
+            Cookie[] cookies = request.getCookies();
+            
+            System.out.println("리프레쉬 토큰 " + cookies);
+    
+            Member member = authenticationFacade.getCurrentMember(); // jwt 인증시 로그인된 멤버 엔티티 정보획득
+
+            System.out.println("현재로그인아이디"+member.getId());  // 아이디 가져오는예시 
+            System.out.println("현재로그인이메일"+member.getEmail()); // 이메일 예시 가져오는예시 
+            System.out.println("현재로그인시퀀스"+member.getMemberSeq());   // 시퀀스 예시 가져오는예시       
+
     }
 	
 	
@@ -666,16 +674,21 @@ public class MemberController {
 	
 	@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 	@GetMapping("/session-status" )
-	public ResponseEntity<ApiResponse<String>> sessionStatus(HttpSession session) {
-	    if (session.getAttribute("id") == null) {
+	public ResponseEntity<ApiResponse<String>> sessionStatus() {
+	    String id = authenticationFacade.getCurrentUserId(); // 시큐리티 인증된정보로 멤버 엔티티 정보획득
+		
+	    if (id == null) {
 	    	System.out.println("404");
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
 	                             .body(new ApiResponse<>(404, "세션 없음", null));
 	    }
+	    
 	    System.out.println("200");
-	    System.out.println(session.getAttribute("id"));
+	    
+	    
 	    return ResponseEntity.status(HttpStatus.OK)
-	                         .body(new ApiResponse<>(200, "세션 있음", session.getId()));
-	}
+	                         .body(new ApiResponse<>(200, "세션 있음", id));		 
+		 }
+	
 
 }

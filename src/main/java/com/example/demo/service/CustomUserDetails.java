@@ -23,7 +23,7 @@ public class CustomUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // 역할에 따른 권한 부여
         // Role을 GrantedAuthority로 변환하여 반환
-    	  System.out.println("Member Role: " + member.getRole());  // 추가된 디버깅 출력
+    	 // System.out.println("Member Role: " + member.getRole());  // 추가된 디버깅 출력
         return List.of(new SimpleGrantedAuthority(member.getRole().name()));
     }
 

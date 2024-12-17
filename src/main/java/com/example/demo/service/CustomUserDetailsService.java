@@ -19,13 +19,13 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-        System.out.println("검증 진행중: " + id); //id가 username으로 명시하엿음
+        //System.out.println("검증 진행중: " + id); //id가 username으로 명시하엿음
 
         // DB에서 조회
         Member member = memberRepository.findById(id);
 
         if (member != null) {
-            System.out.println("DB에서 가져온 ID: " + member.getId());
+            //System.out.println("DB에서 가져온 ID: " + member.getId());
             
             
             
