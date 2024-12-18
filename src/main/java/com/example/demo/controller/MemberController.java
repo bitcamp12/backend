@@ -623,27 +623,46 @@ public class MemberController {
     
 	// 한 명의 사용자 정보를 가져옵니다. (ResponseEntity로 수정하기)
 	@GetMapping("getUserInfo/me")
-	public MemberDTO getUserInfo( HttpSession session) {
-		System.out.println("id : " +session.getAttribute("id"));
-		String id = (String) session.getAttribute("id");
-		MemberDTO memberDTO = memberService.getUserInfo(id);
-		return memberDTO;
+	public ResponseEntity<ApiResponse<MemberDTO>> getUserInfo( HttpSession session) {
+		MemberDTO memberDTO = null;
+		try {
+//			String id = (String) session.getAttribute("id");
+			
+			String id =authenticationFacade.getCurrentUserId();  // JWT
+			
+			memberDTO = memberService.getUserInfo(id);
+			
+			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "사용자 정보 가져오기", memberDTO));
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(500, "사용자정보가져오기 에러", memberDTO));	
+		}
 	}
 	
 	// 회원 정보 수정 (ResponseEntity로 수정하기)
 	@PutMapping("modifyUserInfo")
-	public void modifyUserInfo(@RequestBody MemberDTO modifiedData) {
-		System.out.println(modifiedData);
-		memberService.modifyUserInfo(modifiedData);
+	public ResponseEntity<ApiResponse<String>> modifyUserInfo(@RequestBody MemberDTO modifiedData) {
+		try {
+			System.out.println(modifiedData);
+			memberService.modifyUserInfo(modifiedData);
+			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "회원정보수정", "수정성공"));
+		} catch (Exception e) {
+			System.err.println("Error occurred: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                 .body(new ApiResponse<>(500, null, "에러"));	
+		}
 	}
 	
 	// 회원 탈퇴
 	@DeleteMapping("infoWithdrawal/me")
 	public ResponseEntity<ApiResponse<String>> infoWithdrawal(HttpSession session) {
 		try {
-			String id = (String) session.getAttribute("id");
+//			String id = (String) session.getAttribute("id");
+			String id =authenticationFacade.getCurrentUserId();  // JWT
 			memberService.infoWithdrawal(id);
-			session.invalidate();
+//			session.invalidate();
+			
+			// JWT 토큰 삭제 
 			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "탈퇴", null));
 		} catch (Exception e) {
 			System.err.println("Error occurred: " + e.getMessage());
