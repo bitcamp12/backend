@@ -1,0 +1,6 @@
+2024-12-18 18:32:07 [restartedMain] ERROR com.example.demo.BackendApplication - 에러메세지
+2024-12-18 18:32:23 [http-nio-8080-exec-5] INFO  c.example.demo.aop.TimeTraceAspect - BookService.purchaseSeats(..) - Time Elapsed = 0.039069042s
+2024-12-18 18:32:41 [restartedMain] ERROR com.example.demo.BackendApplication - 에러메세지
+2024-12-18 18:38:07 [restartedMain] ERROR com.example.demo.BackendApplication - 에러메세지
+2024-12-18 18:38:15 [http-nio-8080-exec-3] DEBUG c.example.demo.aop.TimeTraceAspect - BookService.purchaseSeats(..) - Time Elapsed = 0.041197084s
+2024-12-18 18:41:18 [restartedMain] ERROR com.example.demo.BackendApplication - 에러메세지

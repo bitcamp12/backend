@@ -7,9 +7,9 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
-@Log4j2 // log 사용을 위한 lombok annotation
+@Slf4j // log 사용을 위한 annotation
 @Component // bean 등록을 위한 annotation
 @Aspect // AOP bean 등록을 위한 annotation
 public class TimeTraceAspect {
