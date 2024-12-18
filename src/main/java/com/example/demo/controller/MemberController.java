@@ -791,7 +791,7 @@ public class MemberController {
 	}
 	
 	
-//	
+
 //	// 예약정보조회-페이징 (되는거)
 //	@GetMapping("checkMyBook/pagination")
 //	public Page<Book> pagination(@RequestParam("currentPage")int currentPage, HttpSession session) {
