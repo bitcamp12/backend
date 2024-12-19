@@ -24,7 +24,7 @@
     </appender>
 
     <appender name="TimeTraceFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/purchase-seats-time-trace.log</file> <!-- 파일명 -->
+        <file>logs/timeTrace-log.log</file> <!-- 파일명 -->
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern> <!-- 로그 패턴 -->
         </encoder>
