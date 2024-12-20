@@ -623,19 +623,22 @@ public class MemberController {
     
 	// 한 명의 사용자 정보를 가져옵니다. (ResponseEntity로 수정하기)
 	@GetMapping("getUserInfo/me")
-	public ResponseEntity<ApiResponse<MemberDTO>> getUserInfo( HttpSession session) {
-		MemberDTO memberDTO = null;
+	public ResponseEntity<ApiResponse<Member>> getUserInfo( HttpSession session) {
+		Member member = null;
 		try {
 //			String id = (String) session.getAttribute("id");
+//			memberDTO = memberService.getUserInfo(id);
 			
 			String id =authenticationFacade.getCurrentUserId();  // JWT
+			member = authenticationFacade.getCurrentMember(); // jwt 인증시 로그인된 멤버 엔티티 정보획득
+
+            System.out.println("현재로그인아이디"+member.getId());  // 아이디 가져오는예시 
 			
-			memberDTO = memberService.getUserInfo(id);
 			
-			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "사용자 정보 가져오기", memberDTO));
+			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "사용자 정보 가져오기", member));
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse<>(500, "사용자정보가져오기 에러", memberDTO));	
+                    .body(new ApiResponse<>(500, "사용자정보가져오기 에러", member));	
 		}
 	}
 	
