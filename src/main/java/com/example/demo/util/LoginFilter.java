@@ -80,19 +80,18 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         // Refresh Token을 쿠키에 추가
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
         refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setSecure(true); // HTTPS만 허용
         refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7); // 7일
         refreshTokenCookie.setPath("/");
         response.addCookie(refreshTokenCookie);
 
-      //  System.out.println("Redis에 Refresh Token 저장 완료: " + refreshToken);
+        System.out.println("Redis에 Refresh Token 저장 완료: " + refreshToken);
 
         // Access Token 생성 및 응답 헤더에 추가 (1시간 유효기간)
         String token = jwtUtil.createJwt(username, role, 60 *60 * 1000L);
         response.setStatus(200);
         response.addHeader("Authorization", "Bearer " + token);
 
-      //  System.out.println("Access Token 발급 완료: " + token);
+        System.out.println("Access Token 발급 완료: " + token);
     }
 
     @Override
