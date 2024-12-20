@@ -17,6 +17,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.example.demo.service.CustomUserDetailsService;
+import com.example.demo.service.RedisService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -31,6 +32,9 @@ public class SecurityConfig {
     
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
+    
+    @Autowired
+    private RedisService redisService;
 
 
     public SecurityConfig(AuthenticationConfiguration authenticationConfiguration) {
@@ -99,10 +103,21 @@ public class SecurityConfig {
     				//경로별 인가 작업
             http
             .authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/**").permitAll() // 기본 페이지는 전체 허용
-                //.requestMatchers("/api/**").hasAuthority("ROLE_USER") // 유저만 api관련 인증가능
-                .anyRequest().authenticated()) // 나머지 요청은 인증 필요
-            .addFilterAt(new LoginFilter(authenticationManager(), jwtUtil), UsernamePasswordAuthenticationFilter.class) // LoginFilter 추가
+                    .requestMatchers(             		
+                    		"/api/favorites/favorites",                  		
+                    		"/api/qnas/qna",                   		
+                    		"/api/reviewAfters/ReviewA",
+                    		"/api/reviewBefores/ReviewB",                    		
+                    		"/api/books/getBookedSeats",
+                    		"/api/books/purchaseSeats",                   		
+                    		"/api/theaters/getTheaterInfo",                  		
+                            "/api/members/getUserInfo/me",
+                            "/api/members/infoWithdrawal/me",
+                            "/api/members/checkMyBook",
+                            "/api/members/checkMyBook/checkBookingsByDate"
+                        ).hasAuthority("ROLE_USER") // ROLE_USER 권한을 가진 사용자만 접근 가능
+                .requestMatchers("/**").permitAll()) // 기본 페이지는 전체 허용    
+            .addFilterAt(new LoginFilter(authenticationManager(), jwtUtil, redisService), UsernamePasswordAuthenticationFilter.class) // LoginFilter 추가
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // JWT 필터 추가
 
             return http.build();
