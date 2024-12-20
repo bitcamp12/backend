@@ -67,19 +67,20 @@ public interface MemberDAO {
     @Select("SELECT COUNT(*) FROM member WHERE name = #{name} AND email = #{email} AND id =#{id}")
 	public int findPwdByEmail(Map<String, String> map);
 
-    @Select("SELECT member.id, book.book_seq, book.pay_date, book.payment, play.name, play_time_table.target_date "
-    	      + "FROM book "
-    	      + "LEFT JOIN play_time_table ON book.play_time_table_seq = play_time_table.play_time_table_seq "
-    	      + "LEFT JOIN play ON play_time_table.play_seq = play.play_seq "
-    	      + "LEFT JOIN member ON book.member_seq = member.member_seq "
-    	      + "WHERE member.id = #{id}")
+    @Select("select * from booking_status_view where member_id=#{id} order by book_seq desc")
 	public List<CheckMyBookDTO> checkMyBook(String id);
 
+<<<<<<< HEAD
     
     @Select("""
     		SELECT password FROM member WHERE id = #{userId}
     		""")
 	public String getStoredPassword(String userId);
+=======
+    @Select("select * from booking_status_view where member_id=#{id}"
+    		+ "and year(pay_date)=#{year} and month(pay_date)=#{month};")
+	public List<CheckMyBookDTO> checkBookingsByDate(Map<String, Object> map);
+>>>>>>> b417494ff93643e1fe24d2254e8ddccd4084ebbf
 
   
 
