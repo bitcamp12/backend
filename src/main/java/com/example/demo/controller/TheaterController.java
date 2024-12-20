@@ -16,7 +16,6 @@ import com.example.demo.util.ApiResponse;
 
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping(value="/api/theaters")
 public class TheaterController {
     
