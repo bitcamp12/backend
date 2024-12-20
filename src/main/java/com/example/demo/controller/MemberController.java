@@ -8,6 +8,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.CheckMyBookDTO;
@@ -31,6 +33,7 @@ import com.example.demo.dto.member.IdFindDTO;
 import com.example.demo.dto.member.JoinDTO;
 import com.example.demo.dto.member.MemberDTO;
 import com.example.demo.dto.member.SmsRequestDto;
+import com.example.demo.entity.Book;
 import com.example.demo.entity.Member;
 import com.example.demo.service.CustomUserDetails;
 import com.example.demo.service.EmailService;
@@ -664,7 +667,7 @@ public class MemberController {
 	
 // -- 지현: 마이페이지(사용자정보) 수정 ---------------------------
     // 세션얻어오기 => 필요없음(2024.11.27)
-    @CrossOrigin(origins = "http://localhost:3000/member", allowCredentials = "true")
+//    @CrossOrigin(origins = "http://localhost:3000/member", allowCredentials = "true")
     @GetMapping("getSession")
     public ResponseEntity<ApiResponse<String>> getSession (HttpSession session) {
     	try {
@@ -688,11 +691,21 @@ public class MemberController {
     
 	// 한 명의 사용자 정보를 가져옵니다. (ResponseEntity로 수정하기)
 	@GetMapping("getUserInfo/me")
-	public MemberDTO getUserInfo( HttpSession session) {
-		System.out.println("id : " +session.getAttribute("id"));
-		String id = (String) session.getAttribute("id");
-		MemberDTO memberDTO = memberService.getUserInfo(id);
-		return memberDTO;
+
+	public ResponseEntity<ApiResponse<Member>> getUserInfo( ) {
+		Member member = null;
+		try {			
+			String id =authenticationFacade.getCurrentUserId();  // JWT
+			member = authenticationFacade.getCurrentMember(); // jwt 인증시 로그인된 멤버 엔티티 정보획득
+
+            System.out.println("현재로그인아이디"+member.getId());  // 아이디 가져오는예시 
+			
+			
+			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "사용자 정보 가져오기", member));
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>(500, "사용자정보가져오기 에러", member));	
+		}
 	}
 	
 	// 회원 정보 수정 (ResponseEntity로 수정하기)
@@ -740,36 +753,49 @@ public class MemberController {
     }
 	
 
-	// 예약 정보 조회 
-	@GetMapping("checkMyBook")
-	public ResponseEntity<ApiResponse<List<CheckMyBookDTO>>> checkMyBook(HttpSession session) {
-		try {
-			String id = (String) session.getAttribute("id");
-			System.out.println("checkMyBook : " +id);
-			
-			List<CheckMyBookDTO> list = memberService.checkMyBook(id);
-			
-			if(list!=null && !list.isEmpty()) {
-				// 예약목록이 존재할 경우, 
-				System.out.println("checkMyBookList : " +list);
-				return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "예약목록이 있습니다.", list));				
+	
+	
+	// 예약정보조회-페이징
+	@GetMapping("checkMyBook/pagination")
+	public Page<Book> pagination(@RequestParam("currentPage")int currentPage,@RequestParam("classify") String classify, @RequestParam("year") String year, @RequestParam("month") String month, HttpSession session) {
+		//String id = (String) session.getAttribute("id");
+		
+		//JWT 
+		String id =authenticationFacade.getCurrentUserId();  
+		System.out.println("pagination JWT ID : " +id);
+
+		System.out.println(classify+ year + month);
+
+		int pageSize = 3; // 한 페이지에 보여줄 내용
+		Page<Book> pageResult;
+		
+
+		// 년월 검색조회
+		if (!classify.isEmpty() && !year.isEmpty() && !month.isEmpty()) {
+			if(classify.equals("pay_date")) {
+				System.out.println("년월조회");
+				pageResult = memberService.checkMyBookPagination(id, year, month, currentPage, pageSize);    				
 			}else {
-				// 예약 목록이 존재하지 않을 경우
-				return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "예약목록이 없습니다.", null));
+				pageResult=null;
 			}
-		} catch (Exception e) {
-			// 에러났을 경우 
-			System.err.println("Error occurred: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body(new ApiResponse<>(500, "예약목록을 불러오는 중 에러 발생", null));
+		} else {
+			// 일반 조회
+			System.out.println("일반조회");
+			pageResult = memberService.checkMyBookPagination(id, currentPage, pageSize);
 		}
 		
+		System.out.println("[MemberContsroller] pagination111 : "  + pageResult);
+		
+		return pageResult;
 	}
+	
+	
 
 	
-// 세션 존재 확인 (나중에 필요하면 지움)
 	
-	@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+	
+// 세션 존재 확인 (나중에 필요하면 지움)
+//	@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 	@GetMapping("/session-status" )
 	public ResponseEntity<ApiResponse<String>> sessionStatus() {
 	    String id = authenticationFacade.getCurrentUserId(); // 시큐리티 인증된정보로 멤버 엔티티 정보획득
