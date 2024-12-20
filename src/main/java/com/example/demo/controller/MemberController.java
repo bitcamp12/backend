@@ -857,31 +857,7 @@ public class MemberController {
 	}
 
 	
-	 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
-	    @PostMapping("/snslogin")
-	    public ResponseEntity<ApiResponse<String>> snslogin(HttpSession session, @RequestParam("id") String id) {
-	 
-	    	try {
-
-	            // 로그인 서비스 호출
-	            int result = memberService.SNSLoginEntity(id);
-
-	            // 로그인 성공
-	            if (result == 1) {
-	            	System.out.println("로그인성공");
-	            	return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "success", null));
-	  
-	            } else {
-	                // 로그인 실패 (회원 정보 없음)
-	                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(404, null, "회원정보없음"));
-	            }
-	        } catch (Exception e) {
-	            // 예외 발생 시 에러 메시지 반환
-	            System.err.println("Error occurred: " + e.getMessage());
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-	                    .body(new ApiResponse<>(500, null, "에러"));
-	        }
-	    }
+	
 
 	
 
