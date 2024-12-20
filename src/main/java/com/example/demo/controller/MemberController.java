@@ -560,8 +560,7 @@ public class MemberController {
         }
     }
 
-    
-    @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<String>> login(HttpSession session, @RequestBody MemberDTO dto) {
  
@@ -590,7 +589,7 @@ public class MemberController {
     }
 
     
-    @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+
     @PostMapping("/logout")
     public ResponseEntity<ApiResponse<String>> logout(@RequestHeader("Authorization") String authorizationHeader, HttpServletRequest request, HttpServletResponse response) {
         try {
