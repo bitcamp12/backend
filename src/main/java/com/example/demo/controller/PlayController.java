@@ -25,7 +25,6 @@ import com.example.demo.util.ApiResponse;
 
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping(value="/api/plays")
 public class PlayController {
     
