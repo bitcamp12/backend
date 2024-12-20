@@ -171,7 +171,10 @@ public class MemberService {
 		
         try {
             Member member = memberRepository.findById(id);
-            member.setPassword(password);
+            
+            String encodedPassword = passwordEncoder.encode(password);
+            member.setPassword(encodedPassword);  // 암호화된 비밀번호 저장
+            
             memberRepository.save(member);
             return 1;
         } catch (Exception e) {
