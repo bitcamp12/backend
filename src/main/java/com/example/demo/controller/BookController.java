@@ -44,6 +44,7 @@ public class BookController {
 
 	@PostMapping(value = "purchaseSeats")
 	public ResponseEntity<ApiResponse<Void>> purchaseSeats(@RequestBody List<BookDTO> list) {
+		System.out.println("Received Payload: " + list);
 		try {
 			bookService.purchaseSeats(list);
 			return ResponseEntity.ok(new ApiResponse<>(200, "성공", null));
