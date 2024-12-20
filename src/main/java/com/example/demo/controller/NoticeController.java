@@ -16,7 +16,6 @@ import com.example.demo.util.ApiResponse;
 
 @RestController
 @RequestMapping(value="/api/notices")
-@CrossOrigin(origins = "http://localhost:3000")
 public class NoticeController {
     
 	@Autowired
