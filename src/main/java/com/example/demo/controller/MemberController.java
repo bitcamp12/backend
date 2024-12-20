@@ -593,8 +593,8 @@ public class MemberController {
         try {
             // 액세스 토큰 추출 (Bearer <token>)
             String token = authorizationHeader.substring(7);
-            System.out.println("* 로그아웃 컨트롤러입니다. -------------- *");
-            System.out.println("액세스 토큰: " + token);
+          //  System.out.println("* 로그아웃 컨트롤러입니다. -------------- *");
+           // System.out.println("액세스 토큰: " + token);
             
             // 로그인한 사용자 ID 가져오기
             String username = authenticationFacade.getCurrentUserId();
@@ -602,11 +602,11 @@ public class MemberController {
                 // Redis에 액세스토큰을 블랙리스트로 저장
                 String redisKeyBlack = "accessToken:" + username; // 사용자별 고유 키
                 
-                System.out.println("기존 액세스 토큰 Redis블랙리스트 저장: " + redisKeyBlack);
+             //   System.out.println("기존 액세스 토큰 Redis블랙리스트 저장: " + redisKeyBlack);
                 redisService.saveToken(redisKeyBlack, token, 60 * 60 * 24 * 7 * 1000L);
             }
                else {
-            	System.out.println("유효기간이 만료된 사용자입니다. 다시로그인해주세요");
+            	//System.out.println("유효기간이 만료된 사용자입니다. 다시로그인해주세요");
              }
                        
             
@@ -620,9 +620,9 @@ public class MemberController {
             }
 
             if (refreshToken != null) {
-                System.out.println("리프레시 토큰: " + refreshToken);
+               // System.out.println("리프레시 토큰: " + refreshToken);
             } else {
-                System.out.println("리프레시 토큰이 없습니다.");
+               // System.out.println("리프레시 토큰이 없습니다.");
             }
             
             String usernameR = jwtUtil.getUsername(refreshToken);
@@ -635,9 +635,9 @@ public class MemberController {
             if (existingToken != null) {
                 // 리프레시 토큰 삭제
                 redisService.deleteToken(redisKey);
-                System.out.println("리프레시 토큰 Redis에서 삭제됨: " + redisKey);
+              //  System.out.println("리프레시 토큰 Redis에서 삭제됨: " + redisKey);
             } else {
-                System.out.println("리프레시 토큰을 Redis에서 찾을 수 없음: " + redisKey);
+               // System.out.println("리프레시 토큰을 Redis에서 찾을 수 없음: " + redisKey);
             }
 
 
@@ -769,12 +769,12 @@ public class MemberController {
 	    String id = authenticationFacade.getCurrentUserId(); // 시큐리티 인증된정보로 멤버 엔티티 정보획득
 		
 	    if (id == null) {
-	    	System.out.println("404");
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-	                             .body(new ApiResponse<>(404, "세션 없음", null));
+	    //	System.out.println("401");
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	                             .body(new ApiResponse<>(401, "세션 없음", null));
 	    }
 	    
-	    System.out.println("200");
+	 //   System.out.println("200");
 	    
 	    
 	    return ResponseEntity.status(HttpStatus.OK)

@@ -65,9 +65,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     // 토큰 처리 메서드
     private void processTokenAuthentication(String token, HttpServletRequest request, HttpServletResponse response,FilterChain filterChain) throws IOException, ServletException {
    
-        	 System.out.println("토큰 만료 검증시작전: " ); // 만료 여부 출력
+        	// System.out.println("토큰 만료 검증시작전: " ); // 만료 여부 출력
             boolean isExpired = jwtUtil.isExpired(token);
-             System.out.println("토큰 만료 여부: " + isExpired); // 만료 여부 출력
+          //   System.out.println("토큰 만료 여부: " + isExpired); // 만료 여부 출력
 
             if (!isExpired) {
                 // 토큰이 만료되지 않은 경우 인증 처리
@@ -82,7 +82,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     // 유효한 토큰으로 인증 처리
     private void authenticateWithToken(String token) {
         String username = jwtUtil.getUsername(token);
-        System.out.println("토큰에서 추출된 사용자 이름: " + username);
+       // System.out.println("토큰에서 추출된 사용자 이름: " + username);
         
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
         
@@ -98,8 +98,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         
         Member member = authenticationFacade.getCurrentMember();
         
-        System.out.println("이름"+member.getName()+"역할"+member.getRole());        
-        System.out.println("권한"+userDetails.getAuthorities());
+        //System.out.println("이름"+member.getName()+"역할"+member.getRole());        
+       // System.out.println("권한"+userDetails.getAuthorities());
 
       //  System.out.println("유효한 토큰, 인증 완료.");
     }
@@ -133,8 +133,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             
 
             // 리프레시 토큰 삭제
-            System.out.println("리프레시 토큰 이존재함  액세스토재발급 진행 " + redisKey);   
-            System.out.println("레디스에 존재하는 리프레쉬토큰"+refreshToken);
+           // System.out.println("리프레시 토큰 이존재함  액세스토재발급 진행 " + redisKey);   
+          //  System.out.println("레디스에 존재하는 리프레쉬토큰"+refreshToken);
 
             String username = jwtUtil.getUsername(refreshToken);
             String role = jwtUtil.getRole(refreshToken);
@@ -147,20 +147,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             //새로 발급된 토큰으로 인증 자동 진행
             filterChain.doFilter(request, response);
         } else {
-            System.out.println("리프레시 토큰이 없거나 만료됨.");
+          //  System.out.println("리프레시 토큰이 없거나 만료됨.");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            try {
-                response.getWriter().write("토큰이 만료되었습니다. 다시 로그인하세요.");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        }  
+        
     }
 
     // Authorization 헤더에서 JWT 토큰을 추출하는 메서드
     public String extractToken(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
-        System.out.println("헤더 값 추출 중JWT: " + header);
+       // System.out.println("헤더 값 추출 중JWT: " + header);
 
         if (header != null && header.startsWith("Bearer ")) {
             return header.substring(7); // "Bearer " 이후의 토큰 반환
@@ -176,7 +172,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if ("refreshToken".equals(cookie.getName())) {
-                    System.out.println("리프레시 토큰 찾음: " + cookie.getValue());
+                   // System.out.println("리프레시 토큰 찾음: " + cookie.getValue());
                     return cookie.getValue();
                 }
             }
