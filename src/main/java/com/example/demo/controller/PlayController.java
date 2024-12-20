@@ -82,11 +82,55 @@ public class PlayController {
 	    }
 	}
 	
-
 	@GetMapping("/getPlayRandom")
 	public ResponseEntity<ApiResponse<List<PlayDTO>>> getPlayRandom() {
 		List<PlayDTO> plays = playService.getPlayRandom();
 		return ResponseEntity.ok(new ApiResponse<>(200, "Data retrieved", plays));
+	}
+
+	@GetMapping("/getPlayEndingSoon")
+	public ResponseEntity<ApiResponse<List<PlayDTO>>> getPlayEndingSoon(@RequestParam("page") int page, @RequestParam("size") int size) {
+		try {
+			List<PlayDTO> plays = playService.getPlaysEndingSoon(page, size);
+			if (plays.isEmpty()) {
+				return ResponseEntity.ok(new ApiResponse<>(204, "검색된 데이터가없습니다", plays));
+			}
+			return ResponseEntity.ok(new ApiResponse<>(200, "데이터 목록입니다", plays));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ApiResponse<>(500, "서버 에러 발생", null));
+		}
+	}
+
+	@GetMapping("/getPlayComingSoon")
+	public ResponseEntity<ApiResponse<List<PlayDTO>>> getPlayComingSoon(@RequestParam("page") int page, @RequestParam("size") int size) {
+		try {
+			List<PlayDTO> plays = playService.getPlaysComingSoon(page, size);
+			if (plays.isEmpty()) {
+				return ResponseEntity.ok(new ApiResponse<>(204, "검색된 데이터가없습니다", plays));
+			}
+			return ResponseEntity.ok(new ApiResponse<>(200, "데이터 목록입니다", plays));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ApiResponse<>(500, "서버 에러 발생", null));
+		}
+	}
+
+	@GetMapping("/getPlayLimited")
+	public ResponseEntity<ApiResponse<List<PlayDTO>>> getPlayLimited(@RequestParam("page") int page, @RequestParam("size") int size) {
+		try {
+			List<PlayDTO> plays = playService.getPlaysLimited(page, size);
+			if (plays.isEmpty()) {
+				return ResponseEntity.ok(new ApiResponse<>(204, "검색된 데이터가없습니다", plays));
+			}
+			return ResponseEntity.ok(new ApiResponse<>(200, "데이터 목록입니다", plays));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ApiResponse<>(500, "서버 에러 발생", null));
+		}
 	}
 
 }

@@ -33,8 +33,16 @@ dependencies {
     // Spring Web 모듈 의존성 (웹 애플리케이션 개발)
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
+    // Spring Boot 로그 모듈 의존성 (로그 관리)
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter-logging'
+
+    // Toss 결제 모듈 의존성
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+    
     // Lombok (자동으로 getter/setter 생성 등)
     compileOnly 'org.projectlombok:lombok'
+
     annotationProcessor 'org.projectlombok:lombok'
 
     // 개발 도구 의존성 (자동 리스타트 등)
