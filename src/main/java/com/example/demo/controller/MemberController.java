@@ -8,7 +8,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -17,12 +17,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.CheckMyBookDTO;
@@ -31,18 +31,20 @@ import com.example.demo.dto.member.IdFindDTO;
 import com.example.demo.dto.member.JoinDTO;
 import com.example.demo.dto.member.MemberDTO;
 import com.example.demo.dto.member.SmsRequestDto;
-import com.example.demo.entity.Book;
 import com.example.demo.entity.Member;
 import com.example.demo.service.CustomUserDetails;
 import com.example.demo.service.EmailService;
 import com.example.demo.service.MemberService;
+import com.example.demo.service.RedisService;
 import com.example.demo.service.SmsService;
 import com.example.demo.util.ApiResponse;
 import com.example.demo.util.AuthenticationFacade;
 import com.example.demo.util.JWTUtil;
+import com.example.demo.util.JwtAuthenticationFilter;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
@@ -64,6 +66,12 @@ public class MemberController {
     @Autowired
     private AuthenticationFacade authenticationFacade;
     
+    @Autowired
+    private RedisService redisService;
+    
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+      
 
     // 임시로 랜덤 번호를 저장할 Map
     private Map<String, String> emailVerificationCodes = new HashMap<>();
@@ -109,6 +117,11 @@ public class MemberController {
     
     @GetMapping("/jwt")
     public String jwt() {
+    	return "main Controller";
+    }
+    
+    @GetMapping("/api/members/naver")
+    public String naverLogin() {
     	return "main Controller";
     }
     
@@ -576,22 +589,74 @@ public class MemberController {
     
     @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<String>> logout(HttpSession session) {
+    public ResponseEntity<ApiResponse<String>> logout(@RequestHeader("Authorization") String authorizationHeader, HttpServletRequest request, HttpServletResponse response) {
         try {
-        	
-           System.out.println("11a");
-            //session.removeAttribute("id");
-        	session.invalidate();
-            //System.out.println(session.getAttribute("id"));
-            // 로그아웃 성공
-                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "로그아웃", null));
+            // 액세스 토큰 추출 (Bearer <token>)
+            String token = authorizationHeader.substring(7);
+          //  System.out.println("* 로그아웃 컨트롤러입니다. -------------- *");
+           // System.out.println("액세스 토큰: " + token);
+            
+            // 로그인한 사용자 ID 가져오기
+            String username = authenticationFacade.getCurrentUserId();
+            if(username != null) {
+                // Redis에 액세스토큰을 블랙리스트로 저장
+                String redisKeyBlack = "accessToken:" + username; // 사용자별 고유 키
+                
+                System.out.println("기존 액세스 토큰 Redis블랙리스트 저장: " + redisKeyBlack);
+                redisService.saveToken(redisKeyBlack, token, 60 * 60 * 24 * 7 * 1000L);
+            }
+               else {
+            	//System.out.println("유효기간이 만료된 사용자입니다. 다시로그인해주세요");
+             }
+                       
+            
+            String refreshToken = null;
+            
+            for (Cookie cookie : request.getCookies()) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    refreshToken = cookie.getValue();
+                    break;
+                }
+            }
+
+            if (refreshToken != null) {
+               // System.out.println("리프레시 토큰: " + refreshToken);
+            } else {
+               // System.out.println("리프레시 토큰이 없습니다.");
+            }
+            
+            String usernameR = jwtUtil.getUsername(refreshToken);
+            
+            // 사용자별 리프레시 토큰을 저장하는 키
+            String redisKey = "refreshToken:" + usernameR;
+
+            // Redis에서 해당 키가 존재하는지 확인
+            String existingToken = redisService.getToken(redisKey);
+            if (existingToken != null) {
+                // 리프레시 토큰 삭제
+                redisService.deleteToken(redisKey);
+              //  System.out.println("리프레시 토큰 Redis에서 삭제됨: " + redisKey);
+            } else {
+               // System.out.println("리프레시 토큰을 Redis에서 찾을 수 없음: " + redisKey);
+            }
+
+            
+            // 리프레시 토큰 쿠키 삭제
+            Cookie refreshTokenCookie = new Cookie("refreshToken", null);
+            refreshTokenCookie.setPath("/");  // 모든 경로에서 접근 가능하도록 설정
+            refreshTokenCookie.setHttpOnly(true); // JavaScript에서 접근 불가하도록 설정
+            refreshTokenCookie.setMaxAge(0); // 만료 시간을 0으로 설정하여 삭제됨을 의미
+            response.addCookie(refreshTokenCookie);
+
+            // 로그아웃 성공 응답
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "로그아웃 성공", null));
         } catch (Exception e) {
-            // 예외 발생 시 에러 메시지 반환
             System.err.println("Error occurred: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                  .body(new ApiResponse<>(500, null, "에러"));
         }
     }
+
 
 
 	
@@ -623,46 +688,27 @@ public class MemberController {
     
 	// 한 명의 사용자 정보를 가져옵니다. (ResponseEntity로 수정하기)
 	@GetMapping("getUserInfo/me")
-	public ResponseEntity<ApiResponse<MemberDTO>> getUserInfo( HttpSession session) {
-		MemberDTO memberDTO = null;
-		try {
-//			String id = (String) session.getAttribute("id");
-			
-			String id =authenticationFacade.getCurrentUserId();  // JWT
-			
-			memberDTO = memberService.getUserInfo(id);
-			
-			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "사용자 정보 가져오기", memberDTO));
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponse<>(500, "사용자정보가져오기 에러", memberDTO));	
-		}
+	public MemberDTO getUserInfo( HttpSession session) {
+		System.out.println("id : " +session.getAttribute("id"));
+		String id = (String) session.getAttribute("id");
+		MemberDTO memberDTO = memberService.getUserInfo(id);
+		return memberDTO;
 	}
 	
 	// 회원 정보 수정 (ResponseEntity로 수정하기)
 	@PutMapping("modifyUserInfo")
-	public ResponseEntity<ApiResponse<String>> modifyUserInfo(@RequestBody MemberDTO modifiedData) {
-		try {
-			System.out.println(modifiedData);
-			memberService.modifyUserInfo(modifiedData);
-			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "회원정보수정", "수정성공"));
-		} catch (Exception e) {
-			System.err.println("Error occurred: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body(new ApiResponse<>(500, null, "에러"));	
-		}
+	public void modifyUserInfo(@RequestBody MemberDTO modifiedData) {
+		System.out.println(modifiedData);
+		memberService.modifyUserInfo(modifiedData);
 	}
 	
 	// 회원 탈퇴
 	@DeleteMapping("infoWithdrawal/me")
 	public ResponseEntity<ApiResponse<String>> infoWithdrawal(HttpSession session) {
 		try {
-//			String id = (String) session.getAttribute("id");
-			String id =authenticationFacade.getCurrentUserId();  // JWT
+			String id = (String) session.getAttribute("id");
 			memberService.infoWithdrawal(id);
-//			session.invalidate();
-			
-			// JWT 토큰 삭제 
+			session.invalidate();
 			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "탈퇴", null));
 		} catch (Exception e) {
 			System.err.println("Error occurred: " + e.getMessage());
@@ -720,116 +766,26 @@ public class MemberController {
 		
 	}
 
-	// 특정 년/월의 예약 정보 조회 
-	@GetMapping("checkMyBook/checkBookingsByDate")
-	public ResponseEntity<ApiResponse<List<CheckMyBookDTO>>> checkBookingsByDate (@RequestParam("classify") String classify, @RequestParam("year") int year, @RequestParam("month") int month, HttpSession session) {
-			
-		String id =authenticationFacade.getCurrentUserId();  // 아이디 가져오는예시 
-		System.out.println("pagination JWT ID : " +id);
-		
-		try {	
-			System.out.println("checkMyBook/checkBookingsByDate : " + id  + ", "+ classify + ", " + year+ ", " + month);
-			
-			Map<String, Object> map = new HashMap<>();
-			map.put("id", id);
-			map.put("classify", classify);
-			map.put("year", year);
-			map.put("month", month);
-			
-			List<CheckMyBookDTO> list = memberService.checkBookingsByDate(map);
-			
-			if(list!=null && !list.isEmpty()) {
-				// 예약목록이 존재할 경우, 
-				System.out.println("checkBookingsByDate : " +list);
-				return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "년/월 검색 예약목록이 있습니다.", list));				
-			}else {
-				// 예약 목록이 존재하지 않을 경우
-				return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "년/월 검색 예약목록이 없습니다.", null));
-			}
-		} catch (Exception e) {
-			// 에러났을 경우 
-			System.err.println("Error occurred: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body(new ApiResponse<>(500, "예약목록을 불러오는 중 에러 발생", null));
-		}
-		
-	}
 	
+// 세션 존재 확인 (나중에 필요하면 지움)
 	
-	// 예약정보조회-페이징
-	@GetMapping("checkMyBook/pagination")
-	public Page<Book> pagination(@RequestParam("currentPage")int currentPage,@RequestParam("classify") String classify, @RequestParam("year") String year, @RequestParam("month") String month, HttpSession session) {
-		//String id = (String) session.getAttribute("id");
-		
-		//JWT 
-		String id =authenticationFacade.getCurrentUserId();  
-		System.out.println("pagination JWT ID : " +id);
-
-		System.out.println(classify+ year + month);
-
-		int pageSize = 3; // 한 페이지에 보여줄 내용
-		Page<Book> pageResult;
-		
-
-		// 년월 검색조회
-		if (!classify.isEmpty() && !year.isEmpty() && !month.isEmpty()) {
-			if(classify.equals("pay_date")) {
-				System.out.println("년월조회");
-				pageResult = memberService.checkMyBookPagination(id, year, month, currentPage, pageSize);    				
-			}else {
-				pageResult=null;
-			}
-		} else {
-			// 일반 조회
-			System.out.println("일반조회");
-			pageResult = memberService.checkMyBookPagination(id, currentPage, pageSize);
-		}
-		
-		System.out.println("[MemberContsroller] pagination111 : "  + pageResult);
-		
-		return pageResult;
-	}
-	
-	
-
-//	// 예약정보조회-페이징 (되는거)
-//	@GetMapping("checkMyBook/pagination")
-//	public Page<Book> pagination(@RequestParam("currentPage")int currentPage, HttpSession session) {
-//		String id = (String) session.getAttribute("id");
-//		
-//		int pageSize = 3; // 한 페이지에 보여줄 내용
-//	
-//		// 일반 조회
-//		Page<Book> pageResult = memberService.checkMyBookPagination(id, currentPage, pageSize);
-//
-//		System.out.println("[MemberContsroller] pagination : "  + pageResult);
-//		
-//		return pageResult;
-//	}
-	
-
-	
-// 세션 존재 확인 (나중에 지우기)
 	@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 	@GetMapping("/session-status" )
 	public ResponseEntity<ApiResponse<String>> sessionStatus() {
-		
 	    String id = authenticationFacade.getCurrentUserId(); // 시큐리티 인증된정보로 멤버 엔티티 정보획득
 		
 	    if (id == null) {
-	    	System.out.println("404");
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-	                             .body(new ApiResponse<>(404, "세션 없음", null));
+	    //	System.out.println("401");
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	                             .body(new ApiResponse<>(401, "세션 없음", null));
 	    }
 	    
-	    System.out.println("200");
+	 //   System.out.println("200");
 	    
 	    
 	    return ResponseEntity.status(HttpStatus.OK)
 	                         .body(new ApiResponse<>(200, "세션 있음", id));		 
 		 }
-	
-
 	
 
 }
