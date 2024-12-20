@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dto.ReviewAfterDTO;
 import com.example.demo.dto.ReviewBeforeDTO;
 import com.example.demo.entity.Member;
 import com.example.demo.entity.ReviewAfter;
@@ -36,17 +34,21 @@ public class ReviewBeforeController {
 	private ReviewBeforeService reviewBeforeService;
 	@Autowired
 	MemberService memberService;
+
 	@Autowired
 	AuthenticationFacade authenticationFacade;
+
 	//리뷰 작성
 		@PostMapping("reviewB")
 		public ResponseEntity<ApiResponse<ReviewBefore>> reviewBWrite(@RequestParam("playSeq") int playSeq,
 								@RequestBody ReviewBeforeDTO reviewBeforeDTO,
 								HttpSession session) {
+
 			 Member member = authenticationFacade.getCurrentMember();
 			 System.out.println("현재로그인아이디"+member.getId());  // 아이디 가져오는예시 
 			try {
 				reviewBeforeDTO.setMemberSeq(memberService.getMemberSeq(member.getId()));
+
 //				memberService.getMemberSeq();
 		//세션 구할거임
 		 int result=reviewBeforeService.reviewBWrite(playSeq,reviewBeforeDTO.getMemberSeq(),reviewBeforeDTO.getContent());

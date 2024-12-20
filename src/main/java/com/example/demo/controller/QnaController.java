@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,12 +9,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.QnaDTO;
-import com.example.demo.dto.ReviewBeforeDTO;
 import com.example.demo.entity.Member;
 import com.example.demo.entity.Qna;
 import com.example.demo.service.MemberService;
@@ -24,8 +23,6 @@ import com.example.demo.util.ApiResponse;
 import com.example.demo.util.AuthenticationFacade;
 
 import jakarta.servlet.http.HttpSession;
-
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 
@@ -37,8 +34,10 @@ public class QnaController {
 	private QnaService qnaService;
 	@Autowired
 	MemberService memberService;
+
 	@Autowired
 	AuthenticationFacade authenticationFacade;
+
 	
 	@PostMapping("qna")
 	public ResponseEntity<ApiResponse<Qna>> qnaWrite(@RequestParam("playSeq") int playSeq,
@@ -54,6 +53,7 @@ public class QnaController {
 		
 		try {
 			qnaDTO.setMemberSeq(memberService.getMemberSeq(member.getId()));
+
 			int result=qnaService.qnaWrite(playSeq,qnaDTO.getMemberSeq(),qnaDTO.getTitle(),qnaDTO.getContent());
 			if(result==1) {
 				 return  ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "성공", null));

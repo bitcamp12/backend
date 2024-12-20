@@ -255,5 +255,4 @@ public class MemberService {
 	 * checkMyBookRepository.findAll(pageable); }
 	 */
 
-
 }

@@ -28,5 +28,4 @@ public class PlayDTO {
     private int discountRate;
     private String targetDate; 
 
-
 }

@@ -1,20 +1,19 @@
 package com.example.demo.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dto.PlayDTO;
 import com.example.demo.dto.ReviewAfterDTO;
 import com.example.demo.entity.Member;
 import com.example.demo.entity.ReviewAfter;
@@ -24,11 +23,6 @@ import com.example.demo.util.ApiResponse;
 import com.example.demo.util.AuthenticationFacade;
 
 import jakarta.servlet.http.HttpSession;
-import lombok.Delegate;
-
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 
 
@@ -43,6 +37,7 @@ public class ReviewAfterController {
 	@Autowired
 	MemberService memberService;
 	
+
 	@Autowired
 	AuthenticationFacade authenticationFacade;
 	
@@ -51,11 +46,13 @@ public class ReviewAfterController {
 	public ResponseEntity<ApiResponse<ReviewAfter>> reviewWriteA(@RequestParam("playSeq") int playSeq,
 							@RequestBody ReviewAfterDTO reviewDTO,
 							HttpSession session) {
+
 		 Member member = authenticationFacade.getCurrentMember();
 		 System.out.println("현재로그인아이디"+member.getId());  // 아이디 가져오는예시 
 		
 		try {
 			reviewDTO.setMemberSeq(memberService.getMemberSeq(member.getId()));
+
 //			
 	//세션 구할거임
 	 int result=reviewAfterService.reviewAWrite(playSeq,reviewDTO.getMemberSeq(),reviewDTO.getContent(),reviewDTO.getRating());

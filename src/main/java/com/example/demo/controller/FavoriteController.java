@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,10 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dto.FavoriteDTO;
 import com.example.demo.entity.Favorite;
 import com.example.demo.entity.Member;
-import com.example.demo.entity.ReviewAfter;
 import com.example.demo.service.FavoriteService;
 import com.example.demo.service.MemberService;
 import com.example.demo.util.ApiResponse;
@@ -31,12 +28,15 @@ public class FavoriteController {
     
 	@Autowired
 	private FavoriteService favoriteService;
+
 	@Autowired
 	AuthenticationFacade authenticationFacade;
+
 	@PostMapping("favorites")
 	public  ResponseEntity<ApiResponse<Favorite>> favoritesInsert(@RequestParam("playSeq") int playSeq,
 			HttpSession session) {
 		
+
 		Member member = authenticationFacade.getCurrentMember(); // jwt 인증시 로그인된 멤버 엔티티 정보획득
 
         System.out.println("현재로그인아이디"+member.getId());  // 아이디 가져오는예시 
@@ -46,6 +46,7 @@ public class FavoriteController {
 			}
 			else {
 				int memberSeq=memberService.getMemberSeq(member.getId());
+
 				System.out.println(memberSeq+"memberSeq");
 //				
 					System.out.println(memberSeq+"  "+playSeq);
@@ -98,6 +99,7 @@ public class FavoriteController {
 	@DeleteMapping("favorites")
 	public  ResponseEntity<ApiResponse<Favorite>> favoritesDelete(@RequestParam("playSeq") int playSeq,
 			HttpSession session) {
+
 		Member member = authenticationFacade.getCurrentMember(); // jwt 인증시 로그인된 멤버 엔티티 정보획득
 
         System.out.println("현재로그인아이디"+member.getId());  // 아이디 가져오는예시 

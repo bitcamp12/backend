@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -9,16 +8,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,16 +20,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dto.CheckMyBookDTO;
 import com.example.demo.dto.member.IdCheckDTO;
 import com.example.demo.dto.member.IdFindDTO;
-import com.example.demo.dto.member.JoinDTO;
 import com.example.demo.dto.member.MemberDTO;
 import com.example.demo.dto.member.SmsRequestDto;
 import com.example.demo.entity.Book;
 import com.example.demo.entity.Member;
-import com.example.demo.entity.ReviewBefore;
-import com.example.demo.service.CustomUserDetails;
 import com.example.demo.service.EmailService;
 import com.example.demo.service.MemberService;
 import com.example.demo.service.RedisService;
@@ -596,8 +585,10 @@ public class MemberController {
         try {
             // 액세스 토큰 추출 (Bearer <token>)
             String token = authorizationHeader.substring(7);
+
            System.out.println("* 로그아웃 컨트롤러입니다. -------------- *");
             System.out.println("액세스 토큰: " + token);
+
             
             // 로그인한 사용자 ID 가져오기
             String username = authenticationFacade.getCurrentUserId();
@@ -813,6 +804,7 @@ public class MemberController {
 	                         .body(new ApiResponse<>(200, "세션 있음", id));		 
 		 }
 	
+
 	//아이디만 가져갈려고하는것
 	@GetMapping("id")
 	public ResponseEntity<ApiResponse<String>> getMethodName(HttpSession session) {
@@ -839,7 +831,5 @@ public class MemberController {
 	    }
 	}
 
-	
-	
 
 }

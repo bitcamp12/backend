@@ -17,6 +17,7 @@ import com.example.demo.dto.PlayDiscountDTO;
 public interface PlayDAO {
 
 	@Select("""
+
 			 SELECT   p.*, t.discounted_price,t.discount_rate,t.start_time,t.target_date
     FROM   play p
     LEFT JOIN play_time_table t  ON  p.play_seq = t.play_seq

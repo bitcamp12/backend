@@ -28,6 +28,7 @@ public class CustomUserDetails implements UserDetails {
 
     	//return List.of(new SimpleGrantedAuthority(member.getRole().name())); 
     	
+
     	return List.of(new SimpleGrantedAuthority("ROLE_" + member.getRole().name()));
     }
 
