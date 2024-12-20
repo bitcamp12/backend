@@ -70,9 +70,11 @@ public interface MemberDAO {
     @Select("select * from booking_status_view where member_id=#{id} order by book_seq desc")
 	public List<CheckMyBookDTO> checkMyBook(String id);
 
+
     @Select("select * from booking_status_view where member_id=#{id}"
     		+ "and year(pay_date)=#{year} and month(pay_date)=#{month};")
 	public List<CheckMyBookDTO> checkBookingsByDate(Map<String, Object> map);
+
 
   
 

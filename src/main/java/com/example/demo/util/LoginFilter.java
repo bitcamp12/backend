@@ -1,16 +1,8 @@
 package com.example.demo.util;
 
-import com.example.demo.dto.member.MemberDTO;
-import com.example.demo.service.CustomUserDetails;
-import com.example.demo.service.RedisService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Collection;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,10 +10,15 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
+import com.example.demo.dto.member.MemberDTO;
+import com.example.demo.service.CustomUserDetails;
+import com.example.demo.service.RedisService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -51,8 +48,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             // 요청에서 id와 password 추출
             MemberDTO loginData = new ObjectMapper().readValue(request.getInputStream(), MemberDTO.class);
             String id = loginData.getId(); // `username` 대신 `id` 사용
+            
             String password = loginData.getPassword();
             
+            System.out.println("attemptAuthentication password : "+password);
+
             UsernamePasswordAuthenticationToken authRequest =
                     new UsernamePasswordAuthenticationToken(id, password);
 
@@ -84,12 +84,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         refreshTokenCookie.setPath("/");
         response.addCookie(refreshTokenCookie);
 
-        System.out.println("Redis에 Refresh Token 저장 완료: " + refreshToken);
+
+      System.out.println("Redis에 Refresh Token 저장 완료: " + refreshToken);
+
 
         // Access Token 생성 및 응답 헤더에 추가 (1시간 유효기간)
         String token = jwtUtil.createJwt(username, role, 60 *60 * 1000L);
         response.setStatus(200);
         response.addHeader("Authorization", "Bearer " + token);
+
 
         System.out.println("Access Token 발급 완료: " + token);
     }

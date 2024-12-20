@@ -205,6 +205,7 @@ public class MemberService {
 		return memberDAO.checkMyBook(id);
 	}
 
+
 	public List<CheckMyBookDTO> checkBookingsByDate(Map<String, Object> map) {
 		return memberDAO.checkBookingsByDate(map);
 	}
