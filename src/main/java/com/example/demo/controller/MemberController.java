@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.CheckMyBookDTO;
@@ -31,6 +32,7 @@ import com.example.demo.dto.member.JoinDTO;
 import com.example.demo.dto.member.MemberDTO;
 import com.example.demo.dto.member.SmsRequestDto;
 import com.example.demo.entity.Member;
+import com.example.demo.entity.ReviewBefore;
 import com.example.demo.service.CustomUserDetails;
 import com.example.demo.service.EmailService;
 import com.example.demo.service.MemberService;
@@ -720,5 +722,57 @@ public class MemberController {
 	                         .body(new ApiResponse<>(200, "세션 있음", id));		 
 		 }
 	
+	//아이디만 가져갈려고하는것
+	@GetMapping("id")
+	public ResponseEntity<ApiResponse<String>> getMethodName(HttpSession session) {
+	    try {
+	        // 현재 로그인한 사용자 정보 가져오기
+	        Member member = authenticationFacade.getCurrentMember();
+	        
+	        if (member == null || member.getId() == null) {
+	            // 사용자 정보가 없거나 ID가 없는 경우 처리
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	                                 .body(new ApiResponse<>(401, "로그인이 필요합니다.", null));
+	        }
+
+	        System.out.println("현재 로그인 아이디: " + member.getId());
+	        System.out.println(member.getId());
+	        // 정상적인 경우 아이디 반환
+	        return ResponseEntity.status(HttpStatus.OK)
+	                             .body(new ApiResponse<>(200, "성공", member.getId()));
+	    } catch (Exception e) {
+	        // 예외가 발생한 경우 처리
+	        System.err.println("에러 발생: " + e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                             .body(new ApiResponse<>(500, "서버 오류 발생", null));
+	    }
+	}
+
+	
+	 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+	    @PostMapping("/snslogin")
+	    public ResponseEntity<ApiResponse<String>> snslogin(HttpSession session, @RequestParam("id") String id) {
+	 
+	    	try {
+
+	            // 로그인 서비스 호출
+	            int result = memberService.SNSLoginEntity(id);
+
+	            // 로그인 성공
+	            if (result == 1) {
+	            	System.out.println("로그인성공");
+	            	return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "success", null));
+	  
+	            } else {
+	                // 로그인 실패 (회원 정보 없음)
+	                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(404, null, "회원정보없음"));
+	            }
+	        } catch (Exception e) {
+	            // 예외 발생 시 에러 메시지 반환
+	            System.err.println("Error occurred: " + e.getMessage());
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                    .body(new ApiResponse<>(500, null, "에러"));
+	        }
+	    }
 
 }

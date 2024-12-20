@@ -26,4 +26,7 @@ public class PlayDTO {
     private int runningTime;
     private int discountedPrice;
     private int discountRate;
+    private String targetDate; 
+
+
 }

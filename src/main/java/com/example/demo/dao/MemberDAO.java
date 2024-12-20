@@ -75,6 +75,12 @@ public interface MemberDAO {
     	      + "WHERE member.id = #{id}")
 	public List<CheckMyBookDTO> checkMyBook(String id);
 
+    
+    @Select("""
+    		SELECT password FROM member WHERE id = #{userId}
+    		""")
+	public String getStoredPassword(String userId);
+
   
 
 

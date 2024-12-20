@@ -35,7 +35,6 @@ public class PlayTimeTableController {
 			@RequestParam("playSeq") int playSeq,
 			@RequestParam("targetDate") String targetDate) {
 		try {
-			System.out.println(targetDate);
 		List<PlayTimeTableDTO> list =playTimeTableService.playTimeTables(playSeq,targetDate);
 		
 		 // 리스트가 비어있지 않으면 성공 반환

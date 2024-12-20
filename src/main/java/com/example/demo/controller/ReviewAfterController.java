@@ -16,10 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.PlayDTO;
 import com.example.demo.dto.ReviewAfterDTO;
+import com.example.demo.entity.Member;
 import com.example.demo.entity.ReviewAfter;
 import com.example.demo.service.MemberService;
 import com.example.demo.service.ReviewAfterService;
 import com.example.demo.util.ApiResponse;
+import com.example.demo.util.AuthenticationFacade;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.Delegate;
@@ -41,15 +43,19 @@ public class ReviewAfterController {
 	@Autowired
 	MemberService memberService;
 	
+	@Autowired
+	AuthenticationFacade authenticationFacade;
+	
 	//리뷰 작성
 	@PostMapping("ReviewA")
 	public ResponseEntity<ApiResponse<ReviewAfter>> reviewWriteA(@RequestParam("playSeq") int playSeq,
 							@RequestBody ReviewAfterDTO reviewDTO,
 							HttpSession session) {
-		String userId=(String) session.getAttribute("id");
-		System.out.println(userId);
+		 Member member = authenticationFacade.getCurrentMember();
+		 System.out.println("현재로그인아이디"+member.getId());  // 아이디 가져오는예시 
+		
 		try {
-			reviewDTO.setMemberSeq(memberService.getMemberSeq(userId));
+			reviewDTO.setMemberSeq(memberService.getMemberSeq(member.getId()));
 //			
 	//세션 구할거임
 	 int result=reviewAfterService.reviewAWrite(playSeq,reviewDTO.getMemberSeq(),reviewDTO.getContent(),reviewDTO.getRating());
@@ -141,10 +147,11 @@ public class ReviewAfterController {
 	
 	
 	//리뷰 수정
+		
 		@PutMapping("ReviewA")
 		public ResponseEntity<ApiResponse<ReviewAfter>> reviewAUpdate(
 		        @RequestBody ReviewAfterDTO reviewDTO) {
-		    
+			
 		    try {
 		        // 서비스 호출하여 업데이트
 		        int result = reviewAfterService.reviewAUpdate(reviewDTO.getReviewAfterSeq(), reviewDTO.getContent(), reviewDTO.getRating());

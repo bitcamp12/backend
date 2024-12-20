@@ -42,8 +42,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             // 요청에서 id와 password 추출
             MemberDTO loginData = new ObjectMapper().readValue(request.getInputStream(), MemberDTO.class);
             String id = loginData.getId(); // `username` 대신 `id` 사용
+            
             String password = loginData.getPassword();
             
+            System.out.println("attemptAuthentication password : "+password);
             UsernamePasswordAuthenticationToken authRequest =
                     new UsernamePasswordAuthenticationToken(id, password);
 

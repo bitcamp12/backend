@@ -201,5 +201,19 @@ public class MemberService {
 	public List<CheckMyBookDTO> checkMyBook(String id) {
 		return memberDAO.checkMyBook(id);
 	}
+
+	public String getStoredPassword(String userId) {
+		// TODO Auto-generated method stub
+		return memberDAO.getStoredPassword(userId);
+	}
+
+	public int SNSLoginEntity(String id) {
+		 Member member = memberRepository.findById(id);
+		 System.out.println("로그인엔티티2");
+		 if (member != null ) {
+		        return 1;  // 비밀번호가 일치하는 경우 로그인 성공
+		    }
+		return 0;
+	}
 	
 }

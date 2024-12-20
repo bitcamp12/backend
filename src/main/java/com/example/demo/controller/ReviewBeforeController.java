@@ -17,11 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.ReviewAfterDTO;
 import com.example.demo.dto.ReviewBeforeDTO;
+import com.example.demo.entity.Member;
 import com.example.demo.entity.ReviewAfter;
 import com.example.demo.entity.ReviewBefore;
 import com.example.demo.service.MemberService;
 import com.example.demo.service.ReviewBeforeService;
 import com.example.demo.util.ApiResponse;
+import com.example.demo.util.AuthenticationFacade;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -34,14 +36,17 @@ public class ReviewBeforeController {
 	private ReviewBeforeService reviewBeforeService;
 	@Autowired
 	MemberService memberService;
+	@Autowired
+	AuthenticationFacade authenticationFacade;
 	//리뷰 작성
 		@PostMapping("reviewB")
 		public ResponseEntity<ApiResponse<ReviewBefore>> reviewBWrite(@RequestParam("playSeq") int playSeq,
 								@RequestBody ReviewBeforeDTO reviewBeforeDTO,
 								HttpSession session) {
-			String userId=(String) session.getAttribute("id");
+			 Member member = authenticationFacade.getCurrentMember();
+			 System.out.println("현재로그인아이디"+member.getId());  // 아이디 가져오는예시 
 			try {
-				reviewBeforeDTO.setMemberSeq(memberService.getMemberSeq(userId));
+				reviewBeforeDTO.setMemberSeq(memberService.getMemberSeq(member.getId()));
 //				memberService.getMemberSeq();
 		//세션 구할거임
 		 int result=reviewBeforeService.reviewBWrite(playSeq,reviewBeforeDTO.getMemberSeq(),reviewBeforeDTO.getContent());
