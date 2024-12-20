@@ -594,8 +594,8 @@ public class MemberController {
         try {
             // 액세스 토큰 추출 (Bearer <token>)
             String token = authorizationHeader.substring(7);
-          //  System.out.println("* 로그아웃 컨트롤러입니다. -------------- *");
-           // System.out.println("액세스 토큰: " + token);
+           System.out.println("* 로그아웃 컨트롤러입니다. -------------- *");
+            System.out.println("액세스 토큰: " + token);
             
             // 로그인한 사용자 ID 가져오기
             String username = authenticationFacade.getCurrentUserId();
