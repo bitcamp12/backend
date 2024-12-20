@@ -139,7 +139,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String username = jwtUtil.getUsername(refreshToken);
             String role = jwtUtil.getRole(refreshToken);
             String newAccessToken = jwtUtil.createJwt(username, role, 60 * 1000 * 10L); // 10분 유효
-           // System.out.println("새로운 액세스 토큰 생성: " + newAccessToken);
+//           System.out.println("새로운 액세스 토큰 생성: " + newAccessToken);
 
             response.setStatus(200);
             response.addHeader("Authorization", "Bearer " + newAccessToken);
