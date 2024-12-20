@@ -666,7 +666,7 @@ public class MemberController {
 	
 // -- 지현: 마이페이지(사용자정보) 수정 ---------------------------
     // 세션얻어오기 => 필요없음(2024.11.27)
-    @CrossOrigin(origins = {"http://localhost:3000", "http://www.30ticket.shop","http://www.30ticket.shop"}, allowCredentials = "true")
+   // @CrossOrigin(origins = {"http://localhost:3000", "http://www.30ticket.shop","http://www.30ticket.shop"}, allowCredentials = "true")
     @GetMapping("getSession")
     public ResponseEntity<ApiResponse<String>> getSession (HttpSession session) {
     	try {
