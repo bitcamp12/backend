@@ -13,8 +13,8 @@ import lombok.Setter;
 @Data
 @NoArgsConstructor
 public class CheckMyBookDTO {
-	@JsonProperty("id")
-	private String id;
+	@JsonProperty("memberId")
+	private String memberId;
 	
 	@JsonProperty("bookSeq")
 	private int bookSeq;
@@ -22,9 +22,11 @@ public class CheckMyBookDTO {
 	private LocalDateTime payDate;
 	@JsonProperty("payment")
 	private String payment;
+	@JsonProperty("paymentStatus")
+	private String paymentStatus;
 	
-	@JsonProperty("name")
-	private String name;
+	@JsonProperty("playName")
+	private String playName;
 	
 	@JsonProperty("targetDate")
 	private LocalDateTime targetDate;
