@@ -169,17 +169,23 @@ public class MemberService {
 
 	@Transactional
 	public int updatePwdEntity(String id, String password) {
-
-		try {
-			Member member = memberRepository.findById(id);
-			member.setPassword(password);
-			memberRepository.save(member);
-			return 1;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return 0; // 실패
-		}
+		
+        try {
+            Member member = memberRepository.findById(id);
+            
+            String encodedPassword = passwordEncoder.encode(password);
+            member.setPassword(encodedPassword);  // 암호화된 비밀번호 저장
+            
+            memberRepository.save(member);
+            return 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0; // 실패
+        }
 	}
+
+
+
 
 	public int LoginEntity(String id, String password) {
 

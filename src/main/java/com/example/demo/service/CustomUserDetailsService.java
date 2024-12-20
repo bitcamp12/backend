@@ -19,19 +19,23 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-        //System.out.println("검증 진행중: " + id); //id가 username으로 명시하엿음
-
-        // DB에서 조회
+        // DB에서 회원 조회
         Member member = memberRepository.findById(id);
 
+        // 셀러와 어드민 사용자의 로그인 방지
         if (member != null) {
-            //System.out.println("DB에서 가져온 ID: " + member.getId());
-            
-            
-            
+            // Role enum 값을 직접 비교 (ROLE을 붙이지 않음)
+            if (member.getRole() == Member.Role.SELLER) {
+                throw new UsernameNotFoundException("허용되지않은 사용자입니다. " + member.getRole());
+            }
+
+            // UserDetails 객체 반환
             return new CustomUserDetails(member); // UserDetails 구현체 반환
         }
 
+        // 사용자 정보가 없을 경우 예외 던짐
         throw new UsernameNotFoundException("User not found with ID: " + id);
     }
+
+
 }
