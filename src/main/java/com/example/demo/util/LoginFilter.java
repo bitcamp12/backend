@@ -2,12 +2,15 @@ package com.example.demo.util;
 
 import com.example.demo.dto.member.MemberDTO;
 import com.example.demo.service.CustomUserDetails;
+import com.example.demo.service.RedisService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,14 +29,20 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     
 	//JWTUtil 주입
 	private final JWTUtil jwtUtil;
+	
+    private final RedisService redisService;
 
-    public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
+    public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil,RedisService redisService) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
+		this.redisService = redisService;
         
         // 로그인 처리 URL 설정 설정 안하면 기본적으로 자체 적으로 제공하는 /login이 있음
         setFilterProcessesUrl("/api/members/login");
     }
+    
+   
+
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
@@ -56,42 +65,34 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
-				
-				//UserDetailsS
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-
         String username = customUserDetails.getUsername();
-
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-        GrantedAuthority auth = iterator.next();
+        String role = authorities.iterator().next().getAuthority();
 
-        String role = auth.getAuthority();
+        // Refresh Token 생성 (7일 유효기간)
+        String refreshToken = jwtUtil.createRefreshToken(username, role, 60 * 60 * 24 * 7 * 1000L);
 
+        // Redis에 Refresh Token 저장
+        String redisKey = "refreshToken:" + username; // 사용자별 고유 키
+        redisService.saveToken(redisKey, refreshToken, 60 * 60 * 24 * 7 * 1000L);
 
-        
-        
-        // 리프레시 토큰 생성 (만료 시간 7일)
-        String refreshToken = jwtUtil.createRefreshToken(username, role, 60 * 60 * 24 * 7 * 1000L); // 7일
-           
-        // 리프레시 토큰을 쿠키에 설정
+        // Refresh Token을 쿠키에 추가
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
         refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setSecure(true); // HTTPS에서만 전송
-        refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7); // 7일 유효
-        refreshTokenCookie.setPath("/"); // 전체 도메인에서 접근 가능
+        refreshTokenCookie.setSecure(true); // HTTPS만 허용
+        refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7); // 7일
+        refreshTokenCookie.setPath("/");
         response.addCookie(refreshTokenCookie);
-        
-        System.out.println("리프레쉬발급"+refreshToken);
-        //액세스 토큰
-        
-        String token = jwtUtil.createJwt(username, role, 60 * 60 * 10000L); //60 * 60 * 1000L 60분
+
+        System.out.println("Redis에 Refresh Token 저장 완료: " + refreshToken);
+
+        // Access Token 생성 및 응답 헤더에 추가 (1시간 유효기간)
+        String token = jwtUtil.createJwt(username, role, 60 *60 * 1000L);
         response.setStatus(200);
         response.addHeader("Authorization", "Bearer " + token);
-        
-        System.out.println("액세스토큰발급"+token);
-        
-  
+
+        System.out.println("Access Token 발급 완료: " + token);
     }
 
     @Override

@@ -8,6 +8,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -34,13 +35,16 @@ import com.example.demo.entity.Member;
 import com.example.demo.service.CustomUserDetails;
 import com.example.demo.service.EmailService;
 import com.example.demo.service.MemberService;
+import com.example.demo.service.RedisService;
 import com.example.demo.service.SmsService;
 import com.example.demo.util.ApiResponse;
 import com.example.demo.util.AuthenticationFacade;
 import com.example.demo.util.JWTUtil;
+import com.example.demo.util.JwtAuthenticationFilter;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
@@ -62,6 +66,12 @@ public class MemberController {
     @Autowired
     private AuthenticationFacade authenticationFacade;
     
+    @Autowired
+    private RedisService redisService;
+    
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+      
 
     // 임시로 랜덤 번호를 저장할 Map
     private Map<String, String> emailVerificationCodes = new HashMap<>();
@@ -107,6 +117,11 @@ public class MemberController {
     
     @GetMapping("/jwt")
     public String jwt() {
+    	return "main Controller";
+    }
+    
+    @GetMapping("/api/members/naver")
+    public String naverLogin() {
     	return "main Controller";
     }
     
@@ -574,22 +589,68 @@ public class MemberController {
     
     @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<String>> logout(HttpSession session) {
+    public ResponseEntity<ApiResponse<String>> logout(@RequestHeader("Authorization") String authorizationHeader, HttpServletRequest request, HttpServletResponse response) {
         try {
-        	
-           System.out.println("11a");
-            //session.removeAttribute("id");
-        	session.invalidate();
-            //System.out.println(session.getAttribute("id"));
-            // 로그아웃 성공
-                return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "로그아웃", null));
+            // 액세스 토큰 추출 (Bearer <token>)
+            String token = authorizationHeader.substring(7);
+            System.out.println("* 로그아웃 컨트롤러입니다. -------------- *");
+            System.out.println("액세스 토큰: " + token);
+            
+            // 로그인한 사용자 ID 가져오기
+            String username = authenticationFacade.getCurrentUserId();
+            if(username != null) {
+                // Redis에 액세스토큰을 블랙리스트로 저장
+                String redisKeyBlack = "accessToken:" + username; // 사용자별 고유 키
+                
+                System.out.println("기존 액세스 토큰 Redis블랙리스트 저장: " + redisKeyBlack);
+                redisService.saveToken(redisKeyBlack, token, 60 * 60 * 24 * 7 * 1000L);
+            }
+               else {
+            	System.out.println("유효기간이 만료된 사용자입니다. 다시로그인해주세요");
+             }
+                       
+            
+            String refreshToken = null;
+            
+            for (Cookie cookie : request.getCookies()) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    refreshToken = cookie.getValue();
+                    break;
+                }
+            }
+
+            if (refreshToken != null) {
+                System.out.println("리프레시 토큰: " + refreshToken);
+            } else {
+                System.out.println("리프레시 토큰이 없습니다.");
+            }
+            
+            String usernameR = jwtUtil.getUsername(refreshToken);
+            
+            // 사용자별 리프레시 토큰을 저장하는 키
+            String redisKey = "refreshToken:" + usernameR;
+
+            // Redis에서 해당 키가 존재하는지 확인
+            String existingToken = redisService.getToken(redisKey);
+            if (existingToken != null) {
+                // 리프레시 토큰 삭제
+                redisService.deleteToken(redisKey);
+                System.out.println("리프레시 토큰 Redis에서 삭제됨: " + redisKey);
+            } else {
+                System.out.println("리프레시 토큰을 Redis에서 찾을 수 없음: " + redisKey);
+            }
+
+
+
+            // 로그아웃 성공 응답
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "로그아웃 성공", null));
         } catch (Exception e) {
-            // 예외 발생 시 에러 메시지 반환
             System.err.println("Error occurred: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                  .body(new ApiResponse<>(500, null, "에러"));
         }
     }
+
 
 
 	
