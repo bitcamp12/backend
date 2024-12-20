@@ -82,7 +82,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         // Refresh Token을 쿠키에 추가
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
         refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setSecure(true); // HTTPS만 허용
         refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7); // 7일
         refreshTokenCookie.setPath("/");
         response.addCookie(refreshTokenCookie);
@@ -94,9 +93,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setStatus(200);
         response.addHeader("Authorization", "Bearer " + token);
 
-       System.out.println("Access Token 발급 완료: " + token);
 
-       
+        System.out.println("Access Token 발급 완료: " + token);
     }
 
     @Override
