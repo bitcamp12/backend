@@ -72,7 +72,7 @@ public class SecurityConfig {
 
                         CorsConfiguration configuration = new CorsConfiguration();
 
-			configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://211.188.57.64"));
+			configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://www.30ticket.shop", "https://www.30ticket.shop"));
                         configuration.setAllowedMethods(Collections.singletonList("*"));
                         configuration.setAllowCredentials(true);
                         configuration.setAllowedHeaders(Collections.singletonList("*"));
