@@ -30,4 +30,7 @@ public class Theater {
 
     @Column(name = "name", nullable = false, length = 150)
     private String name;
+
+    @Column(name = "total_seats", nullable = false)
+    private int totalSeats;
 }

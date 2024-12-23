@@ -22,7 +22,7 @@ public class PlayTimeTableService {
 		return playTimeTableDAO.playTimeTables(playSeq,targetDate);
 	}
 
-	@Scheduled(fixedRate = 60000)
+	// @Scheduled(fixedRate = 60000)
     public List<PlayDiscountDTO> calculateDiscount() {
         List<PlayDiscountDTO> discountedPlays = playTimeTableDAO.getPlayWithDiscount();
         

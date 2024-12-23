@@ -1,17 +1,24 @@
 package com.example.demo.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.dao.PlayDAO;
@@ -39,17 +46,20 @@ public class PlayService {
 	}
 
 	//민웅 사용자 메인 페이지
-	public List<PlayDTO> getPlayAll(int page, int size) {
-		int offset = (page - 1) * size;
-		return playDAO.getPlayAll(offset, size);
+	public List<Play> getPlayAll(int page, int size) {
+		Pageable pageable = PageRequest.of(page - 1, size);
+		Page<Play> playPage = playRepository.findAll(pageable);
+		return playPage.getContent();
 	}
 
 	public List<PlayDTO> searchList(String name) {
 		return playDAO.searchList(name);
 	}
-
-    public List<PlayDTO> getPlayRandom() {
-        return playDAO.getPlayRandom();
+	
+    public List<Play> getPlayRandom() {
+        List<Play> allPlays = playRepository.findAll();
+		Collections.shuffle(allPlays);
+		return allPlays.stream().limit(10).collect(Collectors.toList());
     }
 
 	public List<PlayDiscountDTO> getPlaySale() {
@@ -67,20 +77,24 @@ public class PlayService {
 		  }
 	}
 
-	public List<PlayDTO> getPlaysEndingSoon(int page, int size) {
-		int offset = (page - 1) * size;
-		return playDAO.getPlaysEndingSoon(offset, size);
+	public List<Play> getPlaysEndingSoon(int page, int size) {
+		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, "endTime"));
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime thirtyDaysFromNow = now.plusDays(30);
+		Page<Play> playPage = playRepository.findByEndTimeBetween(now, thirtyDaysFromNow, pageable);
+		return playPage.getContent();
 	}
 
-	public List<PlayDTO> getPlaysComingSoon(int page, int size) {
-		int offset = (page - 1) * size;
-		return playDAO.getPlaysComingSoon(offset, size);
+	public List<Play> getPlaysComingSoon(int page, int size) {
+		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, "startTime"));
+		Page<Play> playPage = playRepository.findByStartTimeAfter(LocalDateTime.now(), pageable);
+		return playPage.getContent();
 	}
 
-	public List<PlayDTO> getPlaysLimited(int page, int size) {
-		int offset = (page - 1) * size;
-		return playDAO.getPlaysLimited(offset, size);
+	public List<Play> getPlaysLimited(int page, int size) {
+		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "price"));
+		Page<Play> playPage = playRepository.findByPriceGreaterThanEqual(60000, pageable);
+		return playPage.getContent();
 	}
-
 
 }

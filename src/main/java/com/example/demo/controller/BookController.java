@@ -20,7 +20,6 @@ import com.example.demo.util.ApiResponse;
 
 @RestController
 @RequestMapping(value = "/api/books")
-@CrossOrigin(origins = "http://localhost:3000")
 public class BookController {
 
 	@Autowired
