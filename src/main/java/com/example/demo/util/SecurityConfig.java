@@ -105,7 +105,6 @@ public class SecurityConfig {
             http
             .authorizeHttpRequests((auth) -> auth
                     .requestMatchers(  
-                    		"/health",
                     		"/api/favorites/favorites",                  		
                     		"/api/qnas/qna",                   		
                     		"/api/reviewAfters/ReviewA",
@@ -118,7 +117,7 @@ public class SecurityConfig {
                             "/api/members/checkMyBook",
                             "/api/members/checkMyBook/checkBookingsByDate"
                         ).hasAuthority("ROLE_USER") // ROLE_USER 권한을 가진 사용자만 접근 가능
-                .requestMatchers("/**").permitAll()) // 기본 페이지는 전체 허용    
+                .requestMatchers("/**", "/health").permitAll()) // 기본 페이지는 전체 허용    
             .addFilterAt(new LoginFilter(authenticationManager(), jwtUtil, redisService), UsernamePasswordAuthenticationFilter.class) // LoginFilter 추가
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // JWT 필터 추가
 
