@@ -104,7 +104,8 @@ public class SecurityConfig {
     				//경로별 인가 작업
             http
             .authorizeHttpRequests((auth) -> auth
-                    .requestMatchers(             		
+                    .requestMatchers(  
+                    		"/health",
                     		"/api/favorites/favorites",                  		
                     		"/api/qnas/qna",                   		
                     		"/api/reviewAfters/ReviewA",
