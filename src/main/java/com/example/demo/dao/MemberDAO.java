@@ -75,6 +75,9 @@ public interface MemberDAO {
     		+ "and year(pay_date)=#{year} and month(pay_date)=#{month};")
 	public List<CheckMyBookDTO> checkBookingsByDate(Map<String, Object> map);
 
+    @Select("SELECT name FROM member WHERE id = #{id}")
+	public String getname(String id);
+
 
   
 

@@ -36,7 +36,7 @@ public interface ReviewBeforeDAO {
                 @Param("content") String content);
 
 	    @Select("""
-	    	    SELECT rb.*, m.id
+	    	    SELECT rb.*, m.name
 	    	    FROM review_before rb
 	    	    JOIN member m ON rb.member_seq = m.member_seq
 	    	    WHERE rb.play_seq = #{playSeq}
@@ -85,7 +85,7 @@ public interface ReviewBeforeDAO {
 	    
 	 // 아이디로 검색 - 날짜 순
 	    @Select("""
-	        SELECT rb.*, m.id
+	        SELECT rb.*, m.name
 	        FROM review_before rb
 	        JOIN member m ON rb.member_seq = m.member_seq
 	        WHERE rb.member_seq LIKE CONCAT('%', #{keyword}, '%')
@@ -97,7 +97,7 @@ public interface ReviewBeforeDAO {
 
 	    // 내용으로 검색 - 날짜 순
 	    @Select("""
-	        SELECT rb.*, m.id
+	        SELECT rb.*, m.name
 	        FROM review_before rb
 	        JOIN member m ON rb.member_seq = m.member_seq
 	        WHERE rb.content LIKE CONCAT('%', #{keyword}, '%')

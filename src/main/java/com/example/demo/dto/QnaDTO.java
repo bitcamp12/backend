@@ -17,5 +17,5 @@ public class QnaDTO {
 	private String title;
 	private String content;
 	private LocalDateTime createdDate;
-	private String id;
+	private String name;
 }
