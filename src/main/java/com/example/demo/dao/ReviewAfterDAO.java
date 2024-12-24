@@ -41,7 +41,7 @@ public interface ReviewAfterDAO {
 	
 
 	@Select("""
-		  SELECT ra.*, m.name 
+		  SELECT ra.*, m.name ,m.id
 			FROM review_after ra
 			JOIN member m ON ra.member_seq = m.member_seq
 			WHERE ra.play_seq = #{playSeq}
@@ -98,7 +98,7 @@ public interface ReviewAfterDAO {
 
 
 	 @Select("""
-		       SELECT ra.*, m.name 
+		       SELECT ra.*, m.name ,m.id
 			FROM review_after ra
 			JOIN member m ON ra.member_seq = m.member_seq
 			WHERE ra.play_seq = #{playSeq}
@@ -116,7 +116,7 @@ public interface ReviewAfterDAO {
 
 	// 아이디로 검색 - 날짜 순
 	 @Select("""
-	     SELECT ra.*, m.name
+	     SELECT ra.*, m.name,m.id
 	     FROM review_after ra
 	     JOIN member m ON ra.member_seq = m.member_seq
 	     WHERE m.name LIKE CONCAT('%', #{keyword}, '%')
@@ -131,7 +131,7 @@ public interface ReviewAfterDAO {
 
 	 // 아이디로 검색 - 별점 순
 	 @Select("""
-	     SELECT ra.*, m.name
+	     SELECT ra.*, m.name,m.id
 	     FROM review_after ra
 	     JOIN member m ON ra.member_seq = m.member_seq
 	     WHERE m.name LIKE CONCAT('%', #{keyword}, '%')
@@ -146,7 +146,7 @@ public interface ReviewAfterDAO {
 
 	 // 내용으로 검색 - 날짜 순
 	 @Select("""
-			    SELECT ra.*, m.name
+			    SELECT ra.*, m.name,m.id
 			    FROM review_after ra
 			    JOIN member m ON ra.member_seq = m.member_seq
 			    WHERE ra.content LIKE CONCAT('%', #{keyword}, '%')
@@ -160,7 +160,7 @@ public interface ReviewAfterDAO {
 			                               @Param("size") int size);
 	 // 내용으로 검색 - 별점 순
 	 @Select("""
-	     SELECT ra.*, m.name
+	     SELECT ra.*, m.name,m.id
 	     FROM review_after ra
 	     JOIN member m ON ra.member_seq = m.member_seq
 	     WHERE ra.content LIKE CONCAT('%', #{keyword}, '%')

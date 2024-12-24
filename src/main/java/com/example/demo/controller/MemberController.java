@@ -25,6 +25,7 @@ import com.example.demo.dto.member.IdFindDTO;
 import com.example.demo.dto.member.MemberDTO;
 import com.example.demo.dto.member.SmsRequestDto;
 import com.example.demo.entity.Book;
+import com.example.demo.entity.Favorite;
 import com.example.demo.entity.Member;
 import com.example.demo.service.EmailService;
 import com.example.demo.service.MemberService;
@@ -712,11 +713,13 @@ public class MemberController {
 	
 	// 회원 탈퇴
 	@DeleteMapping("infoWithdrawal/me")
-	public ResponseEntity<ApiResponse<String>> infoWithdrawal(HttpSession session) {
+	public ResponseEntity<ApiResponse<String>> infoWithdrawal(@RequestHeader("Authorization") String authorizationHeader) {
+		String token = authorizationHeader.substring(7);
 		try {
-			String id = (String) session.getAttribute("id");
+			String id =authenticationFacade.getCurrentUserId();  // JWT
 			memberService.infoWithdrawal(id);
-			session.invalidate();
+			String redisKeyBlack = token;  // Redis에 액세스토큰을 블랙리스트로 저장
+			
 			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "탈퇴", null));
 		} catch (Exception e) {
 			System.err.println("Error occurred: " + e.getMessage());
@@ -835,5 +838,45 @@ public class MemberController {
 	    }
 	}
 
+	
+	// 좋아요 
+	@GetMapping("checkFavorite/pagination")
+	public Page<Favorite> checkFavorite(@RequestParam("currentPage")int currentPage) {
+		//JWT 
+		String id =authenticationFacade.getCurrentUserId();  
+		System.out.println("pagination JWT ID : " +id);
+
+		int pageSize = 3; // 한 페이지에 보여줄 내용
+		Page<Favorite> pageResult;
+		
+		// 조회
+		System.out.println("일반조회");
+		pageResult = memberService.checkFavoritePagination(id, currentPage, pageSize);
+
+		
+		System.out.println("[MemberContsroller] checkFavoritePagination : "  + pageResult);
+		
+		return pageResult;
+	}
+	
+	@DeleteMapping("checkFavorite/delete")
+	public void checkFavoriteDelete(@RequestParam("delFavoriteSeq")int delFavoriteSeq) {
+		String id =authenticationFacade.getCurrentUserId();  
+		
+		memberService.checkFavoriteDelete(id, delFavoriteSeq);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 }
