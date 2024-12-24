@@ -867,8 +867,13 @@ public class MemberController {
 	}
 	
 	
-	
-	
+	@GetMapping("checkPassword")
+	public boolean checkPassword(@RequestParam("pwd") String pwd) {
+		String id =authenticationFacade.getCurrentUserId();
+		boolean result = memberService.checkPassword(id, pwd);
+		
+		return result;
+	}
 	
 	
 	
