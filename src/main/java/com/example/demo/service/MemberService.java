@@ -246,7 +246,7 @@ public class MemberService {
 		return books;
 	}
 
-	public String getname(String id) {
+	public MemberDTO getname(String id) {
 		// TODO Auto-generated method stub
 		return memberDAO.getname(id);
 	}
