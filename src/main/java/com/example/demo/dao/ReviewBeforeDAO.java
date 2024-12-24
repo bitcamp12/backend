@@ -88,7 +88,7 @@ public interface ReviewBeforeDAO {
 	        SELECT rb.*, m.name,m.id
 	        FROM review_before rb
 	        JOIN member m ON rb.member_seq = m.member_seq
-	        WHERE rb.member_seq LIKE CONCAT('%', #{keyword}, '%')
+	        WHERE m.name LIKE CONCAT('%', #{keyword}, '%')
 	          AND rb.play_seq = #{playSeq}
 	        ORDER BY rb.created_date DESC
 	         LIMIT #{size} OFFSET #{pages}
