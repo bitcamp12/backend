@@ -46,7 +46,7 @@ public class ReviewAfterController {
 	public ResponseEntity<ApiResponse<ReviewAfter>> reviewWriteA(@RequestParam("playSeq") int playSeq,
 							@RequestBody ReviewAfterDTO reviewDTO,
 							HttpSession session) {
-
+System.out.println(reviewDTO.getContent()+reviewDTO.getRating()+"리뷰");
 		 Member member = authenticationFacade.getCurrentMember();
 		 System.out.println("현재로그인아이디"+member.getId());  // 아이디 가져오는예시 
 		

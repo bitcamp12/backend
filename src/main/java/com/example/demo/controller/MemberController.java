@@ -811,7 +811,7 @@ public class MemberController {
 	    try {
 	        // 현재 로그인한 사용자 정보 가져오기
 	        Member member = authenticationFacade.getCurrentMember();
-	        
+	        String name =memberService.getname(member.getId());
 	        if (member == null || member.getId() == null) {
 	            // 사용자 정보가 없거나 ID가 없는 경우 처리
 	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -822,7 +822,7 @@ public class MemberController {
 	        System.out.println(member.getId());
 	        // 정상적인 경우 아이디 반환
 	        return ResponseEntity.status(HttpStatus.OK)
-	                             .body(new ApiResponse<>(200, "성공", member.getId()));
+	                             .body(new ApiResponse<>(200, "성공", name));
 	    } catch (Exception e) {
 	        // 예외가 발생한 경우 처리
 	        System.err.println("에러 발생: " + e.getMessage());

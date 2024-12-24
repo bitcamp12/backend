@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -32,9 +33,11 @@ public class PlayService {
 
 	private List<PlayDiscountDTO> cachedDiscountedPlays;
 
+	
 	public PlayDTO getPlayOne(String playSeq) {
-		PlayDTO playDTO=playDAO.getPlayOne(playSeq);
-		return playDTO;     
+		System.out.println(playSeq);
+		System.out.println("getPlayOne");
+		return playDAO.getPlayOne(playSeq);  
 
 	}
 

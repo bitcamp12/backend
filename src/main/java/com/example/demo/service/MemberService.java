@@ -246,6 +246,11 @@ public class MemberService {
 		return books;
 	}
 
+	public String getname(String id) {
+		// TODO Auto-generated method stub
+		return memberDAO.getname(id);
+	}
+
 	/*
 	 * // 페이징 예약 확인 public Page<CheckMyBook> checkMyBookPagination(int currentPage,
 	 * int pageSize) { Pageable pageable = PageRequest.of(currentPage, pageSize);
