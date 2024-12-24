@@ -64,8 +64,7 @@ public interface ReviewAfterDAO {
 			    UPDATE review_after
 			    SET 
 			        content = #{content}, 
-			        rating = #{rating},
-			        created_date = CURRENT_TIMESTAMP
+			        rating = #{rating}
 			    WHERE 
 			        review_after_seq = #{reviewAfterSeq}
 			""")
