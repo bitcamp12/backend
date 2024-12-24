@@ -252,6 +252,7 @@ public class MemberService {
 		return books;
 	}
 
+
 	public Page<Favorite> checkFavoritePagination(String id, int currentPage, int pageSize) {
 		Pageable pageable = PageRequest.of(currentPage, pageSize);
 		System.out.println("[MemberService]checkFavoritePagination : " + pageable);
@@ -269,6 +270,10 @@ public class MemberService {
 		Member member = memberRepository.findById(id); // select * from member where id = ' '
 		
 		favoriteRepository.deleteById(delFavoriteSeq);
+
+	public MemberDTO getname(String id) {
+		// TODO Auto-generated method stub
+		return memberDAO.getname(id);
 	}
 
 	/*

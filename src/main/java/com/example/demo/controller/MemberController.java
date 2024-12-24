@@ -585,56 +585,60 @@ public class MemberController {
     public ResponseEntity<ApiResponse<String>> logout(@RequestHeader("Authorization") String authorizationHeader, HttpServletRequest request, HttpServletResponse response) {
         try {
             // 액세스 토큰 추출 (Bearer <token>)
+
+            
+          //  System.out.println("* 로그아웃 컨트롤러입니다. -------------- *");
+           // System.out.println("액세스 토큰: " + token);
+
             String token = authorizationHeader.substring(7);
 
-           System.out.println("* 로그아웃 컨트롤러입니다. -------------- *");
-            System.out.println("액세스 토큰: " + token);
+
+
 
             
             // 로그인한 사용자 ID 가져오기
-            String username = authenticationFacade.getCurrentUserId();
-            if(username != null) {
-                // Redis에 액세스토큰을 블랙리스트로 저장
+
+
+            if(token != null) {
+                String username = jwtUtil.getUsername(token);
                 String redisKeyBlack = "accessToken:" + username; // 사용자별 고유 키
-                
+                // Redis에 액세스토큰을 블랙리스트로 저장
                 System.out.println("기존 액세스 토큰 Redis블랙리스트 저장: " + redisKeyBlack);
                 redisService.saveToken(redisKeyBlack, token, 60 * 60 * 24 * 7 * 1000L);
             }
                else {
             	//System.out.println("유효기간이 만료된 사용자입니다. 다시로그인해주세요");
+            	   return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "세션이 만료된 사용자입니다.", null));   
              }
                        
             
             String refreshToken = null;
             
-            for (Cookie cookie : request.getCookies()) {
-                if ("refreshToken".equals(cookie.getName())) {
-                    refreshToken = cookie.getValue();
-                    break;
+            if (request.getCookies() != null) {
+                for (Cookie cookie : request.getCookies()) {
+                    if ("refreshToken".equals(cookie.getName())) {
+                        refreshToken = cookie.getValue();
+                        break;
+                    }
                 }
             }
 
             if (refreshToken != null) {
                // System.out.println("리프레시 토큰: " + refreshToken);
-            } else {
-               // System.out.println("리프레시 토큰이 없습니다.");
-            }
-            
-            String usernameR = jwtUtil.getUsername(refreshToken);
-            
-            // 사용자별 리프레시 토큰을 저장하는 키
-            String redisKey = "refreshToken:" + usernameR;
+                String usernameR = jwtUtil.getUsername(refreshToken);
+                
+                // 사용자별 리프레시 토큰을 저장하는 키
+                String redisKey = "refreshToken:" + usernameR;
 
-            // Redis에서 해당 키가 존재하는지 확인
-            String existingToken = redisService.getToken(redisKey);
-            if (existingToken != null) {
-                // 리프레시 토큰 삭제
+                // Redis에서 해당 키가 존재하는지 확인
+                String existingToken = redisService.getToken(redisKey);
                 redisService.deleteToken(redisKey);
               //  System.out.println("리프레시 토큰 Redis에서 삭제됨: " + redisKey);
             } else {
-               // System.out.println("리프레시 토큰을 Redis에서 찾을 수 없음: " + redisKey);
+               // System.out.println("리프레시 토큰이 없습니다.");
+                // System.out.println("리프레시 토큰을 Redis에서 찾을 수 없음: " + redisKey);
             }
-
+            
             
             // 리프레시 토큰 쿠키 삭제
             Cookie refreshTokenCookie = new Cookie("refreshToken", null);
@@ -810,11 +814,11 @@ public class MemberController {
 
 	//아이디만 가져갈려고하는것
 	@GetMapping("id")
-	public ResponseEntity<ApiResponse<String>> getMethodName(HttpSession session) {
+	public ResponseEntity<ApiResponse<MemberDTO>> getMethodName(HttpSession session) {
 	    try {
 	        // 현재 로그인한 사용자 정보 가져오기
 	        Member member = authenticationFacade.getCurrentMember();
-	        
+	        MemberDTO memberDTO =memberService.getname(member.getId());
 	        if (member == null || member.getId() == null) {
 	            // 사용자 정보가 없거나 ID가 없는 경우 처리
 	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -825,7 +829,7 @@ public class MemberController {
 	        System.out.println(member.getId());
 	        // 정상적인 경우 아이디 반환
 	        return ResponseEntity.status(HttpStatus.OK)
-	                             .body(new ApiResponse<>(200, "성공", member.getId()));
+	                             .body(new ApiResponse<>(200, "성공", memberDTO));
 	    } catch (Exception e) {
 	        // 예외가 발생한 경우 처리
 	        System.err.println("에러 발생: " + e.getMessage());
