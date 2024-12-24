@@ -30,7 +30,7 @@ public interface QnaDAO {
 
 	// Q&A 목록 조회
 	 @Select("""
-	     SELECT q.*, m.name
+	     SELECT q.*, m.name,m.id
 	     FROM qna q
 	     JOIN member m ON q.member_seq = m.member_seq
 	     WHERE q.play_seq = #{playSeq}
@@ -76,7 +76,7 @@ public interface QnaDAO {
     
  // member_seq로 검색하여 Q&A 데이터 조회 (아이디 포함)
     @Select("""
-        SELECT q.*, m.name
+        SELECT q.*, m.name,m.id
         FROM review_before q
         JOIN member m ON q.member_seq = m.member_seq
         WHERE q.member_seq LIKE CONCAT('%', #{keyword}, '%')
@@ -87,7 +87,7 @@ public interface QnaDAO {
 
     // 내용으로 검색하여 Q&A 데이터 조회 (아이디 포함)
     @Select("""
-        SELECT q.*, m.name
+        SELECT q.*, m.name,m.id
         FROM review_before q
         JOIN member m ON q.member_seq = m.member_seq
         WHERE q.content LIKE CONCAT('%', #{keyword}, '%')
