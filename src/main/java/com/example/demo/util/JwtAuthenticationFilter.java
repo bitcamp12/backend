@@ -47,13 +47,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
+        // 요청에서 액세스 토큰과 리프레시 토큰 추출
         String token = extractToken(request);
-        //System.out.println("액세토큰 검증 중: " + token); // 토큰 출력       
-       // String cookie =extractRefreshToken(request);
-      // System.out.println("쿠키쿠키"+cookie);
-        
 
 
+        // 토큰이 유효하면 인증 처리
         if (token != null) {
             processTokenAuthentication(token, request, response, filterChain);
         }
@@ -62,9 +60,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+
     // 토큰 처리 메서드
     private void processTokenAuthentication(String token, HttpServletRequest request, HttpServletResponse response,FilterChain filterChain) throws IOException, ServletException {
-   
+    	 
+        // 요청에서 액세스 토큰과 리프레시 토큰 추출
+        String cookie = extractRefreshToken(request);
+
+        // 리프레시 토큰을 사용하여 블랙리스트 확인 (여기서는 액세스 토큰을 블랙리스트에서 확인)
+        String redisKeyBlack = "accessToken:" + jwtUtil.getUsername(cookie); // 사용자별 액세스 토큰 키
+        String blacklistedToken = redisService.getToken(redisKeyBlack);
+
+        // 2. 토큰이 블랙리스트에 존재하는 경우 인증 거부
+        if (blacklistedToken != null && blacklistedToken.equals(token)) {
+            System.out.println("블랙리스트에 포함된 토큰으로 인증 거부");
+            
+            // 인증 거부 후 401 Unauthorized 상태 코드 반환
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return; // 인증 거부 후 더 이상 필터 체인으로 진행하지 않음
+        }
+    	
+    	
         	// System.out.println("토큰 만료 검증시작전: " ); // 만료 여부 출력
             boolean isExpired = jwtUtil.isExpired(token);
           //   System.out.println("토큰 만료 여부: " + isExpired); // 만료 여부 출력
@@ -133,7 +149,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             
 
             // 리프레시 토큰 삭제
-           // System.out.println("리프레시 토큰 이존재함  액세스토재발급 진행 " + redisKey);   
+            System.out.println("액세스 만료 리프레시 유효 액세스 재발급 진행 " + redisKey);   
           //  System.out.println("레디스에 존재하는 리프레쉬토큰"+refreshToken);
 
             String username = jwtUtil.getUsername(refreshToken);
@@ -155,15 +171,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     // Authorization 헤더에서 JWT 토큰을 추출하는 메서드
     public String extractToken(HttpServletRequest request) {
-        String header = request.getHeader("Authorization");
-       // System.out.println("헤더 값 추출 중JWT: " + header);
+        try {
+            String header = request.getHeader("Authorization");
+            System.out.println("헤더 값 추출 중JWT: " + header);
 
-        if (header != null && header.startsWith("Bearer ")) {
-            return header.substring(7); // "Bearer " 이후의 토큰 반환
+            if (header != null && header.startsWith("Bearer ")) {
+                return header.substring(7); // "Bearer " 이후의 토큰 반환
+            }
+        } catch (Exception e) {
+            // 예외 발생 시 로그를 출력하고 null 반환
+            System.err.println("Jwt 추출 예외" + e.getMessage());
         }
-
-        return null;
+        return null; // null 반환
     }
+
 
     // 리프레시 토큰을 쿠키에서 추출하는 메서드
     public String extractRefreshToken(HttpServletRequest request) {
