@@ -584,56 +584,60 @@ public class MemberController {
     public ResponseEntity<ApiResponse<String>> logout(@RequestHeader("Authorization") String authorizationHeader, HttpServletRequest request, HttpServletResponse response) {
         try {
             // 액세스 토큰 추출 (Bearer <token>)
+
+            
+          //  System.out.println("* 로그아웃 컨트롤러입니다. -------------- *");
+           // System.out.println("액세스 토큰: " + token);
+
             String token = authorizationHeader.substring(7);
 
-           System.out.println("* 로그아웃 컨트롤러입니다. -------------- *");
-            System.out.println("액세스 토큰: " + token);
+
+
 
             
             // 로그인한 사용자 ID 가져오기
-            String username = authenticationFacade.getCurrentUserId();
-            if(username != null) {
-                // Redis에 액세스토큰을 블랙리스트로 저장
+
+
+            if(token != null) {
+                String username = jwtUtil.getUsername(token);
                 String redisKeyBlack = "accessToken:" + username; // 사용자별 고유 키
-                
+                // Redis에 액세스토큰을 블랙리스트로 저장
                 System.out.println("기존 액세스 토큰 Redis블랙리스트 저장: " + redisKeyBlack);
                 redisService.saveToken(redisKeyBlack, token, 60 * 60 * 24 * 7 * 1000L);
             }
                else {
             	//System.out.println("유효기간이 만료된 사용자입니다. 다시로그인해주세요");
+            	   return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "세션이 만료된 사용자입니다.", null));   
              }
                        
             
             String refreshToken = null;
             
-            for (Cookie cookie : request.getCookies()) {
-                if ("refreshToken".equals(cookie.getName())) {
-                    refreshToken = cookie.getValue();
-                    break;
+            if (request.getCookies() != null) {
+                for (Cookie cookie : request.getCookies()) {
+                    if ("refreshToken".equals(cookie.getName())) {
+                        refreshToken = cookie.getValue();
+                        break;
+                    }
                 }
             }
 
             if (refreshToken != null) {
                // System.out.println("리프레시 토큰: " + refreshToken);
-            } else {
-               // System.out.println("리프레시 토큰이 없습니다.");
-            }
-            
-            String usernameR = jwtUtil.getUsername(refreshToken);
-            
-            // 사용자별 리프레시 토큰을 저장하는 키
-            String redisKey = "refreshToken:" + usernameR;
+                String usernameR = jwtUtil.getUsername(refreshToken);
+                
+                // 사용자별 리프레시 토큰을 저장하는 키
+                String redisKey = "refreshToken:" + usernameR;
 
-            // Redis에서 해당 키가 존재하는지 확인
-            String existingToken = redisService.getToken(redisKey);
-            if (existingToken != null) {
-                // 리프레시 토큰 삭제
+                // Redis에서 해당 키가 존재하는지 확인
+                String existingToken = redisService.getToken(redisKey);
                 redisService.deleteToken(redisKey);
               //  System.out.println("리프레시 토큰 Redis에서 삭제됨: " + redisKey);
             } else {
-               // System.out.println("리프레시 토큰을 Redis에서 찾을 수 없음: " + redisKey);
+               // System.out.println("리프레시 토큰이 없습니다.");
+                // System.out.println("리프레시 토큰을 Redis에서 찾을 수 없음: " + redisKey);
             }
-
+            
             
             // 리프레시 토큰 쿠키 삭제
             Cookie refreshTokenCookie = new Cookie("refreshToken", null);
