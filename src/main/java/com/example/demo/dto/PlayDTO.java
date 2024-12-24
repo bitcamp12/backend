@@ -1,5 +1,6 @@
 package com.example.demo.dto;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -11,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PlayDTO {
+public class PlayDTO implements Serializable{
 	private int playSeq;
 	private int memberSeq;         // 공연 관계자 pk
 	private String name;
