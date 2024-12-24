@@ -56,8 +56,7 @@ public interface ReviewBeforeDAO {
 	    @Update("""
 	            UPDATE review_before
 	            SET 
-	                content = #{content},
-	                created_date = CURRENT_TIMESTAMP
+	                content = #{content}
 	            WHERE 
 	                review_before_seq = #{reviewBeforeSeq}
 	            """)
