@@ -16,5 +16,5 @@ public class ReviewBeforeDTO {
 	private int playSeq;
 	private String content;
 	private LocalDateTime createdDate;
-	private String id;
+	private String name;
 }

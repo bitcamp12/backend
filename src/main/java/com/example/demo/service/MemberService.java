@@ -205,6 +205,7 @@ public class MemberService {
 		return memberDAO.checkMyBook(id);
 	}
 
+
 	public List<CheckMyBookDTO> checkBookingsByDate(Map<String, Object> map) {
 		return memberDAO.checkBookingsByDate(map);
 	}
@@ -243,6 +244,11 @@ public class MemberService {
 																			// ?
 
 		return books;
+	}
+
+	public MemberDTO getname(String id) {
+		// TODO Auto-generated method stub
+		return memberDAO.getname(id);
 	}
 
 	/*
