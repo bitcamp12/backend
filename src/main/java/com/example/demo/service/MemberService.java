@@ -247,7 +247,6 @@ public class MemberService {
 	}
 
 	public MemberDTO getname(String id) {
-		// TODO Auto-generated method stub
 		return memberDAO.getname(id);
 	}
 

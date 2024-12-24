@@ -26,6 +26,7 @@ public class BookService {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void purchaseSeats(List<BookDTO> list) {
         List<BookDTO> bookedSeats = bookDAO.getBookedSeats(list.get(0).getPlayTimeTableSeq());
+        
         for (BookDTO seat : list) {
             boolean isBooked = bookedSeats.stream()
                                           .anyMatch(bookedSeat -> bookedSeat.getBookedX() == seat.getBookedX() && bookedSeat.getBookedY() == seat.getBookedY());
@@ -37,4 +38,5 @@ public class BookService {
             bookDAO.insertSeat(seat);
         }
     }
+    
 }

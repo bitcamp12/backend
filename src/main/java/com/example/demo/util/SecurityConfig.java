@@ -105,12 +105,13 @@ public class SecurityConfig {
             http
             .authorizeHttpRequests((auth) -> auth
                     .requestMatchers(  
-                    		"/api/favorites/favorites",                  		
+                    		"/api/favorites/favorites",               		
                     		"/api/qnas/qna",                   		
                     		"/api/reviewAfters/ReviewA",
                     		"/api/reviewBefores/ReviewB",                    		
                     		"/api/books/getBookedSeats",
-                    		"/api/books/purchaseSeats",                   		
+                    		"/api/books/purchaseSeats",
+                            "/api/payment/confirm",              		
                     		"/api/theaters/getTheaterInfo",                  		
                             "/api/members/getUserInfo/me",
                             "/api/members/infoWithdrawal/me",
