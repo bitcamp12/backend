@@ -16,10 +16,12 @@ import com.example.demo.dao.MemberDAO;
 import com.example.demo.dto.CheckMyBookDTO;
 import com.example.demo.dto.member.MemberDTO;
 import com.example.demo.entity.Book;
+import com.example.demo.entity.Favorite;
 import com.example.demo.entity.Member;
 import com.example.demo.repository.AdminRepository;
 import com.example.demo.repository.BookRepository;
 import com.example.demo.repository.CheckMyBookRepository;
+import com.example.demo.repository.FavoriteRepository;
 import com.example.demo.repository.MemberRepository;
 
 import jakarta.transaction.Transactional;
@@ -44,6 +46,10 @@ public class MemberService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private FavoriteRepository favoriteRepository;
+	
 
 	public String test() {
 		return "테스트입니다.";
@@ -245,6 +251,25 @@ public class MemberService {
 
 		return books;
 	}
+
+
+	public Page<Favorite> checkFavoritePagination(String id, int currentPage, int pageSize) {
+		Pageable pageable = PageRequest.of(currentPage, pageSize);
+		System.out.println("[MemberService]checkFavoritePagination : " + pageable);
+
+		Member member = memberRepository.findById(id); // select * from member where id = ' '
+
+		System.out.println(member.getMemberSeq());
+		Page<Favorite> favorites = favoriteRepository.findByMember(member, pageable); // select * from favorite where member_seq = ?
+
+		System.out.println("favorites " + favorites);
+		return favorites;
+	}
+
+	public void checkFavoriteDelete(String id, int delFavoriteSeq) {
+		Member member = memberRepository.findById(id); // select * from member where id = ' '
+		
+		favoriteRepository.deleteById(delFavoriteSeq);
 
 	public MemberDTO getname(String id) {
 		// TODO Auto-generated method stub
