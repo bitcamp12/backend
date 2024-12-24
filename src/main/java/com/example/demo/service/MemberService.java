@@ -270,7 +270,8 @@ public class MemberService {
 		Member member = memberRepository.findById(id); // select * from member where id = ' '
 		
 		favoriteRepository.deleteById(delFavoriteSeq);
-
+	}
+	
 	public MemberDTO getname(String id) {
 		// TODO Auto-generated method stub
 		return memberDAO.getname(id);
