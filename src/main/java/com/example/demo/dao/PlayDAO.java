@@ -23,7 +23,7 @@ public interface PlayDAO {
     LEFT JOIN play_time_table t  ON  p.play_seq = t.play_seq
     WHERE  p.play_seq = #{playSeq}
 			""")
-	PlayDTO getPlayOne(String playSeq);
+	List<PlayDTO> getPlayOne(String playSeq);
 
 
 	//민웅 사용자 메인 페이지
