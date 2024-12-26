@@ -81,6 +81,10 @@ public class MemberService {
 	}
 
 	public void modifyUserInfo(MemberDTO modifiedData) {
+		String encodedPassword = passwordEncoder.encode(modifiedData.getPassword());
+		System.out.println("modifyUserInfo JWT비밀번호 : " + encodedPassword);
+		modifiedData.setPassword(encodedPassword);
+	 	System.out.println("modifyUserInfo JWT 새로운 비밀번호 : " + modifiedData.getPassword());
 		memberDAO.modifyUserInfo(modifiedData);
 	}
 
@@ -183,6 +187,8 @@ public class MemberService {
             member.setPassword(encodedPassword);  // 암호화된 비밀번호 저장
             
             memberRepository.save(member);
+            
+            
             return 1;
         } catch (Exception e) {
             e.printStackTrace();

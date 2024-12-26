@@ -708,6 +708,10 @@ public class MemberController {
 	@PutMapping("modifyUserInfo")
 	public void modifyUserInfo(@RequestBody MemberDTO modifiedData) {
 		System.out.println(modifiedData);
+		// 비밀번호를 암호화해서 데이터베이스에 저장해줘야한다.
+		System.out.println("modifyUserInfo 변경비밀번호 : " + modifiedData.getPassword());
+		
+		
 		memberService.modifyUserInfo(modifiedData);
 	}
 	
@@ -871,7 +875,7 @@ public class MemberController {
 	public boolean checkPassword(@RequestParam("pwd") String pwd) {
 		String id =authenticationFacade.getCurrentUserId();
 		boolean result = memberService.checkPassword(id, pwd);
-		
+		System.out.println("checkPassword result : " + result);
 		return result;
 	}
 	

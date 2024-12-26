@@ -42,7 +42,7 @@ public interface MemberDAO {
     @Select("SELECT * FROM member WHERE id= #{id}")
 	public MemberDTO getUserInfo(String id);
 
-    @Update("UPDATE member SET phone=#{phone}, email=#{email} WHERE id=#{id}")
+    @Update("UPDATE member SET password=#{password}, phone=#{phone}, email=#{email} WHERE id=#{id}")
     public void modifyUserInfo(MemberDTO modifiedData);
     
     @Select("SELECT COUNT(*) FROM member WHERE name = #{name} AND phone = #{phone}")
