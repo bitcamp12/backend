@@ -823,6 +823,11 @@ public class MemberController {
 	        // 현재 로그인한 사용자 정보 가져오기
 	        Member member = authenticationFacade.getCurrentMember();
 	        MemberDTO memberDTO = memberService.getname(member.getId());
+
+			boolean result = memberService.checkPassword(memberDTO.getId(), memberDTO.getPassword());
+	        if(result == true) {
+	        	memberDTO.setPassword(memberDTO.getId());
+	        }
 	        if (member == null || member.getId() == null) {
 	            // 사용자 정보가 없거나 ID가 없는 경우 처리
 	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
