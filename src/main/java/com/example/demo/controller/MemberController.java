@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -78,6 +79,9 @@ public class MemberController {
     // 스케줄러를 사용하여 만료 시간 이후 데이터를 제거
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 	
+    @Autowired
+	private PasswordEncoder passwordEncoder;
+    
     /*
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<Member>> signUp(@RequestBody MemberDTO memberDTO) {
@@ -824,10 +828,11 @@ public class MemberController {
 	        Member member = authenticationFacade.getCurrentMember();
 	        MemberDTO memberDTO = memberService.getname(member.getId());
 
-			boolean result = memberService.checkPassword(memberDTO.getId(), memberDTO.getPassword());
+			boolean result = passwordEncoder.matches(memberDTO.getId(), member.getPassword());
 	        if(result == true) {
-	        	memberDTO.setPassword(memberDTO.getId());
+				memberDTO.setPassword(memberDTO.getId());
 	        }
+	        
 	        if (member == null || member.getId() == null) {
 	            // 사용자 정보가 없거나 ID가 없는 경우 처리
 	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
