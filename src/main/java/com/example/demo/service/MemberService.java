@@ -81,10 +81,14 @@ public class MemberService {
 	}
 
 	public void modifyUserInfo(MemberDTO modifiedData) {
-		String encodedPassword = passwordEncoder.encode(modifiedData.getPassword());
-		System.out.println("modifyUserInfo JWT비밀번호 : " + encodedPassword);
-		modifiedData.setPassword(encodedPassword);
-	 	System.out.println("modifyUserInfo JWT 새로운 비밀번호 : " + modifiedData.getPassword());
+		
+		Member member = memberRepository.findById(modifiedData.getId());
+		if(!member.getPassword().equals(modifiedData.getPassword())) {
+			String encodedPassword = passwordEncoder.encode(modifiedData.getPassword());
+			System.out.println("modifyUserInfo JWT비밀번호 : " + encodedPassword);
+			modifiedData.setPassword(encodedPassword);
+		 	System.out.println("modifyUserInfo JWT 새로운 비밀번호 : " + modifiedData.getPassword());
+		}
 		memberDAO.modifyUserInfo(modifiedData);
 	}
 
