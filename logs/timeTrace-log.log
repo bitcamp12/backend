@@ -8,3 +8,6 @@
 2024-12-24 17:37:08 - BookService.purchaseSeats(..) - Time Elapsed = 0.023808375s
 2024-12-24 17:41:36 - BookService.purchaseSeats(..) - Time Elapsed = 0.1144565s
 2024-12-24 17:46:17 - BookService.purchaseSeats(..) - Time Elapsed = 0.041730333s
+2024-12-26 13:44:33 - BookService.purchaseSeats(..) - Time Elapsed = 0.019241s
+2024-12-26 13:47:06 - BookService.purchaseSeats(..) - Time Elapsed = 0.0194546s
+2024-12-26 13:47:34 - BookService.purchaseSeats(..) - Time Elapsed = 0.0720689s
