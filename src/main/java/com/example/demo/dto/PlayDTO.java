@@ -2,6 +2,7 @@ package com.example.demo.dto;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import lombok.Getter;
@@ -15,8 +16,8 @@ public class PlayDTO implements Serializable{
 	private int playSeq;
 	private int memberSeq;         // 공연 관계자 pk
 	private String name;
-	private LocalDate startTime;
-	private LocalDate endTime;
+	private LocalDateTime startTime;
+	private LocalDateTime endTime;
 	private String imageFileName;
 	private String imageOriginalFileName;
 	private String description;
