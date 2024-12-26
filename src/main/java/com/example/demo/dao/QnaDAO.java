@@ -49,8 +49,7 @@ public interface QnaDAO {
     @Update("""
             UPDATE qna
             SET title = #{title},
-                content = #{content},
-                created_date = CURRENT_TIMESTAMP  
+                content = #{content}
             WHERE qna_seq = #{qnaSeq}
             """)
     int updateQna(@Param("qnaSeq") int qnaSeq, @Param("title") String title, @Param("content") String content);

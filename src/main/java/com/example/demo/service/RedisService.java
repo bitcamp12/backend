@@ -17,9 +17,9 @@ public class RedisService {
     // 데이터 저장
     public void saveToken(String key, String value, long expirationInMillis) {
         try {
-            redisTemplate.opsForValue().set(key, value, Duration.ofMillis(expirationInMillis));
+            redisTemplate.opsForValue().set(key, value, 
+            Duration.ofMillis(expirationInMillis));
         } catch (Exception e) {
-            // Redis 저장 실패 시, 로그에만 기록하고 예외를 던지지 않음
             System.err.println("Redis 저장 실패: " + e.getMessage());
         }
     }

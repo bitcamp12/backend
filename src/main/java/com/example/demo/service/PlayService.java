@@ -37,7 +37,7 @@ public class PlayService {
 	public PlayDTO getPlayOne(String playSeq) {
 		System.out.println(playSeq);
 		System.out.println("getPlayOne");
-		return playDAO.getPlayOne(playSeq);  
+		return playDAO.getPlayOne(playSeq).get(0);  
 
 	}
 

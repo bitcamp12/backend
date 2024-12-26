@@ -273,17 +273,16 @@ public class MemberService {
 	}
 	
 	public MemberDTO getname(String id) {
-		// TODO Auto-generated method stub
 		return memberDAO.getname(id);
 	}
 
-	/*
-	 * // 페이징 예약 확인 public Page<CheckMyBook> checkMyBookPagination(int currentPage,
-	 * int pageSize) { Pageable pageable = PageRequest.of(currentPage, pageSize);
-	 * System.out.println("[MemberService]checkMyBookPagination : " + pageable);
-	 * System.out.println("[MemberService]checkMyBookPagination findeAll()  : " +
-	 * checkMyBookRepository.findAll(pageable)); return
-	 * checkMyBookRepository.findAll(pageable); }
-	 */
+	public boolean checkPassword(String id, String pwd) {
+		Member member = memberRepository.findById(id);
+		System.out.println("checkPassword getId(): " + member.getId());
+		boolean result = passwordEncoder.matches(pwd, member.getPassword());
+		
+		return result;
+	}
+
 
 }

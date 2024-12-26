@@ -56,8 +56,7 @@ public interface ReviewBeforeDAO {
 	    @Update("""
 	            UPDATE review_before
 	            SET 
-	                content = #{content},
-	                created_date = CURRENT_TIMESTAMP
+	                content = #{content}
 	            WHERE 
 	                review_before_seq = #{reviewBeforeSeq}
 	            """)
@@ -112,8 +111,9 @@ public interface ReviewBeforeDAO {
 	    @Select("""
 			    SELECT COUNT(*)
 			   FROM review_before
+			   JOIN member m ON review_before.member_seq = m.member_seq
 			    WHERE play_seq = #{playSeq}
-			    and member_seq LIKE CONCAT('%', #{keyword}, '%')
+			    and m.name LIKE CONCAT('%', #{keyword}, '%')
 			     ORDER BY created_date DESC
 			""")
 		int ReviewBSearchIdCount(@Param("keyword")String keyword,@Param("playSeq") int playSeq);

@@ -34,7 +34,7 @@ ORDER BY
     t.start_time ASC
 LIMIT 1;
 			""")
-	PlayDTO getPlayOne(String playSeq);
+	List<PlayDTO> getPlayOne(String playSeq);
 
 
 	//민웅 사용자 메인 페이지
