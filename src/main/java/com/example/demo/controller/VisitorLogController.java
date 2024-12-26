@@ -18,12 +18,14 @@ public class VisitorLogController {
    private VisitorLogService visitorLogService;
 
    // MainNa.jsx에서 호출하는 방문 로그 저장 API
-   @PostMapping("/log") 
+   @PostMapping("/log")
    public ResponseEntity<ApiResponse<Void>> logVisit(@RequestBody VisitorLogDTO visitorLog) {
        try {
+           System.out.println("Received visit log: " + visitorLog); // 디버깅용 로그
            visitorLogService.logVisit(visitorLog);
            return ResponseEntity.ok(new ApiResponse<>(200, "방문 기록 저장 성공", null));
        } catch (Exception e) {
+           e.printStackTrace(); // 에러 스택트레이스 출력
            return ResponseEntity.badRequest()
                .body(new ApiResponse<>(400, "방문 기록 저장 실패: " + e.getMessage(), null));
        }
@@ -91,4 +93,5 @@ public class VisitorLogController {
                .body(new ApiResponse<>(400, "조회 실패: " + e.getMessage(), null));
        }
    }
+   
 }
