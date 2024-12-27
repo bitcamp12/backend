@@ -597,12 +597,7 @@ public class MemberController {
             String token = authorizationHeader.substring(7);
 
 
-
-
-            
             // 로그인한 사용자 ID 가져오기
-
-
             if(token != null) {
                 String username = jwtUtil.getUsername(token);
                 String redisKeyBlack = "accessToken:" + username; // 사용자별 고유 키
@@ -666,6 +661,7 @@ public class MemberController {
 
 	
 // -- 지현: 마이페이지(사용자정보) 수정 ---------------------------
+  /*
     // 세션얻어오기 => 필요없음(2024.11.27)
    // @CrossOrigin(origins = {"http://localhost:3000", "http://www.30ticket.shop","http://www.30ticket.shop"}, allowCredentials = "true")
     @GetMapping("getSession")
@@ -687,18 +683,17 @@ public class MemberController {
 		}
     	
     }
+    */
     
-    
-	// 한 명의 사용자 정보를 가져옵니다. (ResponseEntity로 수정하기)
+	// 한 명의 사용자 정보를 가져옵니다. (ResponseEntity로 수정하기) 
 	@GetMapping("getUserInfo/me")
-
 	public ResponseEntity<ApiResponse<Member>> getUserInfo( ) {
 		Member member = null;
 		try {			
 			String id =authenticationFacade.getCurrentUserId();  // JWT
 			member = authenticationFacade.getCurrentMember(); // jwt 인증시 로그인된 멤버 엔티티 정보획득
 
-            System.out.println("현재로그인아이디"+member.getId());  // 아이디 가져오는예시 
+        //    System.out.println("현재로그인아이디"+member.getId());  // 아이디 가져오는예시 
 			
 			
 			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "사용자 정보 가져오기", member));
@@ -708,6 +703,7 @@ public class MemberController {
 		}
 	}
 	
+	/*
 	// 회원 정보 수정 (ResponseEntity로 수정하기)
 	@PutMapping("modifyUserInfo")
 	public void modifyUserInfo(@RequestBody MemberDTO modifiedData) {
@@ -718,6 +714,27 @@ public class MemberController {
 		
 		memberService.modifyUserInfo(modifiedData);
 	}
+	*/
+	
+	// 회원 정보 수정 (ResponseEntity & JPA 변경 2024.12.27)
+	@PutMapping("modifyUserInfo")   
+	public ResponseEntity<ApiResponse<String>> modifyUserInfo(@RequestBody MemberDTO modifiedData) {
+		
+		try {
+			System.out.println(modifiedData);
+			// 비밀번호를 암호화해서 데이터베이스에 저장해줘야한다.
+			System.out.println("modifyUserInfo 변경비밀번호 : " + modifiedData.getPassword());
+			
+			memberService.modifyUserInfo(modifiedData);
+
+			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "마이페이지 수정", "수정 완료" ));
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse<>(500, "마이페이지 수정", "수정 실패" ));	
+		}
+		
+	}
+	
+	
 	
 	// 회원 탈퇴
 	@DeleteMapping("infoWithdrawal/me")
