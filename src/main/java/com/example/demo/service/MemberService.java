@@ -228,7 +228,7 @@ public class MemberService {
 	}
 
 	public Page<Book> checkMyBookPagination(String id, int currentPage, int pageSize) {
-		Sort sort = Sort.by(Sort.Order.desc("book_seq"));
+		Sort sort = Sort.by(Sort.Order.desc("bookSeq"));
         
         // Pageable 객체 생성 (currentPage는 0부터 시작하는 인덱스)
 		Pageable pageable = PageRequest.of(currentPage, pageSize, sort);
@@ -245,7 +245,7 @@ public class MemberService {
 	}
 
 	public Page<Book> checkMyBookPagination(String id, String year, String month, int currentPage, int pageSize) {
-		Sort sort = Sort.by(Sort.Order.desc("book_seq"));
+		Sort sort = Sort.by(Sort.Order.desc("bookSeq"));
         
         // Pageable 객체 생성 (currentPage는 0부터 시작하는 인덱스)
 		Pageable pageable = PageRequest.of(currentPage, pageSize, sort);
@@ -271,7 +271,7 @@ public class MemberService {
 
 
 	public Page<Favorite> checkFavoritePagination(String id, int currentPage, int pageSize) {
-		Sort sort = Sort.by(Sort.Order.desc("favorite_seq"));
+		Sort sort = Sort.by(Sort.Order.desc("favoriteSeq"));
 	        
 	        // Pageable 객체 생성 (currentPage는 0부터 시작하는 인덱스)
 	    Pageable pageable = PageRequest.of(currentPage, pageSize, sort);
