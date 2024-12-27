@@ -18,7 +18,7 @@ public interface PlayDAO {
 
 	@Select("""
 
-	SELECT 
+SELECT 
     p.*, 
     t.discounted_price, 
     t.discount_rate, 
@@ -27,7 +27,7 @@ public interface PlayDAO {
 FROM 
     play p
 LEFT JOIN 
-    play_time_table t ON p.play_seq = t.play_seq
+    play_time_table t ON (DATE(t.target_date) = DATE(now()) and p.play_seq = t.play_seq)
 WHERE 
     p.play_seq = #{playSeq}
 ORDER BY 
