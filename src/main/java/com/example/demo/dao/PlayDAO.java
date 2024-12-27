@@ -18,13 +18,25 @@ public interface PlayDAO {
 
 	@Select("""
 
-			 SELECT   p.*, t.discounted_price,t.discount_rate,t.start_time,t.target_date
-    FROM   play p
-    LEFT JOIN play_time_table t  ON  p.play_seq = t.play_seq
-    WHERE  p.play_seq = #{playSeq}
+SELECT 
+    p.*, 
+    t.discounted_price, 
+    t.discount_rate, 
+    t.start_time AS play_start_time, 
+    t.target_date
+FROM 
+    play p
+LEFT JOIN 
+    play_time_table t ON (DATE(t.target_date) = DATE(now()) and p.play_seq = t.play_seq)
+WHERE 
+    p.play_seq = #{playSeq}
+ORDER BY 
+    t.start_time ASC
+LIMIT 1;
 			""")
-	List<PlayDTO> getPlayOne(String playSeq);
+	PlayDTO getPlayOne(String playSeq);
 
+	
 
 	//민웅 사용자 메인 페이지
 	@Select("""
@@ -68,6 +80,6 @@ public interface PlayDAO {
 			ORDER BY price DESC
 			LIMIT #{size} OFFSET #{offset}
 			""")
-	List<PlayDTO> getPlaysLimited(int offset, int size);
+	List<PlayDTO> getPlaysLimited(@Param("offset") int offset, @Param("size") int size);
 
 }

@@ -27,7 +27,7 @@ public class Member {
     @Column(name = "member_seq")
     private int memberSeq;  // 회원 번호 (Primary Key)
 
-    @Column(name = "id", nullable = false, unique = true, length = 30)
+    @Column(name = "id", nullable = false, unique = true, length = 50)
     private String id;  // 아이디
 
     @Column(name = "name", nullable = false, length = 100)

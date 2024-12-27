@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @MapperScan({"com.example.demo.dao"})
 @SpringBootApplication
-@EnableCaching // Spring 캐싱을 활성화합니다.
+@EnableCaching
 public class BackendApplication {
 
 	public static void main(String[] args) {

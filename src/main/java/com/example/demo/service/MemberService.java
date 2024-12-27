@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -81,6 +82,14 @@ public class MemberService {
 	}
 
 	public void modifyUserInfo(MemberDTO modifiedData) {
+		
+		Member member = memberRepository.findById(modifiedData.getId());
+		if(!member.getPassword().equals(modifiedData.getPassword())) {
+			String encodedPassword = passwordEncoder.encode(modifiedData.getPassword());
+			System.out.println("modifyUserInfo JWT비밀번호 : " + encodedPassword);
+			modifiedData.setPassword(encodedPassword);
+		 	System.out.println("modifyUserInfo JWT 새로운 비밀번호 : " + modifiedData.getPassword());
+		}
 		memberDAO.modifyUserInfo(modifiedData);
 	}
 
@@ -183,6 +192,8 @@ public class MemberService {
             member.setPassword(encodedPassword);  // 암호화된 비밀번호 저장
             
             memberRepository.save(member);
+            
+            
             return 1;
         } catch (Exception e) {
             e.printStackTrace();
@@ -217,21 +228,27 @@ public class MemberService {
 	}
 
 	public Page<Book> checkMyBookPagination(String id, int currentPage, int pageSize) {
-		Pageable pageable = PageRequest.of(currentPage, pageSize);
+		Sort sort = Sort.by(Sort.Order.desc("bookSeq"));
+        
+        // Pageable 객체 생성 (currentPage는 0부터 시작하는 인덱스)
+		Pageable pageable = PageRequest.of(currentPage-1, pageSize, sort);
 		System.out.println("[MemberService]checkMyBookPagination : " + pageable);
 		// System.out.println("[MemberService]checkMyBookPagination : " +
 		// checkMyBookRepository.findByMemberId(id, pageable));
 		// return checkMyBookRepository.findByMemberId(id, pageable);
 
 		Member member = memberRepository.findById(id); // select * from member where id = ' '
-
+		System.out.println("zzzzzz"+id);
 		Page<Book> books = BookRepository.findByMember(member, pageable); // select * from book where member_seq = ?
 
 		return books;
 	}
 
 	public Page<Book> checkMyBookPagination(String id, String year, String month, int currentPage, int pageSize) {
-		Pageable pageable = PageRequest.of(currentPage, pageSize);
+		Sort sort = Sort.by(Sort.Order.desc("bookSeq"));
+        
+        // Pageable 객체 생성 (currentPage는 0부터 시작하는 인덱스)
+		Pageable pageable = PageRequest.of(currentPage-1, pageSize, sort);
 		System.out.println("[MemberService]checkMyBookPagination : " + pageable);
 
 		Member member = memberRepository.findById(id); // select * from member where id = ' '
@@ -254,7 +271,10 @@ public class MemberService {
 
 
 	public Page<Favorite> checkFavoritePagination(String id, int currentPage, int pageSize) {
-		Pageable pageable = PageRequest.of(currentPage, pageSize);
+		Sort sort = Sort.by(Sort.Order.desc("favoriteSeq"));
+	        
+	        // Pageable 객체 생성 (currentPage는 0부터 시작하는 인덱스)
+		Pageable pageable = PageRequest.of(currentPage-1, pageSize, sort);
 		System.out.println("[MemberService]checkFavoritePagination : " + pageable);
 
 		Member member = memberRepository.findById(id); // select * from member where id = ' '

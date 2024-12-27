@@ -51,8 +51,8 @@ public class PlayController {
 
 	//민웅 사용자 메인 페이지
 	@GetMapping("/getPlayAll")
-	public ResponseEntity<ApiResponse<List<PlayDTO>>> getPlayAll(@RequestParam("page") int page, @RequestParam("size") int size) {
-		List<PlayDTO> plays = playService.getPlayAll(page, size);
+	public ResponseEntity<ApiResponse<List<Play>>> getPlayAll(@RequestParam("page") int page, @RequestParam("size") int size) {
+		List<Play> plays = playService.getPlayAll(page, size);
 		return ResponseEntity.ok(new ApiResponse<>(200, "Data retrieved", plays));
 	}
 
@@ -80,15 +80,15 @@ public class PlayController {
 	}
 	
 	@GetMapping("/getPlayRandom")
-	public ResponseEntity<ApiResponse<List<PlayDTO>>> getPlayRandom() {
-		List<PlayDTO> plays = playService.getPlayRandom();
+	public ResponseEntity<ApiResponse<List<Play>>> getPlayRandom() {
+		List<Play> plays = playService.getPlayRandom();
 		return ResponseEntity.ok(new ApiResponse<>(200, "Data retrieved", plays));
 	}
 
 	@GetMapping("/getPlayEndingSoon")
-	public ResponseEntity<ApiResponse<List<PlayDTO>>> getPlayEndingSoon(@RequestParam("page") int page, @RequestParam("size") int size) {
+	public ResponseEntity<ApiResponse<List<Play>>> getPlayEndingSoon(@RequestParam("page") int page, @RequestParam("size") int size) {
 		try {
-			List<PlayDTO> plays = playService.getPlaysEndingSoon(page, size);
+			List<Play> plays = playService.getPlaysEndingSoon(page, size);
 			if (plays.isEmpty()) {
 				return ResponseEntity.ok(new ApiResponse<>(204, "검색된 데이터가없습니다", plays));
 			}
@@ -101,9 +101,9 @@ public class PlayController {
 	}
 
 	@GetMapping("/getPlayComingSoon")
-	public ResponseEntity<ApiResponse<List<PlayDTO>>> getPlayComingSoon(@RequestParam("page") int page, @RequestParam("size") int size) {
+	public ResponseEntity<ApiResponse<List<Play>>> getPlayComingSoon(@RequestParam("page") int page, @RequestParam("size") int size) {
 		try {
-			List<PlayDTO> plays = playService.getPlaysComingSoon(page, size);
+			List<Play> plays = playService.getPlaysComingSoon(page, size);
 			if (plays.isEmpty()) {
 				return ResponseEntity.ok(new ApiResponse<>(204, "검색된 데이터가없습니다", plays));
 			}
@@ -116,9 +116,9 @@ public class PlayController {
 	}
 
 	@GetMapping("/getPlayLimited")
-	public ResponseEntity<ApiResponse<List<PlayDTO>>> getPlayLimited(@RequestParam("page") int page, @RequestParam("size") int size) {
+	public ResponseEntity<ApiResponse<List<Play>>> getPlayLimited(@RequestParam("page") int page, @RequestParam("size") int size) {
 		try {
-			List<PlayDTO> plays = playService.getPlaysLimited(page, size);
+			List<Play> plays = playService.getPlaysLimited(page, size);
 			if (plays.isEmpty()) {
 				return ResponseEntity.ok(new ApiResponse<>(204, "검색된 데이터가없습니다", plays));
 			}
