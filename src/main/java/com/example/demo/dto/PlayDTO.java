@@ -28,5 +28,5 @@ public class PlayDTO implements Serializable{
     private int discountedPrice;
     private int discountRate;
     private String targetDate; 
-
+    private String playStartTime;
 }

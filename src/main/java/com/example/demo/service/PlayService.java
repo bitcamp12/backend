@@ -24,6 +24,7 @@ import com.example.demo.util.ApiResponse;
 
 @Service
 public class PlayService {
+	 
 
 	@Autowired
 	private PlayDAO playDAO;
@@ -33,16 +34,19 @@ public class PlayService {
 
 	private List<PlayDiscountDTO> cachedDiscountedPlays;
 
-	
+	@Cacheable(value = "play", key = "#playSeq != null ? #playSeq : '0'", unless = "#result == null")
 	public PlayDTO getPlayOne(String playSeq) {
-		System.out.println(playSeq);
-		System.out.println("getPlayOne");
-		return playDAO.getPlayOne(playSeq).get(0);  
-
+	    System.out.println("Fetching playSeq from DB: " + playSeq);
+	    PlayDTO playDTO = playDAO.getPlayOne(playSeq);
+	    System.out.println("Returned playDTO: " + playDTO);
+	    return playDTO;  
 	}
+	
 
 	//민웅 사용자 메인 페이지
+	@Cacheable(value = "getPlayAll", key = "#page + '-' + #size")
 	public List<PlayDTO> getPlayAll(int page, int size) {
+		 System.out.println("Fetching random plays from DB...getPlayAll");
 		int offset = (page - 1) * size;
 		return playDAO.getPlayAll(offset, size);
 	}
@@ -50,16 +54,21 @@ public class PlayService {
 	public List<PlayDTO> searchList(String name) {
 		return playDAO.searchList(name);
 	}
-
+	
+	//메인 페이지 이미지 불러오는 함수
+	@Cacheable(value = "PlayRandom")
     public List<PlayDTO> getPlayRandom() {
+		 System.out.println("Fetching random plays from DB...PlayRandom");
         return playDAO.getPlayRandom();
     }
 
 	public List<PlayDiscountDTO> getPlaySale() {
         return cachedDiscountedPlays;
     }
-
+	
+	@Cacheable(value = "searchListEntity", key = "#name != null ? #name : ' '")
 	public List<Play> searchListEntity(String name) {
+		 System.out.println("Fetching random plays from DB...searchListEntity");
 		System.out.println(name+"**entity");
 		List<Play> list = playRepository.findByNameContaining(name);
 		
@@ -69,18 +78,21 @@ public class PlayService {
 		        return new ArrayList<>(); 
 		  }
 	}
-
+	@Cacheable(value = "getPlaysEndingSoon", key = "#page + '-' + #size")
 	public List<PlayDTO> getPlaysEndingSoon(int page, int size) {
+		 System.out.println("Fetching random plays from DB...getPlaysEndingSoon");
 		int offset = (page - 1) * size;
 		return playDAO.getPlaysEndingSoon(offset, size);
 	}
-
+	@Cacheable(value = "getPlaysComingSoon", key = "#page + '-' + #size")
 	public List<PlayDTO> getPlaysComingSoon(int page, int size) {
+		 System.out.println("Fetching random plays from DB...getPlaysEndingSoon");
 		int offset = (page - 1) * size;
 		return playDAO.getPlaysComingSoon(offset, size);
 	}
-
+	@Cacheable(value = "getPlaysLimited", key = "#page + '-' + #size")
 	public List<PlayDTO> getPlaysLimited(int page, int size) {
+		 System.out.println("Fetching random plays from DB...getPlaysLimited");
 		int offset = (page - 1) * size;
 		return playDAO.getPlaysLimited(offset, size);
 	}
