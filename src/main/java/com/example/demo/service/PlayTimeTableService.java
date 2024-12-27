@@ -23,8 +23,10 @@ public class PlayTimeTableService {
 		return playTimeTableDAO.playTimeTables(playSeq,targetDate);
 	}
 
-	@Cacheable(value = "calculateDiscount")
-	@Scheduled(fixedRate = 60000)
+
+
+//@Scheduled(fixedRate = 60000)
+@Cacheable(value = "calculateDiscount")
     public List<PlayDiscountDTO> calculateDiscount() {
 		 System.out.println("[CACHE MISS] Calculating discounts from the database...");
 		
@@ -34,9 +36,9 @@ public class PlayTimeTableService {
         for (PlayDiscountDTO playDiscountDTO : discountedPlays) {
             double discountedPrice = playDiscountDTO.calculateSale();
             playDiscountDTO.setDiscountedPrice(discountedPrice);
+            PlayTimeTableDTO playTimeTableDTO = new PlayTimeTableDTO();
 
-			PlayTimeTableDTO playTimeTableDTO = new PlayTimeTableDTO();
-			playTimeTableDTO.setPlayTimeTableSeq(playDiscountDTO.getPlayTimeTableSeq());
+            playTimeTableDTO.setPlayTimeTableSeq(playDiscountDTO.getPlayTimeTableSeq());
             playTimeTableDTO.setDiscountRate(playDiscountDTO.getDiscountRate());
             playTimeTableDTO.setDiscountedPrice(playDiscountDTO.getDiscountedPrice());
 
