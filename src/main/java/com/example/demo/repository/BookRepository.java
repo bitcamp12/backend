@@ -27,6 +27,7 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
 	Page<Book> findByMemberAndPayDateBetween(Member member, LocalDateTime startOfMonth, LocalDateTime endOfMonth,
 			Pageable pageable);
 
+
 //    @Query(value = "SELECT * FROM book WHERE member_seq = :memberSeq " +
 //            "AND YEAR(pay_date) = :year " +
 //            "AND MONTH(pay_date) = :month",

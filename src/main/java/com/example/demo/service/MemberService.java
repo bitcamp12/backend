@@ -231,14 +231,14 @@ public class MemberService {
 		Sort sort = Sort.by(Sort.Order.desc("bookSeq"));
         
         // Pageable 객체 생성 (currentPage는 0부터 시작하는 인덱스)
-		Pageable pageable = PageRequest.of(currentPage, pageSize, sort);
+		Pageable pageable = PageRequest.of(currentPage-1, pageSize, sort);
 		System.out.println("[MemberService]checkMyBookPagination : " + pageable);
 		// System.out.println("[MemberService]checkMyBookPagination : " +
 		// checkMyBookRepository.findByMemberId(id, pageable));
 		// return checkMyBookRepository.findByMemberId(id, pageable);
 
 		Member member = memberRepository.findById(id); // select * from member where id = ' '
-
+		System.out.println("zzzzzz"+id);
 		Page<Book> books = BookRepository.findByMember(member, pageable); // select * from book where member_seq = ?
 
 		return books;
@@ -248,7 +248,7 @@ public class MemberService {
 		Sort sort = Sort.by(Sort.Order.desc("bookSeq"));
         
         // Pageable 객체 생성 (currentPage는 0부터 시작하는 인덱스)
-		Pageable pageable = PageRequest.of(currentPage, pageSize, sort);
+		Pageable pageable = PageRequest.of(currentPage-1, pageSize, sort);
 		System.out.println("[MemberService]checkMyBookPagination : " + pageable);
 
 		Member member = memberRepository.findById(id); // select * from member where id = ' '
@@ -274,7 +274,7 @@ public class MemberService {
 		Sort sort = Sort.by(Sort.Order.desc("favoriteSeq"));
 	        
 	        // Pageable 객체 생성 (currentPage는 0부터 시작하는 인덱스)
-	    Pageable pageable = PageRequest.of(currentPage, pageSize, sort);
+		Pageable pageable = PageRequest.of(currentPage-1, pageSize, sort);
 		System.out.println("[MemberService]checkFavoritePagination : " + pageable);
 
 		Member member = memberRepository.findById(id); // select * from member where id = ' '
