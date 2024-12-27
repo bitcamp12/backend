@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +42,7 @@ public class PlayService {
 
 	private List<PlayDiscountDTO> cachedDiscountedPlays;
 
-	@Cacheable(value = "play", key = "#playSeq != null ? #playSeq : '0'", unless = "#result == null")
+	@Cacheable(value = "play", key = "#p0") // 새 캐시 저장
 	public PlayDTO getPlayOne(String playSeq) {
 	    System.out.println("Fetching playSeq from DB: " + playSeq);
 	    PlayDTO playDTO = playDAO.getPlayOne(playSeq);
@@ -75,7 +76,7 @@ public class PlayService {
         return cachedDiscountedPlays;
     }
 	
-	@Cacheable(value = "searchListEntity", key = "#name != null ? #name : ' '")
+	@Cacheable(value = "searchListEntity", key = "#p0")
 	public List<Play> searchListEntity(String name) {
 		 System.out.println("Fetching random plays from DB...searchListEntity");
 		System.out.println(name+"**entity");
