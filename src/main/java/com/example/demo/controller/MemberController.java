@@ -820,7 +820,7 @@ public class MemberController {
 		 }
 	
 
-	//아이디만 가져갈려고하는것
+	//아이디만 가져갈려고하는 것
 	@GetMapping("id")
 	public ResponseEntity<ApiResponse<MemberDTO>> getMethodName(HttpSession session) {
 	    try {
