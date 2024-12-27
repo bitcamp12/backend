@@ -228,7 +228,10 @@ public class MemberService {
 	}
 
 	public Page<Book> checkMyBookPagination(String id, int currentPage, int pageSize) {
-		Pageable pageable = PageRequest.of(currentPage, pageSize);
+		Sort sort = Sort.by(Sort.Order.desc("book_seq"));
+        
+        // Pageable 객체 생성 (currentPage는 0부터 시작하는 인덱스)
+		Pageable pageable = PageRequest.of(currentPage, pageSize, sort);
 		System.out.println("[MemberService]checkMyBookPagination : " + pageable);
 		// System.out.println("[MemberService]checkMyBookPagination : " +
 		// checkMyBookRepository.findByMemberId(id, pageable));
