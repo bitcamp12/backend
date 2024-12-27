@@ -66,6 +66,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     	 
         // 요청에서 액세스 토큰과 리프레시 토큰 추출
         String cookie = extractRefreshToken(request);
+        
+        String refreshKey = "refreshToken:" + jwtUtil.getUsername(cookie);
+        String storedRefreshToken = redisService.getToken(refreshKey);
+        
+        // 1. Refresh Token 일치 여부 확인
+        if (storedRefreshToken == null || !storedRefreshToken.equals(cookie)) {
+            System.out.println("중복 로그인 감지 또는 잘못된 Refresh Token");
+            
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            // 인증 거부 후 로그아웃 처리
+            return; // 필터 체인 중단
+        }
+        
 
         // 리프레시 토큰을 사용하여 블랙리스트 확인 (여기서는 액세스 토큰을 블랙리스트에서 확인)
         String redisKeyBlack = "accessToken:" + jwtUtil.getUsername(cookie); // 사용자별 액세스 토큰 키
