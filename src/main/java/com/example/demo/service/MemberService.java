@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -241,7 +242,10 @@ public class MemberService {
 	}
 
 	public Page<Book> checkMyBookPagination(String id, String year, String month, int currentPage, int pageSize) {
-		Pageable pageable = PageRequest.of(currentPage, pageSize);
+		Sort sort = Sort.by(Sort.Order.desc("book_seq"));
+        
+        // Pageable 객체 생성 (currentPage는 0부터 시작하는 인덱스)
+		Pageable pageable = PageRequest.of(currentPage, pageSize, sort);
 		System.out.println("[MemberService]checkMyBookPagination : " + pageable);
 
 		Member member = memberRepository.findById(id); // select * from member where id = ' '
@@ -264,7 +268,10 @@ public class MemberService {
 
 
 	public Page<Favorite> checkFavoritePagination(String id, int currentPage, int pageSize) {
-		Pageable pageable = PageRequest.of(currentPage, pageSize);
+		Sort sort = Sort.by(Sort.Order.desc("favorite_seq"));
+	        
+	        // Pageable 객체 생성 (currentPage는 0부터 시작하는 인덱스)
+	    Pageable pageable = PageRequest.of(currentPage, pageSize, sort);
 		System.out.println("[MemberService]checkFavoritePagination : " + pageable);
 
 		Member member = memberRepository.findById(id); // select * from member where id = ' '
