@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -22,16 +23,22 @@ public class PlayTimeTableService {
 		return playTimeTableDAO.playTimeTables(playSeq,targetDate);
 	}
 
-	// @Scheduled(fixedRate = 60000)
+
+
+//@Scheduled(fixedRate = 60000)
+@Cacheable(value = "calculateDiscount")
     public List<PlayDiscountDTO> calculateDiscount() {
+		 System.out.println("[CACHE MISS] Calculating discounts from the database...");
+		
+		
         List<PlayDiscountDTO> discountedPlays = playTimeTableDAO.getPlayWithDiscount();
         
         for (PlayDiscountDTO playDiscountDTO : discountedPlays) {
             double discountedPrice = playDiscountDTO.calculateSale();
             playDiscountDTO.setDiscountedPrice(discountedPrice);
+            PlayTimeTableDTO playTimeTableDTO = new PlayTimeTableDTO();
 
-			PlayTimeTableDTO playTimeTableDTO = new PlayTimeTableDTO();
-			playTimeTableDTO.setPlayTimeTableSeq(playDiscountDTO.getPlayTimeTableSeq());
+            playTimeTableDTO.setPlayTimeTableSeq(playDiscountDTO.getPlayTimeTableSeq());
             playTimeTableDTO.setDiscountRate(playDiscountDTO.getDiscountRate());
             playTimeTableDTO.setDiscountedPrice(playDiscountDTO.getDiscountedPrice());
 
