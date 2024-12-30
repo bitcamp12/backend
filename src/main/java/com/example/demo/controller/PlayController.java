@@ -132,10 +132,10 @@ public class PlayController {
 
 	
 	@GetMapping("cacheRefresh")
-	public ResponseEntity<ApiResponse<String>> cacheRefresh(@RequestParam String param) {
+	public ResponseEntity<ApiResponse<String>> cacheRefresh() {
 		
 		int result=playService.cacheRefresh();
-		return ResponseEntity.ok(new ApiResponse<>(204, "검색된 데이터가없습니다", null));
+		return ResponseEntity.ok(new ApiResponse<>(200, "캐시 비움", null));
 	}
 	
 }
