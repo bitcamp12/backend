@@ -33,8 +33,8 @@ public interface BookDAO {
     List<BookDTO> getBookedSeats(int playTimeTableSeq);
 
     @Insert("""
-            INSERT INTO book (member_seq, play_time_table_seq, booked_x, booked_y, payment, total_price, payment_status)
-            VALUES (#{memberSeq}, #{playTimeTableSeq}, #{bookedX}, #{bookedY}, 'Credit Card', #{totalPrice}, 'PAID')
+            INSERT INTO book (member_seq, play_time_table_seq, booked_x, booked_y, payment, total_price, payment_status, seat_num)
+            VALUES (#{memberSeq}, #{playTimeTableSeq}, #{bookedX}, #{bookedY}, 'Credit Card', #{totalPrice}, 'PAID', #{seatNum})
             """)
     void insertSeat(BookDTO seat);
 

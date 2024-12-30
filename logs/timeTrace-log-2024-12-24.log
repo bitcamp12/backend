@@ -1,0 +1,10 @@
+2024-12-24 16:06:05 - BookService.purchaseSeats(..) - Time Elapsed = 0.02509825s
+2024-12-24 16:07:17 - BookService.purchaseSeats(..) - Time Elapsed = 0.101758084s
+2024-12-24 16:08:46 - BookService.purchaseSeats(..) - Time Elapsed = 0.023560875s
+2024-12-24 16:19:05 - BookService.purchaseSeats(..) - Time Elapsed = 0.123126208s
+2024-12-24 16:25:20 - BookService.purchaseSeats(..) - Time Elapsed = 0.024733042s
+2024-12-24 17:30:28 - BookService.purchaseSeats(..) - Time Elapsed = 8.9375E-5s
+2024-12-24 17:34:36 - BookService.purchaseSeats(..) - Time Elapsed = 0.141200708s
+2024-12-24 17:37:08 - BookService.purchaseSeats(..) - Time Elapsed = 0.023808375s
+2024-12-24 17:41:36 - BookService.purchaseSeats(..) - Time Elapsed = 0.1144565s
+2024-12-24 17:46:17 - BookService.purchaseSeats(..) - Time Elapsed = 0.041730333s
