@@ -5,8 +5,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import com.example.demo.dao.PlayTimeTableDAO;
 import com.example.demo.dto.PlayDiscountDTO;
@@ -22,16 +24,24 @@ public class PlayTimeTableService {
 		return playTimeTableDAO.playTimeTables(playSeq,targetDate);
 	}
 
-	// @Scheduled(fixedRate = 60000)
-    public List<PlayDiscountDTO> calculateDiscount() {
+	@Autowired
+	private PlayService playService;
+
+
+@Scheduled(fixedRate = 60000)
+//@Cacheable(value = "calculateDiscount")
+    public List<PlayDiscountDTO> ScheduledPlayWithDiscount() {
+		 System.out.println("[CACHE MISS] Calculating discounts from the database...");
+		 playService.cacheRefresh();
+		
         List<PlayDiscountDTO> discountedPlays = playTimeTableDAO.getPlayWithDiscount();
         
         for (PlayDiscountDTO playDiscountDTO : discountedPlays) {
             double discountedPrice = playDiscountDTO.calculateSale();
             playDiscountDTO.setDiscountedPrice(discountedPrice);
+            PlayTimeTableDTO playTimeTableDTO = new PlayTimeTableDTO();
 
-			PlayTimeTableDTO playTimeTableDTO = new PlayTimeTableDTO();
-			playTimeTableDTO.setPlayTimeTableSeq(playDiscountDTO.getPlayTimeTableSeq());
+            playTimeTableDTO.setPlayTimeTableSeq(playDiscountDTO.getPlayTimeTableSeq());
             playTimeTableDTO.setDiscountRate(playDiscountDTO.getDiscountRate());
             playTimeTableDTO.setDiscountedPrice(playDiscountDTO.getDiscountedPrice());
 
@@ -41,4 +51,21 @@ public class PlayTimeTableService {
 		return discountedPlays;
 
     }
+
+
+@Cacheable(value = "calculateDiscount")
+public List<PlayDiscountDTO> calculateDiscount() {
+	 System.out.println("[CACHE MISS] Calculating discounts from the database...");
+	
+	
+    List<PlayDiscountDTO> discountedPlays = playTimeTableDAO.getPlayWithDiscount();
+    
+
+	
+	return discountedPlays;
+
+}
+
+
+
 }

@@ -557,7 +557,8 @@ public class MemberController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<String>> login(HttpSession session, @RequestBody MemberDTO dto) {
+    public ResponseEntity<ApiResponse<String>> login
+    (HttpSession session, @RequestBody MemberDTO dto) {
  
     	try {
             String id = dto.getId();
@@ -565,6 +566,9 @@ public class MemberController {
 
             // 로그인 서비스 호출
             int result = memberService.LoginEntity(id, password);
+            
+            
+
 
             // 로그인 성공
             if (result == 1) {
@@ -815,13 +819,15 @@ public class MemberController {
 	
 
 	
-	
+	   	int count ;
 	
 // 세션 존재 확인 (나중에 필요하면 지움)
 //	@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 	@GetMapping("/session-status" )
 	public ResponseEntity<ApiResponse<String>> sessionStatus() {
-	    String id = authenticationFacade.getCurrentUserId(); // 시큐리티 인증된정보로 멤버 엔티티 정보획득
+       
+	    String id = authenticationFacade.getCurrentUserId();// 시큐리티 인증된정보로 멤버 엔티티 정보획득   
+	   
 		
 	    if (id == null) {
 	    //	System.out.println("401");

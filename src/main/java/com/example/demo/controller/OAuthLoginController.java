@@ -146,6 +146,7 @@ public class OAuthLoginController {
 	        String userId = (String) response.get("id");
 	        String email = (String) response.get("email");
 	        String phone = ((String) response.get("mobile")).replaceAll("[^0-9]", "");
+	        phone = phone != null ? phone.replaceAll("[^0-9]", "") : "01012345678";
 	        String name = (String) response.get("name");
 	        System.out.println("네이버 사용자 ID: " + userId);
 	        
@@ -299,7 +300,7 @@ public class OAuthLoginController {
 	        String name = (String) userInfo.get("name");
 	        String email = (String) userInfo.get("email");
 	        String phone = ((String) userInfo.get("mobile"));
-	        phone = phone != null ? phone.replaceAll("[^0-9]", "") : "0";
+	        phone = phone != null ? phone.replaceAll("[^0-9]", "") : "01012345678";
 	        
 	        System.out.println("네이버 사용자 ID: " + userId);
 	        
