@@ -53,7 +53,7 @@ public class PlayTimeTableService {
     }
 
 
-
+@Cacheable(value = "calculateDiscount")
 public List<PlayDiscountDTO> calculateDiscount() {
 	 System.out.println("[CACHE MISS] Calculating discounts from the database...");
 	
