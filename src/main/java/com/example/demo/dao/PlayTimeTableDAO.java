@@ -41,7 +41,9 @@ public interface PlayTimeTableDAO {
 				pt.min_rate,
 				pt.max_rate,
 				pt.target_date,
-				pt.play_time_table_seq
+				pt.play_time_table_seq,
+				pt.discount_rate,
+				pt.discounted_price
 			FROM play p
 			INNER JOIN play_time_table pt ON p.play_seq = pt.play_seq
 			WHERE DATE(pt.target_date) = CURDATE()

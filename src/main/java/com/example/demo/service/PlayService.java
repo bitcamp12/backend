@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,9 @@ public class PlayService {
 	
 	@Autowired
 	private PlayRepository playRepository;
+	
+	 @Autowired
+	 private CacheManager cacheManager;
 
 	private List<PlayDiscountDTO> cachedDiscountedPlays;
 
@@ -109,5 +113,20 @@ public class PlayService {
 		Page<Play> playPage = playRepository.findByPriceGreaterThanEqual(60000, pageable);
 		return playPage.getContent();
 	}
+
+
+public int cacheRefresh() {
+    if (cacheManager != null) {
+        cacheManager.getCacheNames().forEach(cacheName -> {
+            System.out.println("Clearing cache: " + cacheName); // 로그 출력
+            cacheManager.getCache(cacheName).clear(); // 캐시 초기화
+        });
+        return 1; // 캐시 삭제 성공 시 1 반환
+    } else {
+        
+        return 0; // 캐시 삭제 실패 시 0 반환
+    }
+}
+
 
 }
