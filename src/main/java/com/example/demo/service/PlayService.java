@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,9 @@ public class PlayService {
 	
 	@Autowired
 	private PlayRepository playRepository;
+	
+	 @Autowired
+	 private CacheManager cacheManager;
 
 	private List<PlayDiscountDTO> cachedDiscountedPlays;
 
@@ -53,7 +57,7 @@ public class PlayService {
 
 	//민웅 사용자 메인 페이지
 
-@Cacheable(value = "getPlayAll", key = "#page + '-' + #size")
+//@Cacheable(value = "getPlayAll", key = "#page + '-' + #size")
 	public List<Play> getPlayAll(int page, int size) {
 		Pageable pageable = PageRequest.of(page - 1, size);
 		Page<Play> playPage = playRepository.findAll(pageable);
@@ -65,7 +69,7 @@ public class PlayService {
 	}
 	
 
-@Cacheable(value = "PlayRandom")
+//@Cacheable(value = "PlayRandom")
     public List<Play> getPlayRandom() {
         List<Play> allPlays = playRepository.findAll();
 		Collections.shuffle(allPlays);
@@ -76,7 +80,7 @@ public class PlayService {
         return cachedDiscountedPlays;
     }
 	
-	@Cacheable(value = "searchListEntity", key = "#p0")
+//	@Cacheable(value = "searchListEntity", key = "#p0")
 	public List<Play> searchListEntity(String name) {
 		 System.out.println("Fetching random plays from DB...searchListEntity");
 		System.out.println(name+"**entity");
@@ -89,7 +93,7 @@ public class PlayService {
 		  }
 	}
 
-@Cacheable(value = "getPlaysEndingSoon", key = "#page + '-' + #size")
+//@Cacheable(value = "getPlaysEndingSoon", key = "#page + '-' + #size")
 	public List<Play> getPlaysEndingSoon(int page, int size) {
 		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, "endTime"));
 		LocalDateTime now = LocalDateTime.now();
@@ -97,17 +101,32 @@ public class PlayService {
 		Page<Play> playPage = playRepository.findByEndTimeBetween(now, thirtyDaysFromNow, pageable);
 		return playPage.getContent();
 	}
-@Cacheable(value = "getPlaysComingSoon", key = "#page + '-' + #size")
+//@Cacheable(value = "getPlaysComingSoon", key = "#page + '-' + #size")
 	public List<Play> getPlaysComingSoon(int page, int size) {
 		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, "startTime"));
 		Page<Play> playPage = playRepository.findByStartTimeAfter(LocalDateTime.now(), pageable);
 		return playPage.getContent();
 	}
-@Cacheable(value = "getPlaysLimited", key = "#page + '-' + #size")
+//@Cacheable(value = "getPlaysLimited", key = "#page + '-' + #size")
 	public List<Play> getPlaysLimited(int page, int size) {
 		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "price"));
 		Page<Play> playPage = playRepository.findByPriceGreaterThanEqual(60000, pageable);
 		return playPage.getContent();
 	}
+
+
+public int cacheRefresh() {
+    if (cacheManager != null) {
+        cacheManager.getCacheNames().forEach(cacheName -> {
+            System.out.println("Clearing cache: " + cacheName); // 로그 출력
+            cacheManager.getCache(cacheName).clear(); // 캐시 초기화
+        });
+        return 1; // 캐시 삭제 성공 시 1 반환
+    } else {
+        
+        return 0; // 캐시 삭제 실패 시 0 반환
+    }
+}
+
 
 }

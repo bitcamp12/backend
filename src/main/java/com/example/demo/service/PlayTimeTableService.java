@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import com.example.demo.dao.PlayTimeTableDAO;
 import com.example.demo.dto.PlayDiscountDTO;
@@ -23,13 +24,15 @@ public class PlayTimeTableService {
 		return playTimeTableDAO.playTimeTables(playSeq,targetDate);
 	}
 
+	@Autowired
+	private PlayService playService;
 
 
-//@Scheduled(fixedRate = 60000)
-@Cacheable(value = "calculateDiscount")
-    public List<PlayDiscountDTO> calculateDiscount() {
+@Scheduled(fixedRate = 10000)
+//@Cacheable(value = "calculateDiscount")
+    public List<PlayDiscountDTO> ScheduledPlayWithDiscount() {
 		 System.out.println("[CACHE MISS] Calculating discounts from the database...");
-		
+		 playService.cacheRefresh();
 		
         List<PlayDiscountDTO> discountedPlays = playTimeTableDAO.getPlayWithDiscount();
         
@@ -48,4 +51,21 @@ public class PlayTimeTableService {
 		return discountedPlays;
 
     }
+
+
+//@Cacheable(value = "calculateDiscount")
+public List<PlayDiscountDTO> calculateDiscount() {
+	 System.out.println("[CACHE MISS] Calculating discounts from the database...");
+	
+	
+    List<PlayDiscountDTO> discountedPlays = playTimeTableDAO.getPlayWithDiscount();
+    
+
+	
+	return discountedPlays;
+
+}
+
+
+
 }
