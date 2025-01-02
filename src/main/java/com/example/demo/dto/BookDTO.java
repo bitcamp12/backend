@@ -22,6 +22,7 @@ public class BookDTO {
     private LocalDateTime payDate;
     private int bookedX;
     private int bookedY;
+    private int seatNum;
     private String payment;
     private int totalPrice;
     private PaymentStatus paymentStatus = PaymentStatus.PAID; // 기본값 설정
