@@ -81,16 +81,24 @@ public class MemberService {
 		return memberDAO.getUserInfo(id);
 	}
 
+	@Transactional
 	public void modifyUserInfo(MemberDTO modifiedData) {
 		
 		Member member = memberRepository.findById(modifiedData.getId());
+		
 		if(!member.getPassword().equals(modifiedData.getPassword())) {
 			String encodedPassword = passwordEncoder.encode(modifiedData.getPassword());
-			System.out.println("modifyUserInfo JWT비밀번호 : " + encodedPassword);
-			modifiedData.setPassword(encodedPassword);
-		 	System.out.println("modifyUserInfo JWT 새로운 비밀번호 : " + modifiedData.getPassword());
+		//	System.out.println("modifyUserInfo JWT비밀번호 : " + encodedPassword);
+	//		modifiedData.setPassword(encodedPassword);
+		// 	System.out.println("modifyUserInfo JWT 새로운 비밀번호 : " + modifiedData.getPassword());
+			member.setPassword(encodedPassword);	//JPA
 		}
-		memberDAO.modifyUserInfo(modifiedData);
+		member.setPhone(modifiedData.getPhone());
+		member.setEmail(modifiedData.getEmail());
+		
+		memberRepository.save(member);
+		
+	//	memberDAO.modifyUserInfo(modifiedData);
 	}
 
 	public int findIdByPhone(Map<String, String> map) {

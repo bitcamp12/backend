@@ -57,7 +57,7 @@ public class PlayService {
 
 	//민웅 사용자 메인 페이지
 
-@Cacheable(value = "getPlayAll", key = "#page + '-' + #size")
+//@Cacheable(value = "getPlayAll", key = "#page + '-' + #size")
 	public List<Play> getPlayAll(int page, int size) {
 		Pageable pageable = PageRequest.of(page - 1, size);
 		Page<Play> playPage = playRepository.findAll(pageable);
@@ -69,7 +69,7 @@ public class PlayService {
 	}
 	
 
-@Cacheable(value = "PlayRandom")
+//@Cacheable(value = "PlayRandom")
     public List<Play> getPlayRandom() {
         List<Play> allPlays = playRepository.findAll();
 		Collections.shuffle(allPlays);
@@ -80,7 +80,7 @@ public class PlayService {
         return cachedDiscountedPlays;
     }
 	
-	@Cacheable(value = "searchListEntity", key = "#p0")
+//	@Cacheable(value = "searchListEntity", key = "#p0")
 	public List<Play> searchListEntity(String name) {
 		 System.out.println("Fetching random plays from DB...searchListEntity");
 		System.out.println(name+"**entity");
@@ -93,7 +93,7 @@ public class PlayService {
 		  }
 	}
 
-@Cacheable(value = "getPlaysEndingSoon", key = "#page + '-' + #size")
+//@Cacheable(value = "getPlaysEndingSoon", key = "#page + '-' + #size")
 	public List<Play> getPlaysEndingSoon(int page, int size) {
 		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, "endTime"));
 		LocalDateTime now = LocalDateTime.now();
@@ -101,13 +101,13 @@ public class PlayService {
 		Page<Play> playPage = playRepository.findByEndTimeBetween(now, thirtyDaysFromNow, pageable);
 		return playPage.getContent();
 	}
-@Cacheable(value = "getPlaysComingSoon", key = "#page + '-' + #size")
+//@Cacheable(value = "getPlaysComingSoon", key = "#page + '-' + #size")
 	public List<Play> getPlaysComingSoon(int page, int size) {
 		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, "startTime"));
 		Page<Play> playPage = playRepository.findByStartTimeAfter(LocalDateTime.now(), pageable);
 		return playPage.getContent();
 	}
-@Cacheable(value = "getPlaysLimited", key = "#page + '-' + #size")
+//@Cacheable(value = "getPlaysLimited", key = "#page + '-' + #size")
 	public List<Play> getPlaysLimited(int page, int size) {
 		Pageable pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "price"));
 		Page<Play> playPage = playRepository.findByPriceGreaterThanEqual(60000, pageable);
