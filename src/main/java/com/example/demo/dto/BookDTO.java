@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.example.demo.entity.Book.PaymentStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BookDTO {
 
     private int bookSeq;

@@ -53,9 +53,9 @@ public class PlayTimeTableService {
     }
 
 
-@Cacheable(value = "calculateDiscount")
+//@Cacheable(value = "calculateDiscount")
 public List<PlayDiscountDTO> calculateDiscount() {
-	 System.out.println("[CACHE MISS] Calculating discounts from the database...");
+	 //System.out.println("[CACHE MISS] Calculating discounts from the database...");
 	
 	
     List<PlayDiscountDTO> discountedPlays = playTimeTableDAO.getPlayWithDiscount();
