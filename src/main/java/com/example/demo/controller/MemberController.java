@@ -356,8 +356,8 @@ public class MemberController {
     public ResponseEntity<ApiResponse<String>> sendPhoneNumber(@RequestBody SmsRequestDto smsRequestDto) {
         try {
             // 인증 코드 생성 및 SMS 전송
-//            String certificationCode = smsService.sendSms(smsRequestDto);
-        	 String certificationCode = "111";
+            String certificationCode = smsService.sendSms(smsRequestDto);
+        	// String certificationCode = "111";
 
             // 전화번호와 인증 코드 저장
             String phoneNum = smsRequestDto.getPhoneNum();
@@ -387,8 +387,8 @@ public class MemberController {
     public ResponseEntity<ApiResponse<String>> sendPhoneVerificationCode(@RequestBody SmsRequestDto smsRequestDto) {
         try {
             // 인증 코드 생성 및 SMS 전송
-            //String certificationCode = smsService.sendSms(smsRequestDto);
-        	 String certificationCode = "111";
+            String certificationCode = smsService.sendSms(smsRequestDto);
+        	 //String certificationCode = "111";
 
             // 전화번호와 인증 코드 저장
         	 String phoneNum = smsRequestDto.getPhoneNum().replaceAll("[^0-9]", "");
