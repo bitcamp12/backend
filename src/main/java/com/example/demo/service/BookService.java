@@ -24,19 +24,22 @@ public class BookService {
 
     @TimeTrace
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public void purchaseSeats(List<BookDTO> list) {
-        List<BookDTO> bookedSeats = bookDAO.getBookedSeats(list.get(0).getPlayTimeTableSeq());
+    public void purchaseSeats(List<BookDTO> seats, Object totalPrice) {
+        List<BookDTO> bookedSeats = bookDAO.getBookedSeats(seats.get(0).getPlayTimeTableSeq());
         
-        for (BookDTO seat : list) {
+        for (BookDTO seat : seats) {
             boolean isBooked = bookedSeats.stream()
                                           .anyMatch(bookedSeat -> bookedSeat.getBookedX() == seat.getBookedX() && bookedSeat.getBookedY() == seat.getBookedY());
             if (isBooked) {
                 throw new IllegalStateException("이미 예약된 좌석입니다.");
             }
         }
-        for (BookDTO seat : list) {
+        for (BookDTO seat : seats) {
+            seat.setTotalPrice((int) totalPrice);
             bookDAO.insertSeat(seat);
         }
+
+        System.out.println("Seats booked successfully. Total Price: " + totalPrice);
     }
     
 }

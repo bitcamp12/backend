@@ -27,6 +27,5 @@ public class BookDTO {
     private int totalPrice;
     private PaymentStatus paymentStatus = PaymentStatus.PAID; // 기본값 설정
     private List<BookDTO> selectedSeats;
-    private int seatNum;
     
 }
