@@ -130,4 +130,12 @@ public class PlayController {
 		}
 	}
 
+	
+	@GetMapping("cacheRefresh")
+	public ResponseEntity<ApiResponse<String>> cacheRefresh() {
+		
+		int result=playService.cacheRefresh();
+		return ResponseEntity.ok(new ApiResponse<>(200, "캐시 비움", null));
+	}
+	
 }
