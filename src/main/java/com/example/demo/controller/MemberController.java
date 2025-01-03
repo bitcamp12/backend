@@ -500,11 +500,12 @@ public class MemberController {
     @PostMapping("/getIdByPhone")
     public ResponseEntity<ApiResponse<String>> checkId(@RequestBody IdFindDTO dto) {
         try {
-            System.out.println("Received data: " + dto.getName() + " " + dto.getPhone());
+           
 
             String name = dto.getName();
             String phone = dto.getPhone().replaceAll("[^0-9]", "");
    
+            System.out.println("Received data: " + name + " " + phone);
             
             Map<String, String> map = new HashMap<>();
             map.put("name", name);

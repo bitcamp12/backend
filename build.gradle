@@ -90,10 +90,7 @@ dependencies {
       implementation 'org.springframework.boot:spring-boot-starter-cache'
 
       implementation 'com.github.ben-manes.caffeine:caffeine:3.1.6'
-<<<<<<< HEAD
 
-=======
->>>>>>> 5dca134b30179c0be6e72fa083fbd850e939b19c
     
 }
 
