@@ -46,7 +46,7 @@ public interface PlayTimeTableDAO {
 				pt.discounted_price
 			FROM play p
 			INNER JOIN play_time_table pt ON p.play_seq = pt.play_seq
-			WHERE DATE(pt.target_date) = CURDATE()
+			WHERE DATE(pt.target_date) = CURDATE() 
 			""")
 	List<PlayDiscountDTO> getPlayWithDiscount();
 

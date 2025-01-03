@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.example.demo.entity.Book.PaymentStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+
 public class BookDTO {
 
     private int bookSeq;
@@ -20,6 +22,7 @@ public class BookDTO {
     private LocalDateTime payDate;
     private int bookedX;
     private int bookedY;
+    private int seatNum;
     private String payment;
     private int totalPrice;
     private PaymentStatus paymentStatus = PaymentStatus.PAID; // 기본값 설정
