@@ -53,17 +53,19 @@ public class BookController {
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<BookDTO> seats = objectMapper.convertValue(seatsMap, new TypeReference<List<BookDTO>>() {});
 	
-		// Process the user data
 		Map<String, Object> user = (Map<String, Object>) request.get("user");
 		System.out.println("User Data: " + user);
 
 		int memberSeq = (Integer) user.get("memberSeq");
   		for (BookDTO seat : seats) {
-        seat.setMemberSeq(memberSeq); // Set the memberSeq field
-    }
+        	seat.setMemberSeq(memberSeq);
+    	}
+
+		Object totalPrice = request.get("totalPrice");
+            System.out.println("Total Price: " + totalPrice);
 
 		try {
-			bookService.purchaseSeats(seats);
+			bookService.purchaseSeats(seats, totalPrice);
 			return ResponseEntity.ok(new ApiResponse<>(200, "성공", null));
 		} catch (Exception e) {
 			e.printStackTrace();
