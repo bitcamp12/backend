@@ -28,7 +28,7 @@ public class PlayTimeTableService {
 	private PlayService playService;
 
 
-@Scheduled(fixedRate = 10000)
+@Scheduled(fixedRate = 600000)
 //@Cacheable(value = "calculateDiscount")
     public List<PlayDiscountDTO> ScheduledPlayWithDiscount() {
 		 System.out.println("[CACHE MISS] Calculating discounts from the database...");
