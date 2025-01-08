@@ -9,15 +9,20 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.QnaDTO;
+import com.example.demo.entity.Member;
 import com.example.demo.entity.Qna;
+import com.example.demo.service.MemberService;
 import com.example.demo.service.QnaService;
 import com.example.demo.util.ApiResponse;
-import org.springframework.web.bind.annotation.RequestBody;
+import com.example.demo.util.AuthenticationFacade;
+
+import jakarta.servlet.http.HttpSession;
 
 
 
@@ -27,16 +32,29 @@ public class QnaController {
     
 	@Autowired
 	private QnaService qnaService;
+	@Autowired
+	MemberService memberService;
+
+	@Autowired
+	AuthenticationFacade authenticationFacade;
+
 	
 	@PostMapping("qna")
 	public ResponseEntity<ApiResponse<Qna>> qnaWrite(@RequestParam("playSeq") int playSeq,
-			@RequestBody QnaDTO qnaDTO) {
+			@RequestBody QnaDTO qnaDTO,
+			HttpSession session) {
+		 Member member = authenticationFacade.getCurrentMember();
+		 System.out.println("현재로그인아이디"+member.getId());  // 아이디 가져오는예시 
 		
-		System.out.println(qnaDTO.getTitle()+qnaDTO.getContent());
+		
+		  System.out.println("Received QnaDTO: " + qnaDTO); // 객체 전체 출력
+		    System.out.println("Title: " + qnaDTO.getTitle());
+		    System.out.println("Content: " + qnaDTO.getContent());
 		
 		try {
-			int memberSeq=1;
-			int result=qnaService.qnaWrite(playSeq,memberSeq,qnaDTO.getTitle(),qnaDTO.getContent());
+			qnaDTO.setMemberSeq(memberService.getMemberSeq(member.getId()));
+
+			int result=qnaService.qnaWrite(playSeq,qnaDTO.getMemberSeq(),qnaDTO.getTitle(),qnaDTO.getContent());
 			if(result==1) {
 				 return  ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "성공", null));
 			}
@@ -56,9 +74,12 @@ public class QnaController {
 	
 	//qa list->공연 seq
 	@GetMapping("qnaList")
-	public ResponseEntity<ApiResponse<List<QnaDTO>>> getQnaList(@RequestParam("playSeq") int playSeq) {
+	public ResponseEntity<ApiResponse<List<QnaDTO>>> getQnaList(
+			@RequestParam("playSeq") int playSeq,
+			@RequestParam(defaultValue = "1",name = "page") int page, 
+	        @RequestParam("size") int size) {
 		
-		List<QnaDTO> list =qnaService.getQnaList(playSeq);
+		List<QnaDTO> list =qnaService.getQnaList(playSeq,page,size);
 		try {
 		if(!list.isEmpty()) {
 			
@@ -163,5 +184,41 @@ public class QnaController {
 	}
 	
 	
+	
+	@GetMapping("qnaSearch")
+	public  ResponseEntity<ApiResponse<List<QnaDTO>>> qnaSearch(
+			 @RequestParam("playSeq") int playSeq, 
+		        @RequestParam("searchType") String searchType,
+		        @RequestParam("keyword") String keyword) {
+		 try {
+        List<QnaDTO> list;
+        System.out.println(searchType+keyword+"qnaSearch");
+		if(searchType.equals("id")) {
+        	list =qnaService.qnaSearchId(keyword,playSeq);
+        }
+        else if( searchType.equals("title")){
+        	
+        	list =qnaService.qnaSearchKey(keyword,playSeq);
+        	
+        }
+        else {
+        	  return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                      .body(new ApiResponse<>(400, "유효하지 않은 검색 타입", null));
+        }
+        
+
+        if (!list.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "성공", list));
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(404 , "QA 없음",  list));
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(400, "오류", null));
+    }
+	
+	
+	}
 	
 }

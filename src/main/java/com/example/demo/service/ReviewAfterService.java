@@ -20,9 +20,10 @@ public class ReviewAfterService {
 		return result;
 	}
 
-	public List<ReviewAfterDTO> getReviewAList(int playSeq) {
-		
-		return reviewAfterDAO.getReviewAList(playSeq);
+	public List<ReviewAfterDTO> getReviewAList(int playSeq, int page, int size) {
+		  int pages = (page > 0) ? (page - 1) * size : 0; // page가 0일 때 0으로 처리
+		System.out.println(pages);
+		return reviewAfterDAO.getReviewAList(playSeq,pages,size);
 	}
 
 	public ReviewAfterDTO getReviewA(int reviewAfterSeq) {
@@ -55,39 +56,60 @@ public class ReviewAfterService {
 		return reviewAfterDAO.ReviewAAvg(playSeq);
 	}
 
-	public List<ReviewAfterDTO> getReviewAListStar(int playSeq) {
-		// TODO Auto-generated method stub
-		return reviewAfterDAO.getReviewAListStar(playSeq);
+	public List<ReviewAfterDTO> getReviewAListStar(int playSeq, int page, int size) {
+		  int pages = (page > 0) ? (page - 1) * size : 0; // page가 0일 때 0으로 처리
+		
+		return reviewAfterDAO.getReviewAListStar(playSeq,pages,size);
 	}
 
-	public List<ReviewAfterDTO> ReviewASearch(String keyword) {
-		// TODO Auto-generated method stub
-		return reviewAfterDAO.ReviewASearch(keyword);
+	
+
+	
+	public List<ReviewAfterDTO> ReviewASearchIdDate(String keyword, int playSeq, int page, int size) {
+		int pages = (page - 1) * size ; // page가 0일 때 0으로 처리
+		return reviewAfterDAO.ReviewASearchIdDate(keyword,playSeq,pages,size);
 	}
 
-	public List<ReviewAfterDTO> ReviewASearchId(String keyword) {
-		// TODO Auto-generated method stub
-		return reviewAfterDAO.ReviewASearchId(keyword);
+	public List<ReviewAfterDTO> ReviewASearchIdRating(String keyword, int playSeq, int page, int size) {
+		int pages = (page - 1) * size ; // page가 0일 때 0으로 처리
+		return reviewAfterDAO.ReviewASearchIdRating(keyword,playSeq,pages,size);
 	}
 
-	public List<ReviewAfterDTO> ReviewASearchIdDate(String keyword) {
-		// TODO Auto-generated method stub
-		return reviewAfterDAO.ReviewASearchIdDate(keyword);
+	public List<ReviewAfterDTO> ReviewASearchDate(String keyword, int playSeq, int page, int size) {
+		int pages =  (page - 1) * size ; // page가 0일 때 0으로 처리
+	
+		return reviewAfterDAO.ReviewASearchDate(keyword,playSeq,pages,size);
 	}
 
-	public List<ReviewAfterDTO> ReviewASearchIdRating(String keyword) {
-		// TODO Auto-generated method stub
-		return reviewAfterDAO.ReviewASearchIdRating(keyword);
+	public List<ReviewAfterDTO> ReviewASearchRating(String keyword, int playSeq, int page, int size) {
+		int pages =  (page - 1) * size ; // page가 0일 때 0으로 처리
+		return reviewAfterDAO.ReviewASearchRating(keyword,playSeq,pages,size);
 	}
 
-	public List<ReviewAfterDTO> ReviewASearchDate(String keyword) {
+	
+	
+	
+	
+	
+	
+	public int ReviewASearchIdDateCount(String keyword, int playSeq) {
 		// TODO Auto-generated method stub
-		return reviewAfterDAO.ReviewASearchDate(keyword);
+		return reviewAfterDAO.ReviewASearchIdDateCount(keyword,playSeq);
 	}
 
-	public List<ReviewAfterDTO> ReviewASearchRating(String keyword) {
+	public int ReviewASearchIdRatingCount(String keyword, int playSeq) {
 		// TODO Auto-generated method stub
-		return reviewAfterDAO.ReviewASearchRating(keyword);
+		return reviewAfterDAO.ReviewASearchIdRatingCount(keyword,playSeq);
+	}
+
+	public int ReviewASearchDateCount(String keyword, int playSeq) {
+		// TODO Auto-generated method stub
+		return reviewAfterDAO.ReviewASearchDateCount(keyword,playSeq);
+	}
+
+	public int ReviewASearchRatingCount(String keyword, int playSeq) {
+		// TODO Auto-generated method stub
+		return reviewAfterDAO.ReviewASearchRatingCount(keyword,playSeq);
 	}
 
 	

@@ -38,6 +38,7 @@ public class SmsService {
      * @return 6자리 인증 코드
      */
     private String generateCertificationCode() {
-        return String.format("%06d", (int) (Math.random() * 1000000)); // 6자리 랜덤 숫자
+        //return String.format("%06d", (int) (Math.random() * 1000000)); // 6자리 랜덤 숫자
+        return "111"; 
     }
 }

@@ -17,4 +17,6 @@ public class ReviewAfterDTO {
 	private String content;
 	private int rating;
 	private LocalDateTime createdDate; // LocalDateTime 타입으로 변경
+	private String name; // id 리액트에서 필요해서
+	private String id; 
 }

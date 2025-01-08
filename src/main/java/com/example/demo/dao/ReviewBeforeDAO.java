@@ -35,13 +35,15 @@ public interface ReviewBeforeDAO {
                 @Param("memberSeq") int memberSeq, 
                 @Param("content") String content);
 
-	    // 리뷰 목록 조회 (별점 제외)
 	    @Select("""
-	            SELECT * FROM review_before
-	            WHERE play_seq = #{playSeq}
-	            ORDER BY created_date DESC
-	            """)
-	    List<ReviewBeforeDTO> getReviewBList(int playSeq);
+	    	    SELECT rb.*, m.name,m.id
+	    	    FROM review_before rb
+	    	    JOIN member m ON rb.member_seq = m.member_seq
+	    	    WHERE rb.play_seq = #{playSeq}
+	    	    ORDER BY rb.created_date DESC
+	    	    LIMIT #{size} OFFSET #{pages} 
+	    	""")
+	    	List<ReviewBeforeDTO> getReviewBList(@Param("playSeq")int playSeq, @Param("pages")int pages, @Param("size")int size);
 
 	    // 특정 리뷰 조회 (별점 제외)
 	    @Select("""
@@ -54,8 +56,7 @@ public interface ReviewBeforeDAO {
 	    @Update("""
 	            UPDATE review_before
 	            SET 
-	                content = #{content},
-	                created_date = CURRENT_TIMESTAMP
+	                content = #{content}
 	            WHERE 
 	                review_before_seq = #{reviewBeforeSeq}
 	            """)
@@ -77,6 +78,53 @@ public interface ReviewBeforeDAO {
 			    WHERE play_seq = #{playSeq}
 			""")
 		int ReviewBcount(int playSeq);
+
+	    
+	    
+	    
+	 // 아이디로 검색 - 날짜 순
+	    @Select("""
+	        SELECT rb.*, m.name,m.id
+	        FROM review_before rb
+	        JOIN member m ON rb.member_seq = m.member_seq
+	        WHERE m.name LIKE CONCAT('%', #{keyword}, '%')
+	          AND rb.play_seq = #{playSeq}
+	        ORDER BY rb.created_date DESC
+	         LIMIT #{size} OFFSET #{pages}
+	    """)
+	    List<ReviewBeforeDTO> ReviewBSearchId(@Param("keyword") String keyword, @Param("playSeq") int playSeq,@Param("pages") int pages,@Param("size") int size);
+
+	    // 내용으로 검색 - 날짜 순
+	    @Select("""
+	        SELECT rb.*, m.name,m.id
+	        FROM review_before rb
+	        JOIN member m ON rb.member_seq = m.member_seq
+	        WHERE rb.content LIKE CONCAT('%', #{keyword}, '%')
+	          AND rb.play_seq = #{playSeq}
+	        ORDER BY rb.created_date DESC
+	         LIMIT #{size} OFFSET #{pages}
+	    """)
+	    List<ReviewBeforeDTO> ReviewBSearchKey(@Param("keyword") String keyword, @Param("playSeq") int playSeq,@Param("pages") int pages,@Param("size") int size);
+
+	    
+	    
+	    @Select("""
+			    SELECT COUNT(*)
+			   FROM review_before
+			   JOIN member m ON review_before.member_seq = m.member_seq
+			    WHERE play_seq = #{playSeq}
+			    and m.name LIKE CONCAT('%', #{keyword}, '%')
+			     ORDER BY created_date DESC
+			""")
+		int ReviewBSearchIdCount(@Param("keyword")String keyword,@Param("playSeq") int playSeq);
+	    @Select("""
+			    SELECT COUNT(*)
+			   FROM review_before
+			    WHERE play_seq = #{playSeq}
+			    and content LIKE CONCAT('%', #{keyword}, '%')
+			     ORDER BY created_date DESC
+			""")
+		int ReviewBSearchKeyCount(@Param("keyword")String keyword,@Param("playSeq") int playSeq);
 
 	
 

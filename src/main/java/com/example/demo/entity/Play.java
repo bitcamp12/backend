@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -13,7 +14,6 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 
 @Getter
 @Setter
@@ -54,4 +54,14 @@ public class Play {
 
     @Column(name = "total_actor", length = 300)
     private String totalActor;
+    
+    @Column(name = "price")
+    private int price;
+    
+    @Column(name = "age_limit", length = 100)
+    private String ageLimit;
+    
+    @Column(name = "running_time")
+    private int runningTime;
+
 }

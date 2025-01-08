@@ -14,12 +14,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dto.ReviewAfterDTO;
 import com.example.demo.dto.ReviewBeforeDTO;
+import com.example.demo.entity.Member;
 import com.example.demo.entity.ReviewAfter;
 import com.example.demo.entity.ReviewBefore;
+import com.example.demo.service.MemberService;
 import com.example.demo.service.ReviewBeforeService;
 import com.example.demo.util.ApiResponse;
+import com.example.demo.util.AuthenticationFacade;
+
+import jakarta.servlet.http.HttpSession;
 
 
 @RestController
@@ -28,17 +32,26 @@ public class ReviewBeforeController {
     
 	@Autowired
 	private ReviewBeforeService reviewBeforeService;
-	
+	@Autowired
+	MemberService memberService;
+
+	@Autowired
+	AuthenticationFacade authenticationFacade;
+
 	//리뷰 작성
 		@PostMapping("reviewB")
 		public ResponseEntity<ApiResponse<ReviewBefore>> reviewBWrite(@RequestParam("playSeq") int playSeq,
-								@RequestBody ReviewBeforeDTO reviewBeforeDTO) {
-			System.out.println(reviewBeforeDTO.getContent());
+								@RequestBody ReviewBeforeDTO reviewBeforeDTO,
+								HttpSession session) {
+
+			 Member member = authenticationFacade.getCurrentMember();
+			 System.out.println("현재로그인아이디"+member.getId());  // 아이디 가져오는예시 
 			try {
-				int memberSeq=1;
+				reviewBeforeDTO.setMemberSeq(memberService.getMemberSeq(member.getId()));
+
 //				memberService.getMemberSeq();
 		//세션 구할거임
-		 int result=reviewBeforeService.reviewBWrite(playSeq,memberSeq,reviewBeforeDTO.getContent());
+		 int result=reviewBeforeService.reviewBWrite(playSeq,reviewBeforeDTO.getMemberSeq(),reviewBeforeDTO.getContent());
 		 System.out.println(result);
 		
 		 if(result==1) {
@@ -59,13 +72,16 @@ public class ReviewBeforeController {
 		
 		//리뷰 list 출력
 		@GetMapping("reviewBList")
-		public  ResponseEntity<ApiResponse<List<ReviewBeforeDTO>>> getReviewBList(@RequestParam("playSeq") int playSeq) {
+		public  ResponseEntity<ApiResponse<List<ReviewBeforeDTO>>> getReviewBList(@RequestParam("playSeq") int playSeq,
+				@RequestParam(defaultValue = "1",name = "page") int page, 
+		        @RequestParam("size") int size) {
 			
 			
 			try {
-				List<ReviewBeforeDTO> list=reviewBeforeService.getReviewBList(playSeq);
+				System.out.println(playSeq+" "+size+" "+page);
+				List<ReviewBeforeDTO> list=reviewBeforeService.getReviewBList(playSeq,page,size);
 				
-				System.out.println(list);
+				
 				if(!list.isEmpty()) {
 					
 					return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "성공", list));
@@ -165,5 +181,83 @@ public class ReviewBeforeController {
 			    }
 		}
 	
-	
+		@GetMapping("ReviewBSearch")
+		public  ResponseEntity<ApiResponse<List<ReviewBeforeDTO>>> ReviewBSearch(
+				 @RequestParam("playSeq") int playSeq, 
+			        @RequestParam("searchType") String searchType,
+			        @RequestParam("keyword") String keyword,
+			        @RequestParam(defaultValue = "1",name = "page") int page, 
+			        @RequestParam("size") int size
+			        ) {
+			 try {
+			
+	        List<ReviewBeforeDTO> list;
+	        
+			if(searchType.equals("id")) {
+	        	list =reviewBeforeService.ReviewBSearchId(keyword,playSeq,page,size);
+	        }
+	        else if( searchType.equals("title")){
+	        	
+	        	list =reviewBeforeService.ReviewBSearchKey(keyword,playSeq,page,size);
+	        	
+	        }
+	        else {
+	        	  return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                          .body(new ApiResponse<>(400, "유효하지 않은 검색 타입", null));
+	        }
+	        
+
+	        if (!list.isEmpty()) {
+	            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "성공", list));
+	        } else {
+	            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(404 , "리뷰 없음",  list));
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(400, "오류", null));
+	    }
+		
+		
+		}
+
+		
+		
+		@GetMapping("ReviewBSearchCount")
+		public  ResponseEntity<ApiResponse<Integer>> ReviewBSearchCount(
+				 @RequestParam("playSeq") int playSeq, 
+			        @RequestParam("searchType") String searchType,
+			        @RequestParam("keyword") String keyword
+			        ) {
+			 try {
+			
+	        int count;
+	        
+			if(searchType.equals("id")) {
+				count =reviewBeforeService.ReviewBSearchIdCount(keyword,playSeq);
+	        }
+	        else if( searchType.equals("title")){
+	        	
+	        	count =reviewBeforeService.ReviewBSearchKeyCount(keyword,playSeq);
+	        	
+	        }
+	        else {
+	        	  return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                          .body(new ApiResponse<>(400, "유효하지 않은 검색 타입", null));
+	        }
+	        
+
+	        if (count!=0) {
+	            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(200, "성공", count));
+	        } else {
+	            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(404 , "리뷰 없음",  0));
+	        }
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(400, "오류", null));
+	    }
+		
+		
+		}
 }

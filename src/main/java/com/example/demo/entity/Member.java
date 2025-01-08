@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,7 +27,7 @@ public class Member {
     @Column(name = "member_seq")
     private int memberSeq;  // 회원 번호 (Primary Key)
 
-    @Column(name = "id", nullable = false, unique = true, length = 30)
+    @Column(name = "id", nullable = false, unique = true, length = 50)
     private String id;  // 아이디
 
     @Column(name = "name", nullable = false, length = 100)
@@ -55,7 +56,7 @@ public class Member {
     @Column(name = "role", length = 10)
     private Role role;  // 역할 (ENUM)
 
-    @Column(name = "register_date", nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+	@Column(name = "register_date", insertable = false/*nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP"*/)
     private LocalDateTime registerDate;  // 가입 날짜
 
     public enum Gender {

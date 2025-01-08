@@ -28,13 +28,16 @@ public interface QnaDAO {
 		                 @Param("title") String title, 
 		                 @Param("content") String content);
 
-    // Q&A 목록 조회
-    @Select("""
-            SELECT * FROM qna
-            WHERE play_seq = #{playSeq}
-            ORDER BY created_date DESC
-            """)
-    List<QnaDTO> getQnaList(int playSeq);
+	// Q&A 목록 조회
+	 @Select("""
+	     SELECT q.*, m.name,m.id
+	     FROM qna q
+	     JOIN member m ON q.member_seq = m.member_seq
+	     WHERE q.play_seq = #{playSeq}
+	     ORDER BY q.created_date DESC
+	     LIMIT #{size} OFFSET #{pages}
+	 """)
+	 List<QnaDTO> getQnaList(@Param("playSeq")int playSeq,@Param("pages") int pages ,@Param("size") int size);
 
     // 특정 Q&A 조회
     @Select("""
@@ -46,8 +49,7 @@ public interface QnaDAO {
     @Update("""
             UPDATE qna
             SET title = #{title},
-                content = #{content},
-                created_date = CURRENT_TIMESTAMP  
+                content = #{content}
             WHERE qna_seq = #{qnaSeq}
             """)
     int updateQna(@Param("qnaSeq") int qnaSeq, @Param("title") String title, @Param("content") String content);
@@ -68,6 +70,30 @@ public interface QnaDAO {
 		    WHERE play_seq = #{playSeq}
 		""")
 	int qnaCount(int playSeq);
+
+    
+    
+ // member_seq로 검색하여 Q&A 데이터 조회 (아이디 포함)
+    @Select("""
+        SELECT q.*, m.name,m.id
+        FROM review_before q
+        JOIN member m ON q.member_seq = m.member_seq
+        WHERE q.member_seq LIKE CONCAT('%', #{keyword}, '%')
+          AND q.play_seq = #{playSeq}
+        ORDER BY q.created_date DESC
+    """)
+    List<QnaDTO> qnaSearchId(@Param("keyword") String keyword, @Param("playSeq") int playSeq);
+
+    // 내용으로 검색하여 Q&A 데이터 조회 (아이디 포함)
+    @Select("""
+        SELECT q.*, m.name,m.id
+        FROM review_before q
+        JOIN member m ON q.member_seq = m.member_seq
+        WHERE q.content LIKE CONCAT('%', #{keyword}, '%')
+          AND q.play_seq = #{playSeq}
+        ORDER BY q.created_date DESC
+    """)
+    List<QnaDTO> qnaSearchKey(@Param("keyword") String keyword, @Param("playSeq") int playSeq);
 
 	
 }
